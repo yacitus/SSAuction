@@ -116,6 +116,7 @@ Repo.preload(team_two, [:users])
 auction =
   %Auction{
     name: "Test Auction",
+    year_range: year_range,
     players_per_team: 1,
     team_dollars_per_player: 10,
     } |> Repo.insert!

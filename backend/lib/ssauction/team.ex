@@ -5,7 +5,10 @@ defmodule Ssauction.Team do
   schema "teams" do
     field :name, :string
 
-    many_to_many :auctions, Ssauction.Auction, join_through: "auctions_teams"
+    belongs_to :auction, Ssauction.Auction
+
+    has_many :bids, Ssauction.Bid
+
     many_to_many :users, Ssauction.User, join_through: "teams_users"
   end
 

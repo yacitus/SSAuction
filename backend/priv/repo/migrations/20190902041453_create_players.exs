@@ -7,6 +7,8 @@ defmodule Ssauction.Repo.Migrations.CreatePlayers do
       add :ssnum, :integer, null: false
       add :name, :string, null: false
       add :position, :string, null: false
+
+      add :bid_id, references(:bids)
     end
 
     create unique_index(:players, [:year_range, :ssnum])

@@ -8,6 +8,8 @@ defmodule Ssauction.Player do
     field :ssnum, :integer
     field :name, :string
     field :position, :string
+
+    belongs_to :bid, Ssauction.Bid
   end
 
   def changeset(player, params \\ %{}) do
@@ -17,13 +19,12 @@ defmodule Ssauction.Player do
     |> cast(params, required_fields)
     |> validate_required(required_fields)
     |> validate_inclusion(:position, ["SP", "RP", "1B", "2B", "3B", "SS", "OF", "DH"])
-    # |> unique_constraint(:name)
-    # |> unique_constraint(:ssnum)
     |> validate_year_range()
     |> validate_unique_year_range_and_ssnum()
+    # |> assoc_constraint(:bid)
   end
 
-  defp validate_year_range(changeset) do
+  def validate_year_range(changeset) do
     case changeset.valid? do
       true ->
         year_range = get_field(changeset, :year_range)
