@@ -10,6 +10,7 @@ defmodule Ssauction.Player do
     field :position, :string
 
     belongs_to :bid, Ssauction.Bid
+    belongs_to :rostered_player, Ssauction.RosteredPlayer
   end
 
   def changeset(player, params \\ %{}) do

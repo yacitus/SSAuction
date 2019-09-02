@@ -10,6 +10,7 @@ defmodule Ssauction.Team do
     belongs_to :auction, Ssauction.Auction
 
     has_many :bids, Ssauction.Bid
+    has_many :rostered_players, Ssauction.RosteredPlayer
 
     many_to_many :users, Ssauction.User, join_through: "teams_users"
   end
