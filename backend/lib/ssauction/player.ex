@@ -11,6 +11,7 @@ defmodule Ssauction.Player do
 
     belongs_to :bid, Ssauction.Bid
     belongs_to :rostered_player, Ssauction.RosteredPlayer
+    belongs_to :ordered_player, Ssauction.OrderedPlayer
   end
 
   def changeset(player, params \\ %{}) do

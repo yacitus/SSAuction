@@ -14,8 +14,16 @@ defmodule Ssauction.SingleAuction do
 
   Raises `Ecto.NoResultsError` if no auction was found.
   """
-  def get_auction!(id) do
+  def get_auction_by_id!(id) do
     Repo.get!(Auction, id)
+  end
+
+  @doc """
+  Returns a list of teams in the auction
+
+  """
+  def list_teams(%Auction{} = auction) do
+    Repo.preload(auction, [:teams]).teams
   end
 
 end
