@@ -10,6 +10,15 @@ defmodule Ssauction.SingleAuction do
   alias Ssauction.User
 
   @doc """
+  Returns all auctions.
+
+  Raises `Ecto.NoResultsError` if no auction was found.
+  """
+  def get_all_auctions() do
+    Repo.all(Auction)
+  end
+
+  @doc """
   Returns the auction with the given `id`.
 
   Raises `Ecto.NoResultsError` if no auction was found.

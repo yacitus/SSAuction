@@ -12,6 +12,13 @@ defmodule SsauctionWeb.Schema.Schema do
         {:ok, SingleAuction.get_auction_by_id!(id)}
       end
     end
+
+    @desc "Get a list of all auctions"
+    field :auctions, list_of(:auction) do
+      resolve fn _, _, _ ->
+        {:ok, SingleAuction.get_all_auctions()}
+      end
+    end
   end
 
   #
