@@ -16,6 +16,7 @@ alias Ssauction.Player
 alias Ssauction.Team
 alias Ssauction.Auction
 alias Ssauction.Bid
+alias Ssauction.RosteredPlayer
 
 #
 # PLAYERS
@@ -33,14 +34,15 @@ player1 =
      })
   |> Repo.insert!
 
-%Player{}
-|> Player.changeset(%{
-    year_range: year_range,
-    name: "Mike Scott",
-    ssnum: 2,
-    position: "SP"
-   })
-|> Repo.insert!
+player2 =
+  %Player{}
+  |> Player.changeset(%{
+      year_range: year_range,
+      name: "Mike Scott",
+      ssnum: 2,
+      position: "SP"
+     })
+  |> Repo.insert!
 
 %Player{}
 |> Player.changeset(%{
@@ -155,3 +157,15 @@ bid =
 bid = Ecto.build_assoc(team_daryl, :bids, bid)
 bid = Ecto.build_assoc(auction, :bids, bid)
 Repo.insert!(bid)
+
+#
+# ROSTER A PLAYER
+#
+
+rostered_player =
+  %RosteredPlayer{
+    cost: 4,
+    player: player2
+  }
+rostered_player = Ecto.build_assoc(team_two, :rostered_players, rostered_player)
+Repo.insert!(rostered_player)
