@@ -15,6 +15,7 @@ alias Ssauction.User
 alias Ssauction.Player
 alias Ssauction.Team
 alias Ssauction.Auction
+alias Ssauction.Bid
 
 #
 # PLAYERS
@@ -22,14 +23,15 @@ alias Ssauction.Auction
 
 year_range = "1985-1988"
 
-%Player{}
-|> Player.changeset(%{
-    year_range: year_range,
-    name: "Orel Hershiser",
-    ssnum: 1,
-    position: "SP"
-   })
-|> Repo.insert!
+player1 =
+  %Player{}
+  |> Player.changeset(%{
+      year_range: year_range,
+      name: "Orel Hershiser",
+      ssnum: 1,
+      position: "SP"
+     })
+  |> Repo.insert!
 
 %Player{}
 |> Player.changeset(%{
@@ -138,3 +140,18 @@ Repo.preload(auction, [:admins])
 |> Ecto.Changeset.change()
 |> Ecto.Changeset.put_assoc(:admins, [bob])
 |> Repo.update!()
+
+#
+# CREATE A BID
+#
+
+{:ok, utc_datetime} = DateTime.now("Etc/UTC")
+bid =
+  %Bid{
+    bid_amount: 2,
+    time_of_bid: utc_datetime,
+    player: player1
+  }
+bid = Ecto.build_assoc(team_daryl, :bids, bid)
+bid = Ecto.build_assoc(auction, :bids, bid)
+Repo.insert!(bid)
