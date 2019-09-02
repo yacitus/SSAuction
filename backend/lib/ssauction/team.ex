@@ -7,6 +7,7 @@ defmodule Ssauction.Team do
     field :dollars_spent, :integer, default: 0
     field :dollars_bid, :integer, default: 0
     field :unused_nominations, :integer, default: 2
+    field :time_of_last_nomination, :utc_datetime
 
     belongs_to :auction, Ssauction.Auction
 
@@ -17,8 +18,8 @@ defmodule Ssauction.Team do
   end
 
   def changeset(team, params \\ %{}) do
-    required_fields = [:name]
-    optional_fields = [:dollars_spent, :dollars_bid, :unused_nominations]
+    required_fields = [:name, :dollars_spent, :dollars_bid, :unused_nominations]
+    optional_fields = [:time_of_last_nomination]
 
     team
     |> cast(params, required_fields ++ optional_fields)

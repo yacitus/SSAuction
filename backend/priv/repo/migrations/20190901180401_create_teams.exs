@@ -7,6 +7,7 @@ defmodule Ssauction.Repo.Migrations.CreateTeams do
       add :dollars_spent, :integer, null: false
       add :dollars_bid, :integer, null: false
       add :unused_nominations, :integer, null: false
+      add :time_of_last_nomination, :utc_datetime
 
       add :auction_id, references(:auctions)
     end
