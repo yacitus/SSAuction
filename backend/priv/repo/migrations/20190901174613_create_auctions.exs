@@ -9,7 +9,7 @@ defmodule Ssauction.Repo.Migrations.CreateAuctions do
       add :active, :boolean, null: false
       add :players_per_team, :integer, null: false
       add :team_dollars_per_player, :integer, null: false
-      add :started_at, :utc_datetime
+      add :started_or_paused_at, :utc_datetime
 
       timestamps()
     end

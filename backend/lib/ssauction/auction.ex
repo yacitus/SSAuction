@@ -9,7 +9,7 @@ defmodule Ssauction.Auction do
     field :players_per_team, :integer
     field :team_dollars_per_player, :integer
     field :active, :boolean, default: false
-    field :started_at, :utc_datetime
+    field :started_or_paused_at, :utc_datetime
 
     has_many :teams, Ssauction.Team
     has_many :bids, Ssauction.Bid
@@ -22,7 +22,7 @@ defmodule Ssauction.Auction do
   def changeset(auction, params \\ %{}) do
     required_fields = [:name, :year_range, :bid_timeout_seconds,
                        :players_per_team, :team_dollars_per_player, :active]
-    optional_fields = [:started_at]
+    optional_fields = [:started_or_paused_at]
 
     auction
     |> cast(params, required_fields ++ optional_fields)
