@@ -4,6 +4,8 @@ defmodule Ssauction.Team do
 
   schema "teams" do
     field :name, :string
+    field :dollars_spent, :integer, default: 0
+    field :dollars_bid, :integer, default: 0
 
     belongs_to :auction, Ssauction.Auction
 
@@ -14,9 +16,10 @@ defmodule Ssauction.Team do
 
   def changeset(team, params \\ %{}) do
     required_fields = [:name]
+    optional_fields = [:dollars_spent, :dollars_bid]
 
     team
-    |> cast(params, required_fields)
+    |> cast(params, required_fields ++ optional_fields)
     |> validate_required(required_fields)
     |> unique_constraint(:name)
   end
