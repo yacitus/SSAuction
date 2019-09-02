@@ -13,7 +13,7 @@ defmodule Ssauction.Bid do
   end
 
   def changeset(bid, params \\ %{}) do
-    required_fields = [:bid_amount, :time_of_bid]
+    required_fields = [:bid_amount, :time_of_bid, :player]
     optional_fields = [:hidden_high_bid]
 
     bid
