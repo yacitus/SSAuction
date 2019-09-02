@@ -5,6 +5,7 @@ defmodule Ssauction.Auction do
   schema "auctions" do
     field :name, :string
     field :year_range, :string
+    field :nominations_per_team, :integer, default: 2
     field :bid_timeout_seconds, :integer, default: 60*12
     field :players_per_team, :integer
     field :team_dollars_per_player, :integer
@@ -20,7 +21,7 @@ defmodule Ssauction.Auction do
   end
 
   def changeset(auction, params \\ %{}) do
-    required_fields = [:name, :year_range, :bid_timeout_seconds,
+    required_fields = [:name, :year_range, :nominations_per_team, :bid_timeout_seconds,
                        :players_per_team, :team_dollars_per_player, :active]
     optional_fields = [:started_or_paused_at]
 
