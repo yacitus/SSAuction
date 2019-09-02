@@ -149,7 +149,7 @@ Repo.preload(auction, [:admins])
 bid =
   %Bid{
     bid_amount: 2,
-    time_of_bid: utc_datetime,
+    expires_at: DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second),
     player: player1
   }
 bid = Ecto.build_assoc(team_daryl, :bids, bid)

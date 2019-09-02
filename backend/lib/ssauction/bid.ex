@@ -5,7 +5,7 @@ defmodule Ssauction.Bid do
   schema "bids" do
     field :bid_amount, :integer
     field :hidden_high_bid, :integer
-    field :time_of_bid, :utc_datetime
+    field :expires_at, :utc_datetime
 
     has_one :player, Ssauction.Player
     belongs_to :team, Ssauction.Team
@@ -13,7 +13,7 @@ defmodule Ssauction.Bid do
   end
 
   def changeset(bid, params \\ %{}) do
-    required_fields = [:bid_amount, :time_of_bid, :player]
+    required_fields = [:bid_amount, :expires_at, :player]
     optional_fields = [:hidden_high_bid]
 
     bid
