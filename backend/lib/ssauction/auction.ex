@@ -21,8 +21,8 @@ defmodule Ssauction.Auction do
 
   def changeset(auction, params \\ %{}) do
     required_fields = [:name, :year_range, :bid_timeout_seconds,
-                       :players_per_team, :team_dollars_per_player]
-    optional_fields = [:active, :started_at]
+                       :players_per_team, :team_dollars_per_player, :active]
+    optional_fields = [:started_at]
 
     auction
     |> cast(params, required_fields ++ optional_fields)
