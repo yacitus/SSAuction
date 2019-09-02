@@ -6,6 +6,7 @@ defmodule Ssauction.Team do
     field :name, :string
     field :dollars_spent, :integer, default: 0
     field :dollars_bid, :integer, default: 0
+    field :unused_nominations, :integer, default: 2
 
     belongs_to :auction, Ssauction.Auction
 
@@ -17,7 +18,7 @@ defmodule Ssauction.Team do
 
   def changeset(team, params \\ %{}) do
     required_fields = [:name]
-    optional_fields = [:dollars_spent, :dollars_bid]
+    optional_fields = [:dollars_spent, :dollars_bid, :unused_nominations]
 
     team
     |> cast(params, required_fields ++ optional_fields)

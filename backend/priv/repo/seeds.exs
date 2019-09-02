@@ -158,6 +158,9 @@ bid = Ecto.build_assoc(team_daryl, :bids, bid)
 bid = Ecto.build_assoc(auction, :bids, bid)
 Repo.insert!(bid)
 
+Team.changeset(team_daryl, %{unused_nominations: team_daryl.unused_nominations-1})
+|> Repo.update!()
+
 #
 # ROSTER A PLAYER
 #
