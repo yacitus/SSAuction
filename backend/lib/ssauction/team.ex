@@ -13,6 +13,7 @@ defmodule Ssauction.Team do
 
     has_many :bids, Ssauction.Bid
     has_many :rostered_players, Ssauction.RosteredPlayer
+    has_many :ordered_players, Ssauction.OrderedPlayer
 
     many_to_many :users, Ssauction.User, join_through: "teams_users"
   end

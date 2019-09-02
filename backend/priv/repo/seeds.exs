@@ -17,6 +17,7 @@ alias Ssauction.Team
 alias Ssauction.Auction
 alias Ssauction.Bid
 alias Ssauction.RosteredPlayer
+alias Ssauction.OrderedPlayer
 
 #
 # PLAYERS
@@ -44,14 +45,25 @@ player2 =
      })
   |> Repo.insert!
 
-%Player{}
-|> Player.changeset(%{
-    year_range: year_range,
-    name: "Dwight Gooden",
-    ssnum: 3,
-    position: "SP"
-   })
-|> Repo.insert!
+player3 =
+  %Player{}
+  |> Player.changeset(%{
+      year_range: year_range,
+      name: "Dwight Gooden",
+      ssnum: 3,
+      position: "SP"
+     })
+  |> Repo.insert!
+
+player4 =
+  %Player{}
+  |> Player.changeset(%{
+      year_range: year_range,
+      name: "Rick Mahler",
+      ssnum: 4,
+      position: "SP"
+     })
+  |> Repo.insert!
 
 #
 # USERS
@@ -173,3 +185,27 @@ rostered_player =
   }
 rostered_player = Ecto.build_assoc(team_two, :rostered_players, rostered_player)
 Repo.insert!(rostered_player)
+
+#
+# ADD A PLAYER TO A TEAM'S NOMINATION LIST
+#
+
+ordered_player =
+  %OrderedPlayer{
+    rank: 1,
+    player: player3
+  }
+ordered_player = Ecto.build_assoc(team_daryl, :ordered_players, ordered_player)
+Repo.insert!(ordered_player)
+
+#
+# ADD A PLAYER TO AN AUCTION'S AUTO-NOMINATION LIST
+#
+
+ordered_player =
+  %OrderedPlayer{
+    rank: 1,
+    player: player4
+  }
+ordered_player = Ecto.build_assoc(auction, :ordered_players, ordered_player)
+Repo.insert!(ordered_player)

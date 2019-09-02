@@ -15,6 +15,7 @@ defmodule Ssauction.Auction do
 
     has_many :teams, Ssauction.Team
     has_many :bids, Ssauction.Bid
+    has_many :ordered_players, Ssauction.OrderedPlayer
 
     many_to_many :admins, Ssauction.User, join_through: "auctions_users"
 
