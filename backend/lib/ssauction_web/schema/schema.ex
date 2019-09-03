@@ -46,6 +46,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :team_dollars_per_player, non_null(:integer)
     field :active, non_null(:boolean)
     field :started_or_paused_at, :datetime
+    field :autonomination_queue, list_of(:ordered_player) do
+      resolve dataloader(SingleAuction, :ordered_players, args: %{scope: :auction})
+    end
   end
 
   object :team do
@@ -60,6 +63,9 @@ defmodule SsauctionWeb.Schema.Schema do
     end
     field :rostered_players, list_of(:rostered_player) do
       resolve dataloader(SingleAuction, :rostered_players, args: %{scope: :team})
+    end
+    field :nomination_queue, list_of(:ordered_player) do
+      resolve dataloader(SingleAuction, :ordered_players, args: %{scope: :team})
     end
   end
 
@@ -84,6 +90,13 @@ defmodule SsauctionWeb.Schema.Schema do
     field :cost, non_null(:integer)
     field :player, non_null(:player) do
       resolve dataloader(SingleAuction, :player, args: %{scope: :rostered_player})
+    end
+  end
+
+  object :ordered_player do
+    field :rank, non_null(:integer)
+    field :player, non_null(:player) do
+      resolve dataloader(SingleAuction, :player, args: %{scope: :ordered_player})
     end
   end
 
