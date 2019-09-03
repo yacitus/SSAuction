@@ -159,10 +159,11 @@ Repo.preload(auction, [:admins])
 # CREATE A BID
 #
 
+bid_amount = 2
 {:ok, utc_datetime} = DateTime.now("Etc/UTC")
 bid =
   %Bid{
-    bid_amount: 2,
+    bid_amount: bid_amount,
     expires_at: DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second),
     player: player1
   }
@@ -171,6 +172,7 @@ bid = Ecto.build_assoc(auction, :bids, bid)
 Repo.insert!(bid)
 
 Team.changeset(team_daryl, %{unused_nominations: team_daryl.unused_nominations-1,
+                             dollars_bid: team_daryl.dollars_bid + bid_amount,
                              time_of_last_nomination: utc_datetime})
 |> Repo.update!()
 
@@ -178,13 +180,17 @@ Team.changeset(team_daryl, %{unused_nominations: team_daryl.unused_nominations-1
 # ROSTER A PLAYER
 #
 
+player_cost = 4
 rostered_player =
   %RosteredPlayer{
-    cost: 4,
+    cost: player_cost,
     player: player2
   }
 rostered_player = Ecto.build_assoc(team_two, :rostered_players, rostered_player)
 Repo.insert!(rostered_player)
+
+Team.changeset(team_two, %{dollars_spent: team_daryl.dollars_spent + player_cost})
+|> Repo.update!()
 
 #
 # ADD A PLAYER TO A TEAM'S NOMINATION LIST

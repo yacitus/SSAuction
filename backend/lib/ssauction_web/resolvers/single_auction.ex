@@ -8,4 +8,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
   def auctions(_, _, _) do
     {:ok, SingleAuction.get_all_auctions()}
   end
+
+  def teams_in_auction(_, %{auction_id: auction_id}, _) do
+    {:ok, SingleAuction.get_auction_by_id!(auction_id) |> SingleAuction.list_teams()}
+  end
 end
