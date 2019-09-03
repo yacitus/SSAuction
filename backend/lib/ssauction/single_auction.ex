@@ -35,4 +35,13 @@ defmodule Ssauction.SingleAuction do
     Repo.preload(auction, [:teams]).teams
   end
 
+  @doc """
+  Returns the team with the given `id`.
+
+  Raises `Ecto.NoResultsError` if no auction was found.
+  """
+  def get_team_by_id!(id) do
+    Repo.get!(Team, id)
+  end
+
 end

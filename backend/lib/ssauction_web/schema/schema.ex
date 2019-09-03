@@ -3,6 +3,7 @@ defmodule SsauctionWeb.Schema.Schema do
   alias Ssauction.SingleAuction
 
   import_types Absinthe.Type.Custom
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
 
   alias SsauctionWeb.Resolvers
 
@@ -22,6 +23,12 @@ defmodule SsauctionWeb.Schema.Schema do
     field :teams, list_of(:team) do
       arg :auction_id, non_null(:integer)
       resolve &Resolvers.SingleAuction.teams_in_auction/3
+    end
+
+    @desc "Get a team by its id"
+    field :team, :team do
+      arg :id, non_null(:integer)
+      resolve &Resolvers.SingleAuction.team/3
     end
   end
 
@@ -48,6 +55,29 @@ defmodule SsauctionWeb.Schema.Schema do
     field :dollars_bid, non_null(:integer)
     field :unused_nominations, non_null(:integer)
     field :time_of_last_nomination, :datetime
+    field :bids, list_of(:bid) do
+      resolve dataloader(SingleAuction, :bids, args: %{scope: :team})
+    end
+  end
+
+  object :bid do
+    field :id, non_null(:id)
+    field :bid_amount, non_null(:integer)
+    field :expires_at, non_null(:datetime)
+  end
+
+  def context(ctx) do
+    source = Dataloader.Ecto.new(Ssauction.Repo)
+
+    loader =
+      Dataloader.new
+      |> Dataloader.add_source(SingleAuction, source)
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
   end
 
 end
