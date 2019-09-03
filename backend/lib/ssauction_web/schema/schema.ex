@@ -4,20 +4,18 @@ defmodule SsauctionWeb.Schema.Schema do
 
   import_types Absinthe.Type.Custom
 
+  alias SsauctionWeb.Resolvers
+
   query do
     @desc "Get an auction by its id"
     field :auction, :auction do
       arg :id, non_null(:integer)
-      resolve fn _, %{id: id}, _ ->
-        {:ok, SingleAuction.get_auction_by_id!(id)}
-      end
+      resolve &Resolvers.SingleAuction.auction/3
     end
 
     @desc "Get a list of all auctions"
     field :auctions, list_of(:auction) do
-      resolve fn _, _, _ ->
-        {:ok, SingleAuction.get_all_auctions()}
-      end
+      resolve &Resolvers.SingleAuction.auctions/3
     end
   end
 
