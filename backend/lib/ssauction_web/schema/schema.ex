@@ -64,7 +64,19 @@ defmodule SsauctionWeb.Schema.Schema do
     field :id, non_null(:id)
     field :bid_amount, non_null(:integer)
     field :expires_at, non_null(:datetime)
+    field :player, non_null(:player) do
+      resolve dataloader(SingleAuction, :player, args: %{scope: :bid})
+    end
   end
+
+  object :player do
+    field :id, non_null(:id)
+    field :year_range, non_null(:string)
+    field :ssnum, non_null(:integer)
+    field :name, non_null(:string)
+    field :position, non_null(:string)
+  end
+
 
   def context(ctx) do
     source = Dataloader.Ecto.new(Ssauction.Repo)
