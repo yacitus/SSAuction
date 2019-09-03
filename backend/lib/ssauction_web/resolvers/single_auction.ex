@@ -16,4 +16,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
   def team(_, %{id: id}, _) do
     {:ok, SingleAuction.get_team_by_id!(id)}
   end
+
+  def bids_in_auction(auction, _, _) do
+    {:ok, SingleAuction.get_bids_in_auction!(auction)}
+  end
 end

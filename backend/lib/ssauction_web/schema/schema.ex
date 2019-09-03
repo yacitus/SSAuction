@@ -49,6 +49,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :autonomination_queue, list_of(:ordered_player) do
       resolve dataloader(SingleAuction, :ordered_players, args: %{scope: :auction})
     end
+    field :bids, list_of(:bid) do
+      resolve &Resolvers.SingleAuction.bids_in_auction/3
+    end
   end
 
   object :team do
@@ -75,6 +78,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :expires_at, non_null(:datetime)
     field :player, non_null(:player) do
       resolve dataloader(SingleAuction, :player, args: %{scope: :bid})
+    end
+    field :team, non_null(:team) do
+      resolve dataloader(SingleAuction, :team, args: %{scope: :bid})
     end
   end
 

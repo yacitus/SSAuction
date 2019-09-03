@@ -44,4 +44,12 @@ defmodule Ssauction.SingleAuction do
     Repo.get!(Team, id)
   end
 
+  @doc """
+  Returns a list of bids for all teams in the auction
+
+  """
+  def get_bids_in_auction!(%Auction{} = auction) do
+    Repo.all(from b in Bid, where: b.auction_id == ^auction.id)
+  end
+
 end
