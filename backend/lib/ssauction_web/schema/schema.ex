@@ -58,6 +58,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :bids, list_of(:bid) do
       resolve dataloader(SingleAuction, :bids, args: %{scope: :team})
     end
+    field :rostered_players, list_of(:rostered_player) do
+      resolve dataloader(SingleAuction, :rostered_players, args: %{scope: :team})
+    end
   end
 
   object :bid do
@@ -75,6 +78,13 @@ defmodule SsauctionWeb.Schema.Schema do
     field :ssnum, non_null(:integer)
     field :name, non_null(:string)
     field :position, non_null(:string)
+  end
+
+  object :rostered_player do
+    field :cost, non_null(:integer)
+    field :player, non_null(:player) do
+      resolve dataloader(SingleAuction, :player, args: %{scope: :rostered_player})
+    end
   end
 
 
