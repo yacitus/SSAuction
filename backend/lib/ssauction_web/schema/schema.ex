@@ -44,6 +44,16 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :auction_id, non_null(:id)
       resolve &Resolvers.SingleAuction.pause_auction/3
     end
+
+    @desc "Submit a bid"
+    field :submit_bid, :bid do
+      arg :auction_id, non_null(:id)
+      arg :team_id, non_null(:id)
+      arg :player_id, non_null(:id)
+      arg :bid_amount, non_null(:integer)
+      arg :hidden_high_bid, :integer
+      resolve &Resolvers.SingleAuction.submit_bid/3
+    end
   end
 
   #
@@ -65,6 +75,9 @@ defmodule SsauctionWeb.Schema.Schema do
     end
     field :bids, list_of(:bid) do
       resolve &Resolvers.SingleAuction.bids_in_auction/3
+    end
+    field :rostered_players, list_of(:rostered_player) do
+      resolve dataloader(SingleAuction, :rostered_players, args: %{scope: :auction})
     end
   end
 
@@ -111,7 +124,10 @@ defmodule SsauctionWeb.Schema.Schema do
     field :player, non_null(:player) do
       resolve dataloader(SingleAuction, :player, args: %{scope: :rostered_player})
     end
-  end
+    field :team, non_null(:team) do
+      resolve dataloader(SingleAuction, :team, args: %{scope: :rostered_player})
+    end
+ end
 
   object :ordered_player do
     field :rank, non_null(:integer)
@@ -122,7 +138,7 @@ defmodule SsauctionWeb.Schema.Schema do
 
 
   def context(ctx) do
-    ctx = Map.put(ctx, :current_user, Ssauction.Accounts.get_user_by_id(1))
+    ctx = Map.put(ctx, :current_user, Ssauction.Accounts.get_user_by_id(2))
 
     source = Dataloader.Ecto.new(Ssauction.Repo)
 

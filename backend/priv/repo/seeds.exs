@@ -192,6 +192,7 @@ rostered_player =
     player: player2
   }
 rostered_player = Ecto.build_assoc(team_two, :rostered_players, rostered_player)
+rostered_player = Ecto.build_assoc(auction, :rostered_players, rostered_player)
 Repo.insert!(rostered_player)
 
 Team.changeset(team_two, %{dollars_spent: team_daryl.dollars_spent + player_cost})

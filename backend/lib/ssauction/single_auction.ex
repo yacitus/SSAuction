@@ -31,24 +31,33 @@ defmodule Ssauction.SingleAuction do
   Returns a list of teams in the auction
 
   """
-  def list_teams(%Auction{} = auction) do
+  def list_teams(auction = %Auction{}) do
     Repo.preload(auction, [:teams]).teams
   end
 
   @doc """
   Returns the team with the given `id`.
 
-  Raises `Ecto.NoResultsError` if no auction was found.
+  Raises `Ecto.NoResultsError` if no team was found.
   """
   def get_team_by_id!(id) do
     Repo.get!(Team, id)
   end
 
   @doc """
+  Returns the player with the given `id`.
+
+  Raises `Ecto.NoResultsError` if no player was found.
+  """
+  def get_player_by_id!(id) do
+    Repo.get!(Player, id)
+  end
+
+  @doc """
   Returns a list of bids for all teams in the auction
 
   """
-  def get_bids_in_auction!(%Auction{} = auction) do
+  def get_bids_in_auction!(auction = %Auction{}) do
     Repo.all(from b in Bid, where: b.auction_id == ^auction.id)
   end
 
@@ -66,10 +75,26 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Returns true if the team is in the auction
+
+  """
+  def team_is_in_auction?(team = %Team{}, auction = %Auction{}) do
+    Enum.member?(list_teams(auction), team)
+  end
+
+  @doc """
+  Returns true if the user is a member of the team
+
+  """
+  def user_is_team_member?(user = %User{}, team = %Team{}) do
+    Enum.member?(Repo.preload(team, [:users]).users, user)
+  end
+
+  @doc """
   Starts the auction
 
   """
-  def start_auction(%Auction{} = auction) do
+  def start_auction(auction = %Auction{}) do
     {:ok, utc_datetime} = DateTime.now("Etc/UTC")
 
     update_bids_to_new_start_time(auction, utc_datetime)
@@ -95,13 +120,26 @@ defmodule Ssauction.SingleAuction do
   Pauses the auction
 
   """
-  def pause_auction(%Auction{} = auction) do
+  def pause_auction(auction = %Auction{}) do
     {:ok, utc_datetime} = DateTime.now("Etc/UTC")
 
     auction
     |> Auction.active_changeset(%{active: false,
                                   started_or_paused_at: utc_datetime})
     |> Repo.update()
+  end
+
+  @doc """
+  Submits a bid
+
+  """
+  def submit_bid(auction = %Auction{}, team = %Team{}, player = %Player{}, attrs) do
+    %Bid{}
+    |> Bid.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:auction, auction)
+    |> Ecto.Changeset.put_assoc(:team, team)
+    |> Ecto.Changeset.put_assoc(:player, player)
+    |> Repo.insert()
   end
 
 

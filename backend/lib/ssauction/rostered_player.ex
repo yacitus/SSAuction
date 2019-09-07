@@ -7,6 +7,7 @@ defmodule Ssauction.RosteredPlayer do
 
     has_one :player, Ssauction.Player
     belongs_to :team, Ssauction.Team
+    belongs_to :auction, Ssauction.Auction
   end
 
   def changeset(rostered_player, params \\ %{}) do
