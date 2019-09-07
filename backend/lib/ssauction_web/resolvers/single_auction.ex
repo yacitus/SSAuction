@@ -1,5 +1,6 @@
 defmodule SsauctionWeb.Resolvers.SingleAuction do
   alias Ssauction.SingleAuction
+  alias SsauctionWeb.Schema.ChangesetErrors
 
   def auction(_, %{id: id}, _) do
     {:ok, SingleAuction.get_auction_by_id!(id)}
@@ -19,5 +20,55 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
   def bids_in_auction(auction, _, _) do
     {:ok, SingleAuction.get_bids_in_auction!(auction)}
+  end
+
+  def start_auction(_, args, %{context: %{current_user: user}}) do
+    IO.inspect user
+    auction = SingleAuction.get_auction_by_id!(args[:auction_id])
+
+    # make sure the user is an admin for the auction or is super
+    if (SingleAuction.user_is_auction_admin?(user, auction)) do
+      case SingleAuction.start_auction(auction) do
+        {:error, changeset} ->
+          {
+            :error,
+            message: "Could not start auction!",
+            details: ChangesetErrors.error_details(changeset)
+          }
+
+        {:ok, auction} ->
+          {:ok, auction}
+      end
+    else
+      {
+        :error,
+        message: "User not authorized to change auction"
+      }
+    end
+  end
+
+  def pause_auction(_, args, %{context: %{current_user: user}}) do
+    auction = SingleAuction.get_auction_by_id!(args[:auction_id])
+
+
+    # make sure the user is an admin for the auction or is super
+    if (SingleAuction.user_is_auction_admin?(user, auction)) do
+      case SingleAuction.pause_auction(auction) do
+        {:error, changeset} ->
+          {
+            :error,
+            message: "Could not pause auction!",
+            details: ChangesetErrors.error_details(changeset)
+          }
+
+        {:ok, auction} ->
+          {:ok, auction}
+      end
+    else
+      {
+        :error,
+        message: "User not authorized to change auction"
+      }
+    end
   end
 end

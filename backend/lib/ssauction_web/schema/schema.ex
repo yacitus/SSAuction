@@ -32,6 +32,20 @@ defmodule SsauctionWeb.Schema.Schema do
     end
   end
 
+  mutation do
+    @desc "Start the auction if it's paused"
+    field :start_auction, :auction do
+      arg :auction_id, non_null(:id)
+      resolve &Resolvers.SingleAuction.start_auction/3
+    end
+
+    @desc "Pause the auction if it's active"
+    field :pause_auction, :auction do
+      arg :auction_id, non_null(:id)
+      resolve &Resolvers.SingleAuction.pause_auction/3
+    end
+  end
+
   #
   # Object Types
   #
@@ -108,6 +122,8 @@ defmodule SsauctionWeb.Schema.Schema do
 
 
   def context(ctx) do
+    ctx = Map.put(ctx, :current_user, Ssauction.Accounts.get_user_by_id(1))
+
     source = Dataloader.Ecto.new(Ssauction.Repo)
 
     loader =

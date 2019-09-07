@@ -164,7 +164,9 @@ bid_amount = 2
 bid =
   %Bid{
     bid_amount: bid_amount,
-    expires_at: DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second),
+    # the commented line below is correct, but the line below that is for testing
+    # expires_at: DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second),
+    expires_at: DateTime.add(utc_datetime, 600, :second),
     player: player1
   }
 bid = Ecto.build_assoc(team_daryl, :bids, bid)
@@ -174,6 +176,9 @@ Repo.insert!(bid)
 Team.changeset(team_daryl, %{unused_nominations: team_daryl.unused_nominations-1,
                              dollars_bid: team_daryl.dollars_bid + bid_amount,
                              time_of_last_nomination: utc_datetime})
+|> Repo.update!()
+
+Auction.changeset(auction, %{started_or_paused_at: utc_datetime})
 |> Repo.update!()
 
 #

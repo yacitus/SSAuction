@@ -36,4 +36,24 @@ defmodule Ssauction.Auction do
     |> validate_number(:team_dollars_per_player, greater_than_or_equal_to: 10)
     |> Ssauction.Player.validate_year_range()
   end
+
+  def active_changeset(auction, attrs) do
+    current_active_state = auction.active
+
+    auction
+    |> cast(attrs, [:active])
+    |> validate_required([:active])
+    |> validate_active_changed(current_active_state)
+  end
+
+  defp validate_active_changed(changeset, current_active_state) do
+    case {get_field(changeset, :active), current_active_state} do
+      {false, false} ->
+        add_error(changeset, :active, "auction already paused")
+      {true, true} ->
+        add_error(changeset, :active, "auction already running")
+      {_, _} ->
+        changeset
+    end
+  end
 end

@@ -17,9 +17,10 @@ defmodule Ssauction.User do
 
   def changeset(user, attrs) do
     required_fields = [:username, :email, :password]
+    optional_fields = [:super]
     
     user
-    |> cast(attrs, required_fields)
+    |> cast(attrs, required_fields ++ optional_fields)
     |> validate_required(required_fields)
     |> validate_length(:username, min: 2)
     |> validate_length(:password, min: 6)

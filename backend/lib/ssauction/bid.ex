@@ -13,11 +13,13 @@ defmodule Ssauction.Bid do
   end
 
   def changeset(bid, params \\ %{}) do
-    required_fields = [:bid_amount, :expires_at, :player]
+    required_fields = [:bid_amount, :expires_at]
     optional_fields = [:hidden_high_bid]
 
     bid
     |> cast(params, required_fields ++ optional_fields)
     |> validate_required(required_fields)
+    |> assoc_constraint(:team)
+    |> assoc_constraint(:auction)
   end
 end
