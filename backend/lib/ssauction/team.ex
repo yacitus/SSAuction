@@ -11,7 +11,7 @@ defmodule Ssauction.Team do
 
     belongs_to :auction, Ssauction.Auction
 
-    has_many :bids, Ssauction.Bid
+    has_many :bids, Ssauction.Bid, on_replace: :nilify
     has_many :rostered_players, Ssauction.RosteredPlayer
     has_many :ordered_players, Ssauction.OrderedPlayer
 

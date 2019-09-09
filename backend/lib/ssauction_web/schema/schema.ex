@@ -21,7 +21,7 @@ defmodule SsauctionWeb.Schema.Schema do
 
     @desc "Get a list of teams in an auction"
     field :teams, list_of(:team) do
-      arg :auction_id, non_null(:integer)
+      arg :team_id, non_null(:integer)
       resolve &Resolvers.SingleAuction.teams_in_auction/3
     end
 
@@ -29,6 +29,24 @@ defmodule SsauctionWeb.Schema.Schema do
     field :team, :team do
       arg :id, non_null(:integer)
       resolve &Resolvers.SingleAuction.team/3
+    end
+
+    @desc "Get a list of users in a team"
+    field :users, list_of(:user) do
+      arg :team_id, non_null(:integer)
+      resolve &Resolvers.SingleAuction.users_in_team/3
+    end
+
+    @desc "Get a user by its id"
+    field :user, :user do
+      arg :id, non_null(:integer)
+      resolve &Resolvers.SingleAuction.user/3
+    end
+
+    @desc "Get a bid by its id"
+    field :bid, :bid do
+      arg :id, non_null(:integer)
+      resolve &Resolvers.SingleAuction.bid/3
     end
   end
 
@@ -59,6 +77,13 @@ defmodule SsauctionWeb.Schema.Schema do
   #
   # Object Types
   #
+
+  object :user do
+    field :id, non_null(:id)
+    field :username, non_null(:string)
+    field :email, non_null(:string)
+  end
+
   object :auction do
     field :id, non_null(:id)
     field :name, non_null(:string)
@@ -88,6 +113,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :dollars_bid, non_null(:integer)
     field :unused_nominations, non_null(:integer)
     field :time_of_last_nomination, :datetime
+    field :users, list_of(:user) do
+      resolve dataloader(SingleAuction, :users, args: %{scope: :team})
+    end
     field :bids, list_of(:bid) do
       resolve dataloader(SingleAuction, :bids, args: %{scope: :team})
     end

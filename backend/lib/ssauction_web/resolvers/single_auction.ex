@@ -18,8 +18,20 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.get_team_by_id!(id)}
   end
 
+  def users_in_team(_, %{team_id: team_id}, _) do
+    {:ok, SingleAuction.get_team_by_id!(team_id) |> SingleAuction.list_users()}
+  end
+
+  def user(_, %{id: id}, _) do
+    {:ok, SingleAuction.get_user_by_id!(id)}
+  end
+
+  def bid(_, %{id: id}, _) do
+    {:ok, SingleAuction.get_bid_by_id!(id)}
+  end
+
   def bids_in_auction(auction, _, _) do
-    {:ok, SingleAuction.get_bids_in_auction!(auction)}
+    {:ok, SingleAuction.list_bids_in_auction!(auction)}
   end
 
   def start_auction(_, args, %{context: %{current_user: user}}) do
@@ -75,37 +87,140 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     team = SingleAuction.get_team_by_id!(args[:team_id])
     player = SingleAuction.get_player_by_id!(args[:player_id])
 
-    # make sure the team is in the auction
-    if (SingleAuction.team_is_in_auction?(team, auction)) do
-      # make sure the user is in the team submitting the bid
-      if (SingleAuction.user_is_team_member?(user, team)) do
-        {:ok, utc_datetime} = DateTime.now("Etc/UTC")
-        args = Map.put(args,
-                       :expires_at,
-                       DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second))
-
-        case SingleAuction.submit_bid(auction, team, player, args) do
-          {:error, changeset} ->
-            {
-              :error,
-              message: "Could not submit bid!",
-              details: ChangesetErrors.error_details(changeset)
-            }
-
-          {:ok, bid} ->
-            {:ok, bid}
-        end
-      else
+    cond do
+      not auction.active ->
         {
           :error,
-          message: "User not member of team submitting bid"
+          message: "Auction is paused"
         }
-      end
-    else
+      not SingleAuction.team_is_in_auction?(team, auction) ->
         {
           :error,
           message: "Team is not in auction"
         }
+      not SingleAuction.user_is_team_member?(user, team) ->
+        {
+          :error,
+          message: "User not member of team submitting bid"
+        }
+      SingleAuction.player_is_rostered?(player) ->
+        {
+          :error,
+          message: "Player is already rostered"
+        }
+      not SingleAuction.player_in_bids?(player) ->
+        cond do
+          not SingleAuction.legal_team_bid_amount?(auction, team, args, nil) ->
+            {
+              :error,
+              message: "Bid amount not legal for team"
+            }
+          not SingleAuction.team_has_open_roster_spot?(team, auction) ->
+            {
+              :error,
+              message: "Team does not have open roster spot for another bid"
+            }
+          team.unused_nominations == 0 ->
+            {
+              :error,
+              message: "Team does not have an open nomination"
+            }
+          true ->
+            submit_bid_changeset(auction, team, player, args, nil)
+        end
+      true ->
+        existing_bid = SingleAuction.get_players_bid!(player)
+
+        cond do
+          args[:bid_amount] < existing_bid.bid_amount ->
+            {
+              :error,
+              message: "Bid amount cannot be reduced"
+            }
+          args[:team_id] != existing_bid.team_id ->
+            cond do
+              not SingleAuction.legal_team_bid_amount?(auction, team, args, nil) ->
+                {
+                  :error,
+                  message: "Bid amount not legal for team"
+                }
+              args[:bid_amount] <= existing_bid.bid_amount ->
+                {
+                  :error,
+                  message: "Existing bid amount must be increased"
+                }
+              not SingleAuction.team_has_open_roster_spot?(team, auction) ->
+                {
+                  :error,
+                  message: "Team does not have open roster spot for another bid"
+                }
+              true ->
+                submit_bid_changeset(auction, team, player, args, existing_bid)
+            end
+          not SingleAuction.legal_team_bid_amount?(auction, team, args, existing_bid) ->
+            {
+              :error,
+              message: "Bid amount not legal for team"
+            }
+          args[:bid_amount] != existing_bid.bid_amount ->
+            {
+              :error,
+              message: "Cannot out-bid yourself"
+            }
+          not hidden_high_bid_legal?(args[:hidden_high_bid], existing_bid.bid_amount) ->
+            {
+              :error,
+              message: "Hidden high bid must be nil or above bid amount"
+            }
+          true ->
+            submit_bid_changeset(auction, team, player, args, existing_bid)
+        end
     end
+  end
+
+  defp add_expires_at_to_args(args, auction) do
+    {:ok, utc_datetime} = DateTime.now("Etc/UTC")
+    Map.put(args, :expires_at, DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second))
+  end
+
+  defp submit_bid_changeset(auction, team, player, args, nil) do
+    args = add_expires_at_to_args(args, auction)
+
+    case SingleAuction.submit_new_bid(auction, team, player, args) do
+      {:error, changeset} ->
+        {
+          :error,
+          message: "Could not submit bid!",
+          details: ChangesetErrors.error_details(changeset)
+        }
+
+      {:ok, bid} ->
+        {:ok, bid}
+    end
+  end
+
+  defp submit_bid_changeset(auction, team, player, args, existing_bid) do
+    args
+    |> add_expires_at_to_args(auction)
+
+    case SingleAuction.update_existing_bid(existing_bid, team, args) do
+      {:error, changeset} ->
+        {
+          :error,
+          message: "Could not update bid!",
+          details: ChangesetErrors.error_details(changeset)
+        }
+
+      {:ok, bid} ->
+        {:ok, bid}
+    end
+  end
+
+  defp hidden_high_bid_legal?(nil, _) do
+    true
+  end
+
+  defp hidden_high_bid_legal?(hidden, bid_amount) do
+    hidden > bid_amount
   end
 end

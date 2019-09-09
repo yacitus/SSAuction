@@ -45,6 +45,23 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Returns a list of users in the team
+
+  """
+  def list_users(team = %Team{}) do
+    Repo.preload(team, [:users]).users
+  end
+
+  @doc """
+  Returns the team with the given `id`.
+
+  Raises `Ecto.NoResultsError` if no team was found.
+  """
+  def get_user_by_id!(id) do
+    Repo.get!(User, id)
+  end
+
+  @doc """
   Returns the player with the given `id`.
 
   Raises `Ecto.NoResultsError` if no player was found.
@@ -57,8 +74,24 @@ defmodule Ssauction.SingleAuction do
   Returns a list of bids for all teams in the auction
 
   """
-  def get_bids_in_auction!(auction = %Auction{}) do
-    Repo.all(from b in Bid, where: b.auction_id == ^auction.id)
+  def list_bids_in_auction!(auction = %Auction{}) do
+    Repo.preload(auction, [:bids]).bids
+  end
+
+  @doc """
+  Returns the bid with the given `id`.
+
+  Raises `Ecto.NoResultsError` if no player was found.
+  """
+  def get_bid_by_id!(id) do
+    Repo.get!(Bid, id)
+  end
+
+  @doc """
+  Returns the bid associated with the player
+  """
+  def get_players_bid!(player = %Player{}) do
+    get_bid_by_id!(player.bid_id)
   end
 
   @doc """
@@ -88,6 +121,85 @@ defmodule Ssauction.SingleAuction do
   """
   def user_is_team_member?(user = %User{}, team = %Team{}) do
     Enum.member?(Repo.preload(team, [:users]).users, user)
+  end
+
+  @doc """
+  Returns true if the player is rostered in the auction
+
+  """
+  def player_is_rostered?(player = %Player{}) do
+    # Enum.find(Repo.preload(auction, [:rostered_players]).rostered_players,
+    #           fn p -> p.id == player.id end) != nil
+    player.rostered_player_id != nil
+  end
+
+  @doc """
+  Returns true if the team has an open roster spot for a bid
+
+  """
+  def team_has_open_roster_spot?(team = %Team{}, auction = %Auction{}) do
+    open_spots = auction.players_per_team - number_of_rostered_players_in_team(team)
+                                          - number_of_bids_for_team(team)
+    open_spots > 0
+  end
+
+  @doc """
+  Returns true if the player is in the auction's bid
+
+  """
+  def player_in_bids?(player = %Player{}) do
+    player.bid_id != nil
+  end
+
+  @doc """
+  Returns the number of rostered players in a team
+
+  """
+  def number_of_rostered_players_in_team(team = %Team{}) do
+    team
+    |> Ecto.assoc(:rostered_players)
+    |> Repo.aggregate(:count, :id)
+  end
+
+  @doc """
+  Returns the number of bids a team has
+
+  """
+  def number_of_bids_for_team(team = %Team{}) do
+    team
+    |> Ecto.assoc(:bids)
+    |> Repo.aggregate(:count, :id)
+  end
+
+  @doc """
+  Returns true if the team has enough money left for the bid amount (and hidden high bid)
+
+  """
+
+  def legal_team_bid_amount?(auction = %Auction{}, team = %Team{}, args, existing_team_bid) do
+    total_dollars_for_team = auction.players_per_team * auction.team_dollars_per_player
+    dollars_left = total_dollars_for_team - (team.dollars_spent + team.dollars_bid)
+    dollars_left = dollars_left - (auction.players_per_team - number_of_rostered_players_in_team(team))
+    max_new_dollars = calculate_max_new_dollars(args, existing_team_bid)
+    (dollars_left - max_new_dollars) >= 0
+  end
+
+  defp calculate_max_new_dollars(args, nil) do
+    calculate_max_bid_vs_hidden_high_bid(args[:bid_amount], args[:hidden_high_bid])
+  end
+
+  defp calculate_max_new_dollars(args, existing_team_bid) do
+    max_existing = calculate_max_bid_vs_hidden_high_bid(existing_team_bid.bid_amount, existing_team_bid.hidden_high_bid)
+    max_bid = calculate_max_bid_vs_hidden_high_bid(args[:bid_amount], args[:hidden_high_bid])
+    max_bid - max_existing
+  end
+
+  defp calculate_max_bid_vs_hidden_high_bid(bid, nil) do
+    bid
+  end
+
+  defp calculate_max_bid_vs_hidden_high_bid(bid, hidden_high_bid) do
+    max(bid, hidden_high_bid)
   end
 
   @doc """
@@ -130,16 +242,28 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Submits a bid
+  Submits a new bid
 
   """
-  def submit_bid(auction = %Auction{}, team = %Team{}, player = %Player{}, attrs) do
+  def submit_new_bid(auction = %Auction{}, team = %Team{}, player = %Player{}, attrs) do
     %Bid{}
     |> Bid.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:auction, auction)
     |> Ecto.Changeset.put_assoc(:team, team)
     |> Ecto.Changeset.put_assoc(:player, player)
     |> Repo.insert()
+  end
+
+  @doc """
+  Updates an existing bid
+
+  """
+  def update_existing_bid(bid, new_team = %Team{}, attrs) do
+    bid
+    |> Repo.preload([:team])
+    |> Bid.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:team, new_team)
+    |> Repo.update()
   end
 
 

@@ -15,7 +15,7 @@ alias Ssauction.User
 alias Ssauction.Player
 alias Ssauction.Team
 alias Ssauction.Auction
-alias Ssauction.Bid
+# alias Ssauction.Bid
 alias Ssauction.RosteredPlayer
 alias Ssauction.OrderedPlayer
 
@@ -133,7 +133,7 @@ auction =
   %Auction{
     name: "Test Auction",
     year_range: year_range,
-    players_per_team: 1,
+    players_per_team: 2,
     team_dollars_per_player: 10,
     } |> Repo.insert!
 
@@ -161,17 +161,12 @@ Repo.preload(auction, [:admins])
 
 bid_amount = 2
 {:ok, utc_datetime} = DateTime.now("Etc/UTC")
-bid =
-  %Bid{
-    bid_amount: bid_amount,
-    # the commented line below is correct, but the line below that is for testing
-    # expires_at: DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second),
-    expires_at: DateTime.add(utc_datetime, 600, :second),
-    player: player1
-  }
-bid = Ecto.build_assoc(team_daryl, :bids, bid)
-bid = Ecto.build_assoc(auction, :bids, bid)
-Repo.insert!(bid)
+attrs = %{bid_amount: bid_amount,
+          # the commented line below is correct, but the line below that is for testing
+          # expires_at: DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second),
+          expires_at: DateTime.add(utc_datetime, 600, :second),
+          player: player1}
+Ssauction.SingleAuction.submit_new_bid(auction, team_daryl, player1, attrs)
 
 Team.changeset(team_daryl, %{unused_nominations: team_daryl.unused_nominations-1,
                              dollars_bid: team_daryl.dollars_bid + bid_amount,
