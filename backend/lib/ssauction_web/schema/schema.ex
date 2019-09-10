@@ -72,6 +72,13 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :hidden_high_bid, :integer
       resolve &Resolvers.SingleAuction.submit_bid/3
     end
+
+    @desc "Sign in a user"
+    field :signin, :session do
+      arg :username, non_null(:string)
+      arg :password, non_null(:string)
+      resolve &Resolvers.Accounts.signin/3
+    end
   end
 
   #
@@ -82,6 +89,11 @@ defmodule SsauctionWeb.Schema.Schema do
     field :id, non_null(:id)
     field :username, non_null(:string)
     field :email, non_null(:string)
+  end
+
+  object :session do
+    field :user, non_null(:user)
+    field :token, non_null(:string)
   end
 
   object :auction do
