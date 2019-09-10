@@ -6,6 +6,7 @@ defmodule SsauctionWeb.Schema.Schema do
   import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
 
   alias SsauctionWeb.Resolvers
+  alias SsauctionWeb.Schema.Middleware
 
   query do
     @desc "Get an auction by its id"
@@ -65,11 +66,12 @@ defmodule SsauctionWeb.Schema.Schema do
 
     @desc "Submit a bid"
     field :submit_bid, :bid do
-      arg :auction_id, non_null(:id)
-      arg :team_id, non_null(:id)
-      arg :player_id, non_null(:id)
+      arg :auction_id, non_null(:integer)
+      arg :team_id, non_null(:integer)
+      arg :player_id, non_null(:integer)
       arg :bid_amount, non_null(:integer)
       arg :hidden_high_bid, :integer
+      middleware Middleware.Authenticate
       resolve &Resolvers.SingleAuction.submit_bid/3
     end
 
@@ -178,8 +180,6 @@ defmodule SsauctionWeb.Schema.Schema do
 
 
   def context(ctx) do
-    ctx = Map.put(ctx, :current_user, Ssauction.Accounts.get_user_by_id(2))
-
     source = Dataloader.Ecto.new(Ssauction.Repo)
 
     loader =

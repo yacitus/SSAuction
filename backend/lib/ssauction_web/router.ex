@@ -11,6 +11,7 @@ defmodule SsauctionWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug SsauctionWeb.Plugs.SetCurrentUser
   end
 
   scope "/" do
@@ -25,8 +26,8 @@ defmodule SsauctionWeb.Router do
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: SsauctionWeb.Schema.Schema,
-      # socket: SsauctionWeb.UserSocket
-      interface: :simple
+      socket: SsauctionWeb.UserSocket,
+      interface: :advanced
   end
 
   # Other scopes may use custom stacks.

@@ -199,7 +199,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
-  defp submit_bid_changeset(auction, team, player, args, existing_bid) do
+  defp submit_bid_changeset(auction, team, _player, args, existing_bid) do
     args
     |> add_expires_at_to_args(auction)
 
