@@ -17,6 +17,15 @@ defmodule Ssauction.Accounts do
     Repo.get(User, id)
   end
 
+  @doc """
+  Returns the user with the given `id`.
+
+  Raises `Ecto.NoResultsError` if no user was found.
+  """
+  def get_user_by_id!(id) do
+    Repo.get!(User, id)
+  end
+
  @doc """
   Authenticates a user.
 

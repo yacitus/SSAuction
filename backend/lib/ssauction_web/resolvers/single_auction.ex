@@ -22,10 +22,6 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.get_team_by_id!(team_id) |> SingleAuction.list_users()}
   end
 
-  def user(_, %{id: id}, _) do
-    {:ok, SingleAuction.get_user_by_id!(id)}
-  end
-
   def bid(_, %{id: id}, _) do
     {:ok, SingleAuction.get_bid_by_id!(id)}
   end

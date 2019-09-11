@@ -41,7 +41,12 @@ defmodule SsauctionWeb.Schema.Schema do
     @desc "Get a user by its id"
     field :user, :user do
       arg :id, non_null(:integer)
-      resolve &Resolvers.SingleAuction.user/3
+      resolve &Resolvers.Accounts.user/3
+    end
+
+    @desc "Get the currently signed-in user"
+    field :me, :user do
+      resolve &Resolvers.Accounts.me/3
     end
 
     @desc "Get a bid by its id"

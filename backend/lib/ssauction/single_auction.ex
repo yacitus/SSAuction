@@ -53,15 +53,6 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns the team with the given `id`.
-
-  Raises `Ecto.NoResultsError` if no team was found.
-  """
-  def get_user_by_id!(id) do
-    Repo.get!(User, id)
-  end
-
-  @doc """
   Returns the player with the given `id`.
 
   Raises `Ecto.NoResultsError` if no player was found.
