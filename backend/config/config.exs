@@ -5,6 +5,11 @@
 # is restricted to this project.
 use Mix.Config
 
+config :cors_plug,
+  origin: ["http://localhost:3000"],
+  max_age: 86400,
+  methods: ["GET", "POST"]
+
 # General application configuration
 config :ssauction,
   ecto_repos: [Ssauction.Repo]
