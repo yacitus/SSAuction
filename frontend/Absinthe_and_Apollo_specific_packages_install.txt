@@ -1,0 +1,41 @@
+$ npm install @absinthe/socket-apollo-link @jumpn/utils-graphql apollo-client apollo-cache-inmemory apollo-link-context apollo-link-http graphql-tag phoenix react-apollo react-router-dom
+npm WARN deprecated core-js@2.6.0: core-js@<2.6.8 is no longer maintained. Please, upgrade to core-js@3 or at least to actual version of core-js@2.
+
+> core-js@2.6.9 postinstall /Users/dspitzer/dev/ssauction/frontend/node_modules/babel-polyfill/node_modules/core-js
+> node scripts/postinstall || echo "ignore"
+
+Thank you for using core-js ( https://github.com/zloirock/core-js ) for polyfilling JavaScript standard library!
+
+The project needs your help! Please consider supporting of core-js on Open Collective or Patreon:
+> https://opencollective.com/core-js
+> https://www.patreon.com/zloirock
+
+Also, the author of core-js ( https://github.com/zloirock ) is looking for a good job -)
+
+npm WARN @typescript-eslint/eslint-plugin@1.13.0 requires a peer of eslint@^5.0.0 but none is installed. You must install peer dependencies yourself.
+npm WARN @typescript-eslint/parser@1.13.0 requires a peer of eslint@^5.0.0 but none is installed. You must install peer dependencies yourself.
+npm WARN tsutils@3.17.1 requires a peer of typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta but none is installed. You must install peer dependencies yourself.
+npm WARN react-apollo@3.1.0 requires a peer of @types/react@^16.8.0 but none is installed. You must install peer dependencies yourself.
+npm WARN react-apollo@3.1.0 requires a peer of graphql@^14.3.1 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-hoc@3.1.0 requires a peer of @types/react@^16.8.0 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-hoc@3.1.0 requires a peer of graphql@^14.3.1 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-components@3.1.0 requires a peer of @types/react@^16.8.0 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-components@3.1.0 requires a peer of apollo-link@^1.2.12 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-components@3.1.0 requires a peer of graphql@^14.3.1 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-common@3.1.0 requires a peer of @types/react@^16.8.0 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-common@3.1.0 requires a peer of graphql@^14.3.1 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-hooks@3.1.0 requires a peer of @types/react@^16.8.0 but none is installed. You must install peer dependencies yourself.
+npm WARN @apollo/react-hooks@3.1.0 requires a peer of graphql@^14.3.1 but none is installed. You must install peer dependencies yourself.
+
++ graphql-tag@2.10.1
++ react-router-dom@5.0.1
++ apollo-link-context@1.0.19
++ apollo-link-http@1.5.16
++ apollo-cache-inmemory@1.6.3
++ apollo-client@2.6.4
++ phoenix@1.4.10
++ react-apollo@3.1.0
++ @absinthe/socket-apollo-link@0.2.1
++ @jumpn/utils-graphql@0.6.0
+added 62 packages from 69 contributors and audited 905552 packages in 13.876s
+found 0 vulnerabilities
