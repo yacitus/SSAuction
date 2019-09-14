@@ -125,13 +125,19 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Returns the number of open roster spots for a team
+
+  """
+  def open_roster_spots(team = %Team{}, auction = %Auction{}) do
+    auction.players_per_team - number_of_rostered_players_in_team(team) - number_of_bids_for_team(team)
+  end
+
+  @doc """
   Returns true if the team has an open roster spot for a bid
 
   """
   def team_has_open_roster_spot?(team = %Team{}, auction = %Auction{}) do
-    open_spots = auction.players_per_team - number_of_rostered_players_in_team(team)
-                                          - number_of_bids_for_team(team)
-    open_spots > 0
+    open_roster_spots(team, auction) > 0
   end
 
   @doc """

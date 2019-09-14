@@ -1,7 +1,10 @@
 defmodule SsauctionWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :ssauction
+  use Absinthe.Phoenix.Endpoint
 
-  socket "/socket", SsauctionWeb.UserSocket
+  socket "/socket", SsauctionWeb.UserSocket,
+    websocket: true,
+    longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #

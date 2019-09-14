@@ -191,6 +191,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
 
       {:ok, bid} ->
+        publish_bid_change(bid)
         {:ok, bid}
     end
   end
@@ -208,8 +209,17 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
 
       {:ok, bid} ->
+        publish_bid_change(bid)
         {:ok, bid}
     end
+  end
+
+  defp publish_bid_change(bid) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      bid,
+      bid_change: bid.id
+    )
   end
 
   defp hidden_high_bid_legal?(nil, _) do
