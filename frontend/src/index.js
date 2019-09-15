@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// Importing the Bootstrap CSS
+import "bootstrap/dist/css/bootstrap.min.css";
+
 // GraphQL-specific
 import { ApolloProvider } from "react-apollo";
 import client from "./client";
