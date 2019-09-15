@@ -89,8 +89,8 @@ defmodule SsauctionWeb.Schema.Schema do
   end
 
   subscription do
-    @desc "Subscribe to changes to a bid"
-    field :bid_change, :bid do
+    @desc "Subscribe to changes to an auction's bids"
+    field :auction_bid_change, :auction do
       arg :id, non_null(:id)
       config fn args, _res ->
         {:ok, topic: args.id}
