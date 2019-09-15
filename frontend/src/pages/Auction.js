@@ -31,9 +31,7 @@ class Auction extends Component {
           return (
             <Container>
               <Jumbotron>
-                <h1 className="header">Auction</h1>
-                <p>ID: {data.auction.id}</p>
-                <p>Name: {data.auction.name}</p>
+                <h1 className="header">{data.auction.name}</h1>
                 <p>Years: {data.auction.yearRange}</p>
                 <p>Active: {data.auction.active ? '✅' : '❌'}</p>
               </Jumbotron>

@@ -33,6 +33,12 @@ class AuctionList extends Component {
       formatter: activeFormatter
     }];
 
+    const rowEvents = {
+      onClick: (e, row, rowIndex) => {
+        window.location = `/auction/${row.id}`
+      }
+    };
+
     return (
       <Container>
         <h1 className="header">Auctions</h1>
@@ -41,6 +47,7 @@ class AuctionList extends Component {
           keyField='id'
           data={ auctions }
           columns={ columns }
+          rowEvents={ rowEvents }
           striped
           hover />
       </Container>
