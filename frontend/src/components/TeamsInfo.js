@@ -23,15 +23,21 @@ class TeamsInfo extends Component {
   render() {
     const { auctionId } = this.props;
 
+    function dollarsFormatter(cell, row) {
+      return (`$${cell}`);
+    }
+
     const columns = [{
       dataField: 'name',
-      text: 'Name'
+      text: 'Team'
     }, {
       dataField: 'dollarsSpent',
-      text: '$ Spent'
+      text: '$ Spent',
+      formatter: dollarsFormatter
     }, {
       dataField: 'dollarsBid',
       text: '$ Bid',
+      formatter: dollarsFormatter
     }, {
       dataField: 'unusedNominations',
       text: 'Unused Nominations',
