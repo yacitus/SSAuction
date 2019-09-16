@@ -22,7 +22,7 @@ defmodule SsauctionWeb.Schema.Schema do
 
     @desc "Get a list of teams in an auction"
     field :teams, list_of(:team) do
-      arg :team_id, non_null(:integer)
+      arg :auction_id, non_null(:integer)
       resolve &Resolvers.SingleAuction.teams_in_auction/3
     end
 
