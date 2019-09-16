@@ -5,8 +5,9 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
+import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
-// import Moment from 'react-moment';
+import Moment from 'react-moment';
 
 function seconds_to_days_hours_mins_secs_str(seconds)
 { // day, h, m and s
@@ -29,6 +30,9 @@ const GET_AUCTION_QUERY = gql`
       name
       yearRange
       active
+      startedOrPausedAt
+      playersPerTeam
+      teamDollarsPerPlayer
       nominationsPerTeam
       secondsBeforeAutonomination
       bidTimeoutSeconds
@@ -52,36 +56,55 @@ class Auction extends Component {
               <Jumbotron>
                 <h1 className="header">{data.auction.name}</h1>
               </Jumbotron>
-              <Table striped bordered>
-                <tbody>
-                  <tr>
-                    <td>Active:</td>
-                    <td>{data.auction.active ? '✅' : '❌'}</td>
-                  </tr>
-                  <tr>
-                    <td>Years:</td>
-                    <td>{data.auction.yearRange}</td>
-                  </tr>
-                  <tr>
-                    <td>Nominations Per Team:</td>
-                    <td>{data.auction.nominationsPerTeam}</td>
-                  </tr>
-                  <tr>
-                    <td>Time Before Auto-nomination:</td>
-                    <td>
-                      {seconds_to_days_hours_mins_secs_str(
-                          data.auction.secondsBeforeAutonomination)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Time Before Bids Expire:</td>
-                    <td>
-                      {seconds_to_days_hours_mins_secs_str(
-                          data.auction.bidTimeoutSeconds)}
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <Card border="light" style={{ width: '36rem' }}>
+                <Card.Header>Auction Info</Card.Header>
+                <Table bordered>
+                  <tbody>
+                    <tr>
+                      <td>Active:</td>
+                      <td>{data.auction.active ? '✅' : '❌'}</td>
+                    </tr>
+                    <tr>
+                      <td>Last Started or Paused:</td>
+                      <td>
+                        <Moment>
+                          {data.auction.startedOrPausedAt}
+                        </Moment>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Years:</td>
+                      <td>{data.auction.yearRange}</td>
+                    </tr>
+                    <tr>
+                      <td>Players Per Team:</td>
+                      <td>{data.auction.playersPerTeam}</td>
+                    </tr>
+                    <tr>
+                      <td>Dollars Per Player Per Team:</td>
+                      <td>${data.auction.teamDollarsPerPlayer}</td>
+                    </tr>
+                    <tr>
+                      <td>Nominations Per Team:</td>
+                      <td>{data.auction.nominationsPerTeam}</td>
+                    </tr>
+                    <tr>
+                      <td>Time Before Auto-nomination:</td>
+                      <td>
+                        {seconds_to_days_hours_mins_secs_str(
+                            data.auction.secondsBeforeAutonomination)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Time Before Bids Expire:</td>
+                      <td>
+                        {seconds_to_days_hours_mins_secs_str(
+                            data.auction.bidTimeoutSeconds)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </Card>
             </Container>
           );
         }}
