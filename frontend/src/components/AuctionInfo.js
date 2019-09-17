@@ -63,7 +63,7 @@ class AuctionInfo extends Component {
                     <tr>
                       <td>Last Started or Paused:</td>
                       <td>
-                        <Moment>
+                        <Moment format="llll">
                           {data.auction.startedOrPausedAt}
                         </Moment>
                       </td>

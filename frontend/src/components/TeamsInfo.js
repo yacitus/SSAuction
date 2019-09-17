@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import 'moment';
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
@@ -24,7 +25,17 @@ class TeamsInfo extends Component {
     const { auctionId } = this.props;
 
     function dollarsFormatter(cell, row) {
-      return (`$${cell}`);
+        return (`$${cell}`);
+    }
+
+    var moment = require('moment');
+
+    function timestampFormatter(cell, row) {
+      if (cell == null) {
+        return cell;
+      } else {
+        return (moment(cell).utcOffset(cell).local().format('llll'));
+      }
     }
 
     const columns = [{
@@ -44,7 +55,14 @@ class TeamsInfo extends Component {
     }, {
       dataField: 'timeOfLastNomination',
       text: 'Time of Last Nomination',
+      formatter: timestampFormatter
     }];
+
+    const rowEvents = {
+      onClick: (e, row, rowIndex) => {
+        window.location = `/team/${row.id}`
+      }
+    };
 
     return (
       <Query
@@ -60,6 +78,7 @@ class TeamsInfo extends Component {
                 keyField='id'
                 data={ data.teams }
                 columns={ columns }
+                rowEvents={ rowEvents }
                 striped
                 hover />
             </Container>
