@@ -6,6 +6,7 @@ import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import TeamBids from "../components/TeamBids";
+import NominationQueue from "../components/NominationQueue";
 import TeamInfo from "../components/TeamInfo";
 import UserInfo from "../components/UserInfo";
 
@@ -37,6 +38,7 @@ class Team extends Component {
                 <h1 className="header">{data.team.name}</h1>
               </Jumbotron>
               <TeamBids teamId={ teamId } />
+              <NominationQueue teamId={ teamId } />
               <TeamInfo teamId={ teamId } />
               <UserInfo teamId={ teamId } />
             </Container>
