@@ -6,6 +6,8 @@ import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import TeamInfo from "../components/TeamInfo";
+import UserInfo from "../components/UserInfo";
+
 
 
 const TEAM_INFO_QUERY = gql`
@@ -34,6 +36,7 @@ class Team extends Component {
                 <h1 className="header">{data.team.name}</h1>
               </Jumbotron>
               <TeamInfo teamId={ teamId } />
+              <UserInfo teamId={ teamId } />
             </Container>
           );
         }}
