@@ -169,16 +169,41 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Returns the number of dollars each team has in the auction
+
+  """
+
+  def dollars_per_team(auction = %Auction{}) do
+    auction.players_per_team * auction.team_dollars_per_player
+  end
+
+  @doc """
+  Returns the number of dollars the team has left to bid
+
+  """
+
+  def team_dollars_remaining_for_bids(team = %Team{}) do
+    auction = get_auction_by_id!(team.auction_id)
+    team_dollars_remaining_for_bids(auction, team)
+  end
+
+  def team_dollars_remaining_for_bids(auction = %Auction{}, team = %Team{}) do
+    dollars_left = dollars_per_team(auction) - (team.dollars_spent + team.dollars_bid)
+    dollars_left - \
+      (auction.players_per_team \
+       - number_of_rostered_players_in_team(team) \
+       - number_of_bids_for_team(team) \
+       - 1) # the -1 is because a bid would remove the need to save a dollar for that one player
+  end
+
+  @doc """
   Returns true if the team has enough money left for the bid amount (and hidden high bid)
 
   """
 
   def legal_team_bid_amount?(auction = %Auction{}, team = %Team{}, args, existing_team_bid) do
-    total_dollars_for_team = auction.players_per_team * auction.team_dollars_per_player
-    dollars_left = total_dollars_for_team - (team.dollars_spent + team.dollars_bid)
-    dollars_left = dollars_left - (auction.players_per_team - number_of_rostered_players_in_team(team))
     max_new_dollars = calculate_max_new_dollars(args, existing_team_bid)
-    (dollars_left - max_new_dollars) >= 0
+    (team_dollars_remaining_for_bids(auction, team) - max_new_dollars) >= 0
   end
 
   defp calculate_max_new_dollars(args, nil) do

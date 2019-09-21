@@ -143,6 +143,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :name, non_null(:string)
     field :dollars_spent, non_null(:integer)
     field :dollars_bid, non_null(:integer)
+    field :dollars_remaining_for_bids, non_null(:integer) do
+      resolve &Resolvers.SingleAuction.team_dollars_remaining_for_bids/3
+    end
     field :unused_nominations, non_null(:integer)
     field :time_of_last_nomination, :datetime
     field :users, list_of(:user) do

@@ -22,12 +22,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.get_team_by_id!(team_id) |> SingleAuction.list_users()}
   end
 
-  def dollars_per_team(auction) do
-    auction.players_per_team * auction.team_dollars_per_player
-  end
-
   def dollars_per_team(auction, _, _) do
-    {:ok, dollars_per_team(auction)}
+    {:ok, SingleAuction.dollars_per_team(auction)}
   end
 
   def bid(_, %{id: id}, _) do
@@ -36,6 +32,10 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
   def bids_in_auction(auction, _, _) do
     {:ok, SingleAuction.list_bids_in_auction!(auction)}
+  end
+
+  def team_dollars_remaining_for_bids(team, _, _) do
+    {:ok, SingleAuction.team_dollars_remaining_for_bids(team)}
   end
 
   def start_auction(_, args, %{context: %{current_user: user}}) do

@@ -16,6 +16,7 @@ const TEAM_INFO_QUERY = gql`
       name
       dollarsSpent
       dollarsBid
+      dollarsRemainingForBids
       unusedNominations
       timeOfLastNomination
     }
@@ -46,6 +47,10 @@ class TeamInfo extends Component {
                     <tr>
                       <td>$ Bid</td>
                       <td>${data.team.dollarsBid}</td>
+                    </tr>
+                    <tr>
+                      <td>$ Remaining for Bids</td>
+                      <td>${data.team.dollarsRemainingForBids}</td>
                     </tr>
                     <tr>
                       <td>Unused Nominations</td>
