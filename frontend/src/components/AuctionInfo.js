@@ -31,7 +31,7 @@ const AUCTION_INFO_QUERY = gql`
       active
       startedOrPausedAt
       playersPerTeam
-      teamDollarsPerPlayer
+      dollarsPerTeam
       nominationsPerTeam
       secondsBeforeAutonomination
       bidTimeoutSeconds
@@ -77,8 +77,8 @@ class AuctionInfo extends Component {
                       <td>{data.auction.playersPerTeam}</td>
                     </tr>
                     <tr>
-                      <td>Dollars Per Player Per Team:</td>
-                      <td>${data.auction.teamDollarsPerPlayer}</td>
+                      <td>Dollars Per Team:</td>
+                      <td>${data.auction.dollarsPerTeam}</td>
                     </tr>
                     <tr>
                       <td>Nominations Per Team:</td>
