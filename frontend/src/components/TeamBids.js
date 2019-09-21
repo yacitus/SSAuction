@@ -6,6 +6,7 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
+import './tables.css';
 
 const TEAM_BIDS_QUERY = gql`
   query TeamBids($team_id: Int!) {
@@ -59,6 +60,14 @@ class TeamBids extends Component {
       formatter: timestampFormatter
     }];
 
+    const CaptionElement = () =>
+      <h3 style={{ borderRadius: '0.25em',
+                   textAlign: 'center',
+                   color: 'purple',
+                   border: '1px solid green',
+                   padding: '0.5em' }}>
+        Bids</h3>;
+
     return (
       <Query
         query={TEAM_BIDS_QUERY}
@@ -70,6 +79,7 @@ class TeamBids extends Component {
             <Container>
               <BootstrapTable
                 bootstrap4={ true }
+                caption={ <CaptionElement /> }
                 keyField='id'
                 data={ data.team.bids }
                 columns={ columns }

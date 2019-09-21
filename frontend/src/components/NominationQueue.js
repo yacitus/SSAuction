@@ -38,6 +38,14 @@ class NominationQueue extends Component {
       text: 'Scoresheet num',
     }];
 
+    const CaptionElement = () =>
+      <h3 style={{ borderRadius: '0.25em',
+                   textAlign: 'center',
+                   color: 'purple',
+                   border: '1px solid green',
+                   padding: '0.5em' }}>
+        Nomination Queue</h3>;
+
     return (
       <Query
         query={TEAM_NOMINATION_QUEUE_QUERY}
@@ -49,6 +57,7 @@ class NominationQueue extends Component {
             <Container>
               <BootstrapTable
                 bootstrap4={ true }
+                caption={ <CaptionElement /> }
                 keyField='id'
                 data={ data.team.nominationQueue }
                 columns={ columns }
