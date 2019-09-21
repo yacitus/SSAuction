@@ -6,6 +6,7 @@ import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import AuctionBids from "../components/AuctionBids";
+import AuctionRosteredPlayers from "../components/AuctionRosteredPlayers";
 import TeamsInfo from "../components/TeamsInfo";
 import AuctionInfo from "../components/AuctionInfo";
 
@@ -36,6 +37,7 @@ class Auction extends Component {
                 <h1 className="header">{data.auction.name}</h1>
               </Jumbotron>
               <AuctionBids auctionId={ auctionId } />
+              <AuctionRosteredPlayers auctionId={ auctionId } />
               <TeamsInfo auctionId={ auctionId } />
               <AuctionInfo auctionId={ auctionId } />
             </Container>
