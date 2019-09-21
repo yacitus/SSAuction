@@ -49,6 +49,9 @@ class AuctionBids extends Component {
     }
 
     const columns = [{
+      dataField: 'team.name',
+      text: 'Team'
+    }, {
       dataField: 'player.name',
       text: 'Player'
     }, {
@@ -62,9 +65,6 @@ class AuctionBids extends Component {
       dataField: 'expiresAt',
       text: 'Expires',
       formatter: timestampFormatter
-    }, {
-      dataField: 'team.name',
-      text: 'Team'
     }];
 
     const CaptionElement = () =>
