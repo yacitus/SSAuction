@@ -6,21 +6,31 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
+import './tables.css';
 
-const TEAMS_INFO_QUERY = gql`
-  query TeamsInfo($auction_id: Int!) {
-    teams(auctionId: $auction_id) {
+const AUCTION_BIDS_QUERY = gql`
+  query AuctionBids($auction_id: Int!) {
+    auction(id: $auction_id) {
       id
-      name
-      dollarsSpent
-      dollarsBid
-      unusedNominations
-      timeOfLastNomination
+      bids {
+        id
+        bidAmount
+        expiresAt
+        player {
+          id
+          ssnum
+          name
+        }
+        team {
+          id
+          name
+        }
+      }
     }
   }
 `;
 
-class TeamsInfo extends Component {
+class AuctionBids extends Component {
   render() {
     const { auctionId } = this.props;
 
@@ -39,23 +49,22 @@ class TeamsInfo extends Component {
     }
 
     const columns = [{
-      dataField: 'name',
-      text: 'Team'
+      dataField: 'player.name',
+      text: 'Player'
     }, {
-      dataField: 'dollarsSpent',
-      text: '$ Spent',
-      formatter: dollarsFormatter
+      dataField: 'player.ssnum',
+      text: 'Scoresheet num',
     }, {
-      dataField: 'dollarsBid',
+      dataField: 'bidAmount',
       text: '$ Bid',
       formatter: dollarsFormatter
     }, {
-      dataField: 'unusedNominations',
-      text: 'Unused Nominations',
-    }, {
-      dataField: 'timeOfLastNomination',
-      text: 'Time of Last Nomination',
+      dataField: 'expiresAt',
+      text: 'Expires',
       formatter: timestampFormatter
+    }, {
+      dataField: 'team.name',
+      text: 'Team'
     }];
 
     const CaptionElement = () =>
@@ -64,17 +73,11 @@ class TeamsInfo extends Component {
                    color: 'purple',
                    border: '1px solid green',
                    padding: '0.5em' }}>
-        Teams</h3>;
-
-    const rowEvents = {
-      onClick: (e, row, rowIndex) => {
-        window.location = `/team/${row.id}`
-      }
-    };
+        Bids</h3>;
 
     return (
       <Query
-        query={TEAMS_INFO_QUERY}
+        query={AUCTION_BIDS_QUERY}
         variables={{ auction_id: parseInt(auctionId, 10) }}>
         {({ data, loading, error }) => {
           if (loading) return <Loading />;
@@ -85,9 +88,8 @@ class TeamsInfo extends Component {
                 bootstrap4={ true }
                 caption={ <CaptionElement /> }
                 keyField='id'
-                data={ data.teams }
+                data={ data.auction.bids }
                 columns={ columns }
-                rowEvents={ rowEvents }
                 striped
                 hover />
             </Container>
@@ -98,4 +100,4 @@ class TeamsInfo extends Component {
   }
 }
 
-export default TeamsInfo;
+export default AuctionBids;
