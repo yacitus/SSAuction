@@ -74,6 +74,7 @@ daryl =
   |> User.changeset(%{
       username: "daryl",
       email: "daryl.spitzer@gmail.com",
+      slack_display_name: "daryl",
       super: true,
       password: "secret"
     })
@@ -84,6 +85,7 @@ bob =
   |> User.changeset(%{
       username: "bob",
       email: "bob@example.com",
+      slack_display_name: "bob",
       password: "secret"
     })
   |> Repo.insert!
@@ -93,6 +95,7 @@ fred =
   |> User.changeset(%{
       username: "fred",
       email: "fred@example.com",
+      slack_display_name: "fred",
       password: "secret"
     })
   |> Repo.insert!

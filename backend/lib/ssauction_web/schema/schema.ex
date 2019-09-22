@@ -106,6 +106,7 @@ defmodule SsauctionWeb.Schema.Schema do
     field :id, non_null(:id)
     field :username, non_null(:string)
     field :email, non_null(:string)
+    field :slack_display_name, non_null(:string)
   end
 
   object :session do

@@ -16,6 +16,7 @@ const TEAM_USERS_INFO_QUERY = gql`
         id
         username
         email
+        slackDisplayName
       }
     }
   }
@@ -24,11 +25,12 @@ const TEAM_USERS_INFO_QUERY = gql`
 class UserInfo extends Component {
   renderTableData(users) {
     return users.map((user, index) => {
-       const { username, email } = user
+       const { username, email, slackDisplayName } = user
        return (
           <tr>
              <td>{username}</td>
              <td>{email}</td>
+             <td>{slackDisplayName}</td>
           </tr>
        )
     })

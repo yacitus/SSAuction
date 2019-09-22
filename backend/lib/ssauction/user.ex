@@ -5,6 +5,7 @@ defmodule Ssauction.User do
   schema "users" do
     field :username, :string
     field :email, :string
+    field :slack_display_name, :string
     field :super, :boolean, default: false
     field :password_hash, :string
     field :password, :string, virtual: true
@@ -16,7 +17,7 @@ defmodule Ssauction.User do
   end
 
   def changeset(user, attrs) do
-    required_fields = [:username, :email, :password]
+    required_fields = [:username, :email, :slack_display_name, :password]
     optional_fields = [:super]
     
     user
