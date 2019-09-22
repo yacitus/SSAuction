@@ -4,8 +4,7 @@ import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Table from "react-bootstrap/Table";
+import BootstrapTable from 'react-bootstrap-table-next';
 
 
 const TEAM_USERS_INFO_QUERY = gql`
@@ -39,6 +38,30 @@ class UserInfo extends Component {
   render() {
     const { teamId } = this.props;
 
+    function slackDisplayNameFormatter(cell, row) {
+        return (`@${cell}`);
+    }
+
+    const columns = [{
+      dataField: 'username',
+      text: 'Username'
+    }, {
+      dataField: 'email',
+      text: 'Email'
+    }, {
+      dataField: 'slackDisplayName',
+      text: 'Slack Display Name',
+      formatter: slackDisplayNameFormatter
+    }];
+
+    const CaptionElement = () =>
+      <h3 style={{ borderRadius: '0.25em',
+                   textAlign: 'center',
+                   color: 'purple',
+                   border: '1px solid green',
+                   padding: '0.5em' }}>
+        Team Users</h3>;
+
     return (
       <Query
         query={TEAM_USERS_INFO_QUERY}
@@ -48,14 +71,14 @@ class UserInfo extends Component {
           if (error) return <Error error={error} />;
           return (
             <Container>
-              <Card border="light" style={{ width: '36rem' }}>
-                <Card.Header>Team Users</Card.Header>
-                <Table bordered>
-                  <tbody>
-                    {this.renderTableData(data.team.users)}
-                  </tbody>
-                </Table>
-              </Card>
+              <BootstrapTable
+                bootstrap4={ true }
+                caption={ <CaptionElement /> }
+                keyField='id'
+                data={ data.team.users }
+                columns={ columns }
+                striped
+                hover />
             </Container>
           );
         }}
