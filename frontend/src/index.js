@@ -11,7 +11,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { ApolloProvider } from "react-apollo";
 import client from "./client";
 
-// ReactDOM.render(<App />, document.getElementById('root'));
+// ApolloProvider wraps the React app and places the Apollo client
+// on the React context so the client can be conveniently accessed
+// from anywhere in the component tree.
+
 ReactDOM.render(
   <ApolloProvider client={client}>
     <App />
