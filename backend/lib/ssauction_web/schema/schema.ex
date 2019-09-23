@@ -159,6 +159,8 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve dataloader(SingleAuction, :rostered_players, args: %{scope: :team})
     end
     field :nomination_queue, list_of(:ordered_player) do
+      middleware Middleware.Authenticate
+      middleware Middleware.AuthorizeUserInTeam
       resolve dataloader(SingleAuction, :ordered_players, args: %{scope: :team})
     end
   end
