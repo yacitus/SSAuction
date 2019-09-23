@@ -23,47 +23,29 @@ alias Ssauction.OrderedPlayer
 # PLAYERS
 #
 
+
 year_range = "1985-1988"
 
-player1 =
-  %Player{}
-  |> Player.changeset(%{
-      year_range: year_range,
-      name: "Orel Hershiser",
-      ssnum: 1,
-      position: "SP"
-     })
-  |> Repo.insert!
+"players.csv"
+|> Path.expand(__DIR__)
+|> File.read!()
+|> String.split("\n", trim: true)
+|> Enum.map(&String.split(&1, ","))
+|> Enum.map(fn [ssnum, name, position] ->
+     %Player{}
+     |> Player.changeset(%{
+          year_range: year_range,
+          name: name,
+          ssnum: ssnum,
+          position: String.trim_trailing(position)
+        })
+     |> Repo.insert!
+   end)
 
-player2 =
-  %Player{}
-  |> Player.changeset(%{
-      year_range: year_range,
-      name: "Mike Scott",
-      ssnum: 2,
-      position: "SP"
-     })
-  |> Repo.insert!
-
-player3 =
-  %Player{}
-  |> Player.changeset(%{
-      year_range: year_range,
-      name: "Dwight Gooden",
-      ssnum: 3,
-      position: "SP"
-     })
-  |> Repo.insert!
-
-player4 =
-  %Player{}
-  |> Player.changeset(%{
-      year_range: year_range,
-      name: "Rick Mahler",
-      ssnum: 4,
-      position: "SP"
-     })
-  |> Repo.insert!
+player1 = Repo.get!(Player, 1)
+player2 = Repo.get!(Player, 2)
+player3 = Repo.get!(Player, 3)
+player4 = Repo.get!(Player, 4)
 
 #
 # USERS

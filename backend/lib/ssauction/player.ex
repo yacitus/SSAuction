@@ -20,7 +20,7 @@ defmodule Ssauction.Player do
     player
     |> cast(params, required_fields)
     |> validate_required(required_fields)
-    |> validate_inclusion(:position, ["SP", "RP", "1B", "2B", "3B", "SS", "OF", "DH"])
+    |> validate_inclusion(:position, ["SP", "RP", "C", "1B", "2B", "3B", "SS", "OF", "DH"])
     |> validate_year_range()
     |> validate_unique_year_range_and_ssnum()
     # |> assoc_constraint(:bid)
