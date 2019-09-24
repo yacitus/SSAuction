@@ -24,7 +24,7 @@ alias Ssauction.OrderedPlayer
 #
 
 
-year_range = "1985-1988"
+year_range = "1985-1988-NL"
 
 "players.csv"
 |> Path.expand(__DIR__)

@@ -31,18 +31,21 @@ defmodule Ssauction.Player do
       true ->
         year_range = get_field(changeset, :year_range)
         case String.length(year_range) do
-          9 ->
-            [start_year, end_year] = start_and_end_year_from_range(year_range)
-            case start_year <= end_year do
-              false ->
-                add_error(changeset, :year_range, "end year must be greater or equal to start year")
+          12 ->
+            case parse_year_range(year_range) do
+              %{"start_year" => start_year, "end_year" => end_year} ->
+                case String.to_integer(end_year) >= String.to_integer(start_year) do
+                  false ->
+                    add_error(changeset, :year_range, "end year must be greater or equal to start year")
 
+                  _ ->
+                    changeset
+                end
               _ ->
-                changeset
+                add_error(changeset, :year_range, "can't find start and end year")
             end
-
           _ ->
-            add_error(changeset, :year_range, "must be 9 characters")
+            add_error(changeset, :year_range, "must be 12 characters")
         end
 
       _ ->
@@ -50,8 +53,8 @@ defmodule Ssauction.Player do
     end
   end
 
-  def start_and_end_year_from_range(year_range) do
-    Enum.map(String.split(year_range, "-"), fn(x) -> String.to_integer(x) end)
+  def parse_year_range(year_range) do
+    Regex.named_captures(~r/(?<start_year>\d{4})-(?<end_year>\d{4})-(?<league>[A-Z]{2})/, year_range)
   end
 
   defp validate_unique_year_range_and_ssnum(changeset) do
