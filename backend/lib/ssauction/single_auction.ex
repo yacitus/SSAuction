@@ -45,6 +45,73 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Returns a query of all players in an auction's bids
+
+  """
+  def players_in_auction_bids_query(auction = %Auction{}) do
+    from a in Auction,
+      where: a.id == ^auction.id,
+      join: bids in assoc(a, :bids),
+      join: player in assoc(bids, :player),
+      select: player
+  end
+
+  @doc """
+  Returns a query of all players rostered in an auction
+
+  """
+  def players_rostered_in_auction_query(auction = %Auction{}) do
+    from a in Auction,
+      where: a.id == ^auction.id,
+      join: rostered_players in assoc(a, :rostered_players),
+      join: player in assoc(rostered_players, :player),
+      select: player
+  end
+
+  @doc """
+  Returns a query of all players in an auction
+
+  """
+  def players_in_auction_query(auction = %Auction{}) do
+    from player in Player,
+      where: player.year_range == ^auction.year_range,
+      select: player
+  end
+
+  @doc """
+  Returns a query of all players in a team's nomination queue
+
+  """
+  def players_in_team_nomination_queue_query(team = %Team{}) do
+    from t in Team,
+      where: t.id == ^team.id,
+      join: ordered_players in assoc(t, :ordered_players),
+      join: player in assoc(ordered_players, :player),
+      select: player
+  end
+
+  @doc """
+  Returns a list of players who can be added to a team's nomination queue
+
+  """
+  def queueable_players(team = %Team{}) do
+    auction = get_auction_by_id!(team.auction_id)
+
+    bid_players = players_in_auction_bids_query(auction)
+    rostered_players = players_rostered_in_auction_query(auction)
+    queued_players = players_in_team_nomination_queue_query(team)
+
+    queueable_players = from player in Player,
+                          where: player.year_range == ^auction.year_range,
+                          select: player,
+                          except_all: ^bid_players,
+                          except_all: ^rostered_players,
+                          except_all: ^queued_players
+
+    Repo.all(from p in subquery(queueable_players), order_by: p.id)
+  end
+
+  @doc """
   Returns a list of users in the team
 
   """
@@ -300,3 +367,4 @@ defmodule Ssauction.SingleAuction do
   end
 
 end
+3

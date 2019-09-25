@@ -1,5 +1,5 @@
 defmodule Ssauction.Repo do
-  use Ecto.Repo, otp_app: :ssauction
+  use Ecto.Repo, otp_app: :ssauction, adapter: Ecto.Adapters.Postgres
 
   @doc """
   Dynamically loads the repository url from the

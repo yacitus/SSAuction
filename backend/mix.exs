@@ -35,7 +35,7 @@ defmodule Ssauction.Mixfile do
     [
       {:phoenix, "~> 1.4.3"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
+      {:phoenix_ecto, "~> 4.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
@@ -48,7 +48,8 @@ defmodule Ssauction.Mixfile do
       {:absinthe_phoenix, "~> 1.4.0"},
       {:jason, "~> 1.0"},
       {:dataloader, "~> 1.0.6"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:ecto_sql, "~> 3.0"}
     ]
   end
 

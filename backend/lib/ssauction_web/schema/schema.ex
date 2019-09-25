@@ -32,6 +32,12 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve &Resolvers.SingleAuction.team/3
     end
 
+    @desc "Get a list of players who can be added to a team's nomination queue"
+    field :queueable_players, list_of(:player) do
+      arg :team_id, non_null(:integer)
+      resolve &Resolvers.SingleAuction.queueable_players/3
+    end
+
     @desc "Get a list of users in a team"
     field :users, list_of(:user) do
       arg :team_id, non_null(:integer)

@@ -18,6 +18,10 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.get_team_by_id!(id)}
   end
 
+  def queueable_players(_, %{team_id: team_id}, _) do
+    {:ok, SingleAuction.get_team_by_id!(team_id) |> SingleAuction.queueable_players()}
+  end
+
   def users_in_team(_, %{team_id: team_id}, _) do
     {:ok, SingleAuction.get_team_by_id!(team_id) |> SingleAuction.list_users()}
   end
