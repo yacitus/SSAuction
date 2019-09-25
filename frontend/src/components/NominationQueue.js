@@ -6,6 +6,7 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 const TEAM_NOMINATION_QUEUE_QUERY = gql`
   query TeamNominationQueue($team_id: Int!) {
@@ -17,8 +18,20 @@ const TEAM_NOMINATION_QUEUE_QUERY = gql`
           id
           name
           ssnum
+          position
         }
       }
+    }
+  }
+`;
+
+const TEAM_QUEUEABLE_PLAYERS_QUERY = gql`
+  query TeamQueueablePlayers($team_id: Int!) {
+    queueablePlayers(teamId: $team_id) {
+      id
+      name
+      ssnum
+      position
     }
   }
 `;
@@ -27,15 +40,26 @@ class NominationQueue extends Component {
   render() {
     const { teamId } = this.props;
 
-    const columns = [{
-      dataField: 'rank',
-      text: 'Order'
+    const queue_columns = [{
+      dataField: 'player.ssnum',
+      text: 'Scoresheet num',
     }, {
       dataField: 'player.name',
       text: 'Player',
     }, {
-      dataField: 'player.ssnum',
+      dataField: 'player.position',
+      text: 'Position',
+    }];
+
+    const players_columns = [{
+      dataField: 'ssnum',
       text: 'Scoresheet num',
+    }, {
+      dataField: 'name',
+      text: 'Player',
+    }, {
+      dataField: 'position',
+      text: 'Position',
     }];
 
     const CaptionElement = () =>
@@ -47,26 +71,44 @@ class NominationQueue extends Component {
         Nomination Queue</h3>;
 
     return (
-      <Query
-        query={TEAM_NOMINATION_QUEUE_QUERY}
-        variables={{ team_id: parseInt(teamId, 10) }}>
-        {({ data, loading, error }) => {
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          return (
-            <Container>
-              <BootstrapTable
-                bootstrap4={ true }
-                caption={ <CaptionElement /> }
-                keyField='id'
-                data={ data.team.nominationQueue }
-                columns={ columns }
-                striped
-                hover />
-            </Container>
-          );
-        }}
-      </Query>
+      <Container>
+        <Query
+          query={TEAM_NOMINATION_QUEUE_QUERY}
+          variables={{ team_id: parseInt(teamId, 10) }}>
+          {({ data, loading, error }) => {
+            if (loading) return <Loading />;
+            if (error) return <Error error={error} />;
+            return (
+                <BootstrapTable
+                  bootstrap4={ true }
+                  caption={ <CaptionElement /> }
+                  keyField='id'
+                  data={ data.team.nominationQueue }
+                  columns={ queue_columns }
+                  striped
+                  hover />
+            );
+          }}
+        </Query>
+        <Query
+          query={TEAM_QUEUEABLE_PLAYERS_QUERY}
+          variables={{ team_id: parseInt(teamId, 10) }}>
+          {({ data, loading, error }) => {
+            if (loading) return <Loading />;
+            if (error) return <Error error={error} />;
+            return (
+                <BootstrapTable
+                  bootstrap4={ true }
+                  keyField='id'
+                  data={ data.queueablePlayers }
+                  columns={ players_columns }
+                  pagination={ paginationFactory() }
+                  striped
+                  hover />
+            );
+          }}
+        </Query>
+      </Container>
     );
   }
 }
