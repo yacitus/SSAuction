@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
 const TEAM_NOMINATION_QUEUE_QUERY = gql`
   query TeamNominationQueue($team_id: Int!) {
@@ -39,6 +40,8 @@ const TEAM_QUEUEABLE_PLAYERS_QUERY = gql`
 class NominationQueue extends Component {
   render() {
     const { teamId } = this.props;
+
+    const { SearchBar } = Search;
 
     const queue_columns = [{
       dataField: 'player.ssnum',
@@ -97,14 +100,29 @@ class NominationQueue extends Component {
             if (loading) return <Loading />;
             if (error) return <Error error={error} />;
             return (
-                <BootstrapTable
-                  bootstrap4={ true }
-                  keyField='id'
-                  data={ data.queueablePlayers }
-                  columns={ players_columns }
-                  pagination={ paginationFactory() }
-                  striped
-                  hover />
+              <ToolkitProvider
+                bootstrap4={ true }
+                keyField="id"
+                data={ data.queueablePlayers }
+                columns={ players_columns }
+                striped
+                hover
+                search
+              >
+              {
+                props => (
+                  <div>
+                    <h3>Search for a Scoresheet num, name, or position:</h3>
+                    <SearchBar { ...props.searchProps } />
+                    <hr />
+                    <BootstrapTable
+                      { ...props.baseProps }
+                      pagination={ paginationFactory() }
+                    />
+                  </div>
+                )
+              }
+              </ToolkitProvider>
             );
           }}
         </Query>
