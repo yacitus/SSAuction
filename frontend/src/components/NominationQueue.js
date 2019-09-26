@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+import Button from 'react-bootstrap/Button'
 
 const TEAM_NOMINATION_QUEUE_QUERY = gql`
   query TeamNominationQueue($team_id: Int!) {
@@ -54,6 +55,12 @@ class NominationQueue extends Component {
       text: 'Position',
     }];
 
+    function buttonFormatter(cell, row) {
+      return (
+        <Button variant="outline-success">Add</Button>
+      );
+    }
+
     const players_columns = [{
       dataField: 'ssnum',
       text: 'Scoresheet num',
@@ -63,6 +70,9 @@ class NominationQueue extends Component {
     }, {
       dataField: 'position',
       text: 'Position',
+    }, {
+      text: 'Add To Queue',
+      formatter: buttonFormatter
     }];
 
     const CaptionElement = () =>
