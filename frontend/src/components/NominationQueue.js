@@ -38,6 +38,21 @@ const TEAM_QUEUEABLE_PLAYERS_QUERY = gql`
   }
 `;
 
+class AddButton extends Component {
+  handleClick = () => {
+    console.log("AddButton click: "+ this.props.row.id);
+  }
+
+  render() {
+    return (
+      <Button onClick={this.handleClick}
+              variant="outline-success">
+        Add
+      </Button>
+    );
+  }
+}
+
 class NominationQueue extends Component {
   render() {
     const { teamId } = this.props;
@@ -57,7 +72,7 @@ class NominationQueue extends Component {
 
     function buttonFormatter(cell, row) {
       return (
-        <Button variant="outline-success">Add</Button>
+        <AddButton row={row}/>
       );
     }
 
