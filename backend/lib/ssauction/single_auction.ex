@@ -45,7 +45,7 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns a query of all players in an auction's bids
+  Returns a query of all players in thhe auction's bids
 
   """
   def players_in_auction_bids_query(auction = %Auction{}) do
@@ -57,7 +57,7 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns a query of all players rostered in an auction
+  Returns a query of all players rostered in the auction
 
   """
   def players_rostered_in_auction_query(auction = %Auction{}) do
@@ -69,7 +69,7 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns a query of all players in an auction
+  Returns a query of all players in the auction
 
   """
   def players_in_auction_query(auction = %Auction{}) do
@@ -79,7 +79,7 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns a query of all players in a team's nomination queue
+  Returns a query of all players in the team's nomination queue
 
   """
   def players_in_team_nomination_queue_query(team = %Team{}) do
@@ -91,24 +91,64 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns a list of players who can be added to a team's nomination queue
+  Returns a the largest rank of the players in the team's nomination queue
 
   """
-  def queueable_players(team = %Team{}) do
+  def largest_rank_in_team_nomination_queue(team = %Team{}) do
+    query = from t in Team,
+              where: t.id == ^team.id,
+              join: ordered_players in assoc(t, :ordered_players),
+              select: ordered_players.rank,
+              order_by: ordered_players.rank
+    ranks = Repo.all(query)
+    case ranks do
+      [] ->
+        0
+
+      _ ->
+        Enum.max(ranks)
+    end
+  end
+
+  @doc """
+  Returns a query for players who can be added to thhe team's nomination queue
+
+  """
+  def queueable_players_query(team = %Team{}) do
     auction = get_auction_by_id!(team.auction_id)
 
     bid_players = players_in_auction_bids_query(auction)
     rostered_players = players_rostered_in_auction_query(auction)
     queued_players = players_in_team_nomination_queue_query(team)
 
-    queueable_players = from player in Player,
-                          where: player.year_range == ^auction.year_range,
-                          select: player,
-                          except_all: ^bid_players,
-                          except_all: ^rostered_players,
-                          except_all: ^queued_players
+    from player in Player,
+      where: player.year_range == ^auction.year_range,
+      select: player,
+      except_all: ^bid_players,
+      except_all: ^rostered_players,
+      except_all: ^queued_players
+  end
 
-    Repo.all(from p in subquery(queueable_players), order_by: p.id)
+  @doc """
+  Returns a list of players (sorted by id) who can be added to the team's nomination queue
+
+  """
+  def queueable_players(team = %Team{}) do
+    query = queueable_players_query(team)
+
+    Repo.all(from p in subquery(query), order_by: p.id)
+  end
+
+
+  @doc """
+  Returns true if the player can be added to the team's nomination queue
+
+  """
+  def queueable_player?(player = %Player{}, team = %Team{}) do
+    query = queueable_players_query(team)
+
+    Enum.any?(Repo.all(from p in subquery(query), order_by: p.id,  select: p.id),
+              fn id -> id == player.id end)
   end
 
   @doc """
@@ -328,6 +368,21 @@ defmodule Ssauction.SingleAuction do
     |> Auction.active_changeset(%{active: false,
                                   started_or_paused_at: utc_datetime})
     |> Repo.update()
+  end
+
+  @doc """
+  Submits a new bid
+
+  """
+
+  def add_to_nomination_queue(player = %Player{}, team = %Team{}) do
+    ordered_player =
+      %OrderedPlayer{
+        rank: largest_rank_in_team_nomination_queue(team) + 1,
+        player: player
+      }
+    ordered_player = Ecto.build_assoc(team, :ordered_players, ordered_player)
+    Repo.insert!(ordered_player)
   end
 
   @doc """

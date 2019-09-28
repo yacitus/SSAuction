@@ -66,14 +66,28 @@ defmodule SsauctionWeb.Schema.Schema do
     @desc "Start the auction if it's paused"
     field :start_auction, :auction do
       arg :auction_id, non_null(:id)
+      middleware Middleware.Authenticate
+      middleware Middleware.AuthorizeUserAuctionAdmin
       resolve &Resolvers.SingleAuction.start_auction/3
     end
 
     @desc "Pause the auction if it's active"
     field :pause_auction, :auction do
       arg :auction_id, non_null(:id)
+      middleware Middleware.Authenticate
+      middleware Middleware.AuthorizeUserAuctionAdmin
       resolve &Resolvers.SingleAuction.pause_auction/3
     end
+
+    @desc "Add a player to a team's nomination queue"
+    field :add_to_nomination_queue, list_of(:ordered_player) do
+      arg :team_id, non_null(:integer)
+      arg :player_id, non_null(:integer)
+      middleware Middleware.Authenticate
+      middleware Middleware.AuthorizeUserInTeam
+      resolve &Resolvers.SingleAuction.add_to_nomination_queue/3
+    end
+
 
     @desc "Submit a bid"
     field :submit_bid, :bid do
@@ -83,6 +97,7 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :bid_amount, non_null(:integer)
       arg :hidden_high_bid, :integer
       middleware Middleware.Authenticate
+      middleware Middleware.AuthorizeUserInTeam
       resolve &Resolvers.SingleAuction.submit_bid/3
     end
 

@@ -90,6 +90,22 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
+  def add_to_nomination_queue(_, args, %{context: %{current_user: user}}) do
+    team = SingleAuction.get_team_by_id!(args[:team_id])
+    player = SingleAuction.get_player_by_id!(args[:player_id])
+
+    cond do
+      not SingleAuction.queueable_player?(player, team) ->
+        {
+          :error,
+          message: "player not queueable"
+        }
+
+      true ->
+        {:ok, SingleAuction.add_to_nomination_queue(player, team)}
+    end
+  end
+
   def submit_bid(_, args, %{context: %{current_user: user}}) do
     auction = SingleAuction.get_auction_by_id!(args[:auction_id])
     team = SingleAuction.get_team_by_id!(args[:team_id])

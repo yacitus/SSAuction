@@ -2,12 +2,19 @@ defmodule SsauctionWeb.Schema.Middleware.AuthorizeUserInTeam do
   @behaviour Absinthe.Middleware
 
   alias Ssauction.SingleAuction
+  alias Ssauction.Team
 
   def call(resolution, _) do
-    IO.inspect resolution.source, label: "AuthorizeUserInTeam resolution.source: "
+    team = case resolution.source do
+             %Team{} ->
+               resolution.source
+             _ ->
+               SingleAuction.get_team_by_id!(resolution.arguments.team_id)
+           end
+
     case resolution.context do
       %{current_user: user} ->
-        case SingleAuction.user_is_team_member?(user, resolution.source) do
+        case SingleAuction.user_is_team_member?(user, team) do
           true ->
             resolution
           _ ->
