@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import 'moment';
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
+import { Mutation } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
@@ -38,17 +39,47 @@ const TEAM_QUEUEABLE_PLAYERS_QUERY = gql`
   }
 `;
 
-class AddButton extends Component {
-  handleClick = () => {
-    console.log("AddButton click: "+ this.props.row.id);
+const ADD_TO_NOMINATION_QUEUE_MUTATION = gql`
+  mutation AddToNominationQueue(
+    $player_id: Int!
+    $team_id: Int!
+  ) {
+    addToNominationQueue(playerId: $player_id, teamId: $team_id) {
+      rank
+      player {
+        id
+        ssnum
+        name
+      }
+    }
   }
+`;
 
+class AddButton extends Component {
   render() {
+    const { teamId } = this.props;
+    const playerId = this.props.row.id;
+
     return (
-      <Button onClick={this.handleClick}
+      <Mutation
+        mutation={ADD_TO_NOMINATION_QUEUE_MUTATION}
+        variables={{
+          player_id: parseInt(playerId, 10),
+          team_id: parseInt(teamId, 10)
+        }}
+      >
+        {(addToQueue, { loading, error }) => (
+          <div>
+            <Error error={error} />
+            <Button
+              disabled={loading}
+              onClick={addToQueue}
               variant="outline-success">
-        Add
-      </Button>
+              Add
+            </Button>
+          </div>
+        )}
+      </Mutation>
     );
   }
 }
@@ -72,7 +103,7 @@ class NominationQueue extends Component {
 
     function buttonFormatter(cell, row) {
       return (
-        <AddButton row={row}/>
+        <AddButton row={row} teamId={teamId}/>
       );
     }
 
@@ -110,7 +141,7 @@ class NominationQueue extends Component {
                 <BootstrapTable
                   bootstrap4={ true }
                   caption={ <CaptionElement /> }
-                  keyField='id'
+                  keyField='player.ssnum'
                   data={ data.team.nominationQueue }
                   columns={ queue_columns }
                   striped
@@ -126,8 +157,8 @@ class NominationQueue extends Component {
             if (error) return <Error error={error} />;
             return (
               <ToolkitProvider
+                keyField="ssnum"
                 bootstrap4={ true }
-                keyField="id"
                 data={ data.queueablePlayers }
                 columns={ players_columns }
                 striped
