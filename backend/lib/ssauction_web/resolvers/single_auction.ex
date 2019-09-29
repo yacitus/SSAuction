@@ -102,6 +102,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
 
       true ->
+        publish_nomination_queue_change(team)
         {:ok, SingleAuction.add_to_nomination_queue(player, team)}
     end
   end
@@ -240,6 +241,14 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         publish_bid_change(auction)
         {:ok, bid}
     end
+  end
+
+  defp publish_nomination_queue_change(team) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      team,
+      nomination_queue_change: team.id
+    )
   end
 
   defp publish_bid_change(auction) do

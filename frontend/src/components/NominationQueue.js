@@ -1,187 +1,87 @@
 import React, { Component } from "react";
-import 'moment';
 import gql from "graphql-tag";
+import PropTypes from "prop-types";
 import { Query } from "react-apollo";
-import { Mutation } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import Button from 'react-bootstrap/Button'
+import NominationQueueTable from "../components/NominationQueueTable";
+import NominationQueuePlayerSearch from "../components/NominationQueuePlayerSearch";
 
-const TEAM_NOMINATION_QUEUE_QUERY = gql`
-  query TeamNominationQueue($team_id: Int!) {
+const TEAM_QUERY = gql`
+  query Team($team_id: Int!) {
     team(id: $team_id) {
       id
-      nominationQueue {
-        rank
-        player {
-          id
-          name
-          ssnum
-          position
-        }
-      }
     }
   }
 `;
 
-const TEAM_QUEUEABLE_PLAYERS_QUERY = gql`
-  query TeamQueueablePlayers($team_id: Int!) {
-    queueablePlayers(teamId: $team_id) {
+const TEAM_NOMINATION_QUEUE_SUBSCRIPTION = gql`
+  subscription TeamNominationQueueChange($team_id: Int!) {
+    nominationQueueChange(id: $team_id) {
       id
-      name
-      ssnum
-      position
     }
   }
 `;
 
-const ADD_TO_NOMINATION_QUEUE_MUTATION = gql`
-  mutation AddToNominationQueue(
-    $player_id: Int!
-    $team_id: Int!
-  ) {
-    addToNominationQueue(playerId: $player_id, teamId: $team_id) {
-      rank
-      player {
-        id
-        ssnum
-        name
-      }
-    }
-  }
-`;
-
-class AddButton extends Component {
+class NominationQueue extends Component {
   render() {
-    const { teamId } = this.props;
-    const playerId = this.props.row.id;
+    const teamId = parseInt(this.props.teamId, 10);
 
     return (
-      <Mutation
-        mutation={ADD_TO_NOMINATION_QUEUE_MUTATION}
-        variables={{
-          player_id: parseInt(playerId, 10),
-          team_id: parseInt(teamId, 10)
+      <Query
+        query={TEAM_QUERY}
+        variables={{ team_id: teamId }}>
+        {({ data, loading, error, subscribeToMore }) => {
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+          return (
+            <NominationQueuePair
+              teamId={ teamId }
+              subscribeToNominationQueueChanges={subscribeToMore}
+            />
+          );
         }}
-      >
-        {(addToQueue, { loading, error }) => (
-          <div>
-            <Error error={error} />
-            <Button
-              disabled={loading}
-              onClick={addToQueue}
-              variant="outline-success">
-              Add
-            </Button>
-          </div>
-        )}
-      </Mutation>
+      </Query>
     );
   }
 }
 
-class NominationQueue extends Component {
+class NominationQueuePair extends Component {
+  state = {
+    refreshToggle: false
+  }
+
+  static propTypes = {
+    teamId: PropTypes.number.isRequired,
+    subscribeToNominationQueueChanges: PropTypes.func.isRequired
+  };
+
+  componentDidMount() {
+    this.props.subscribeToNominationQueueChanges({
+      document: TEAM_NOMINATION_QUEUE_SUBSCRIPTION,
+      variables: { team_id: this.props.teamId },
+      updateQuery: this.handleNominationQueueChange
+    });
+  }
+
+  handleNominationQueueChange = (prev, { subscriptionData }) => {
+    if (!subscriptionData.data) return prev;
+    this.setState({refreshToggle: !this.state.refreshToggle}); // force children to refreshh
+    return prev;
+  };
+
   render() {
     const { teamId } = this.props;
 
-    const { SearchBar } = Search;
-
-    const queue_columns = [{
-      dataField: 'player.ssnum',
-      text: 'Scoresheet num',
-    }, {
-      dataField: 'player.name',
-      text: 'Player',
-    }, {
-      dataField: 'player.position',
-      text: 'Position',
-    }];
-
-    function buttonFormatter(cell, row) {
-      return (
-        <AddButton row={row} teamId={teamId}/>
-      );
-    }
-
-    const players_columns = [{
-      dataField: 'ssnum',
-      text: 'Scoresheet num',
-    }, {
-      dataField: 'name',
-      text: 'Player',
-    }, {
-      dataField: 'position',
-      text: 'Position',
-    }, {
-      text: 'Add To Queue',
-      formatter: buttonFormatter
-    }];
-
-    const CaptionElement = () =>
-      <h3 style={{ borderRadius: '0.25em',
-                   textAlign: 'center',
-                   color: 'purple',
-                   border: '1px solid green',
-                   padding: '0.5em' }}>
-        Nomination Queue</h3>;
-
     return (
       <Container>
-        <Query
-          query={TEAM_NOMINATION_QUEUE_QUERY}
-          variables={{ team_id: parseInt(teamId, 10) }}>
-          {({ data, loading, error }) => {
-            if (loading) return <Loading />;
-            if (error) return <Error error={error} />;
-            return (
-                <BootstrapTable
-                  bootstrap4={ true }
-                  caption={ <CaptionElement /> }
-                  keyField='player.ssnum'
-                  data={ data.team.nominationQueue }
-                  columns={ queue_columns }
-                  striped
-                  hover />
-            );
-          }}
-        </Query>
-        <Query
-          query={TEAM_QUEUEABLE_PLAYERS_QUERY}
-          variables={{ team_id: parseInt(teamId, 10) }}>
-          {({ data, loading, error }) => {
-            if (loading) return <Loading />;
-            if (error) return <Error error={error} />;
-            return (
-              <ToolkitProvider
-                keyField="ssnum"
-                bootstrap4={ true }
-                data={ data.queueablePlayers }
-                columns={ players_columns }
-                striped
-                hover
-                search
-              >
-              {
-                props => (
-                  <div>
-                    <h3>Search for a Scoresheet num, name, or position:</h3>
-                    <SearchBar { ...props.searchProps } />
-                    <hr />
-                    <BootstrapTable
-                      { ...props.baseProps }
-                      pagination={ paginationFactory() }
-                    />
-                  </div>
-                )
-              }
-              </ToolkitProvider>
-            );
-          }}
-        </Query>
+        <NominationQueueTable
+          teamId={ teamId }
+          refresh={ this.state.refreshToggle } />
+        <NominationQueuePlayerSearch
+          teamId={ teamId }
+          refresh={ this.state.refreshToggle } />
       </Container>
     );
   }
