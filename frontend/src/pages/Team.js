@@ -6,6 +6,7 @@ import Loading from "../components/Loading";
 import CurrentUserInTeam from "../components/CurrentUserInTeam";
 import Container from "react-bootstrap/Container";
 import TeamBids from "../components/TeamBids";
+import TeamAuthorizedBids from "../components/TeamAuthorizedBids";
 import NominationQueue from "../components/NominationQueue";
 import TeamRosteredPlayers from "../components/TeamRosteredPlayers";
 import TeamInfo from "../components/TeamInfo";
@@ -37,9 +38,14 @@ class Team extends Component {
             <CurrentUserInTeam teamId={ teamId }>
               {currentUserInTeam => (
                 <Container>
-                  <TeamBids teamId={ teamId } />
+                  {!currentUserInTeam && (
+                    <TeamBids teamId={ teamId } />
+                  )}
                   {currentUserInTeam && (
-                    <NominationQueue teamId={ teamId } />
+                    <>
+                      <TeamAuthorizedBids teamId={ teamId } />
+                      <NominationQueue teamId={ teamId } />
+                    </>
                   )}
                   <TeamRosteredPlayers teamId={ teamId } />
                   <TeamInfo teamId={ teamId } />

@@ -203,6 +203,11 @@ defmodule SsauctionWeb.Schema.Schema do
   object :bid do
     field :id, non_null(:id)
     field :bid_amount, non_null(:integer)
+    field :hidden_high_bid, :integer do
+      middleware Middleware.Authenticate
+      middleware Middleware.AuthorizeUserInTeam
+      middleware Absinthe.Middleware.MapGet, :hidden_high_bid
+    end
     field :expires_at, non_null(:datetime)
     field :player, non_null(:player) do
       resolve dataloader(SingleAuction, :player, args: %{scope: :bid})
