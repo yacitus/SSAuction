@@ -15,6 +15,7 @@ const AUCTION_INFO_QUERY = gql`
     auction(id: $auction_id) {
       id
       name
+      active
     }
   }
 `;
@@ -32,7 +33,9 @@ class Auction extends Component {
           if (error) return <Error error={error} />;
           return (
             <Container>
-              <AuctionBids auctionId={ auctionId } />
+              <AuctionBids
+                auctionActive={ data.active }
+                auctionId={ auctionId } />
               <AuctionRosteredPlayers auctionId={ auctionId } />
               <TeamsInfo auctionId={ auctionId } />
               <AuctionInfo auctionId={ auctionId } />

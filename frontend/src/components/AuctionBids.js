@@ -33,14 +33,15 @@ const AUCTION_BIDS_QUERY = gql`
 class AuctionBids extends Component {
   render() {
     const { auctionId } = this.props;
+    const { auctionActive } = this.props;
 
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
     }
 
     function countdownFormatter(cell, row) {
-      if (cell == null) {
-        return cell;
+      if (!auctionActive || cell == null) {
+        return "";
       } else {
         return (
           <Countdown expires={cell}/>
