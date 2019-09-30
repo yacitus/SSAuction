@@ -51,8 +51,12 @@ class Countdown extends Component {
   updateState() {
     this.setState({ timeRemainingString:
                     getTimeRemainingString(this.props.expires) });
-    setTimeout(() => { this.updateState() }, 1000);
+    this.timeout = setTimeout(() => { this.updateState() }, 1000);
   }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  };
 
   render() {
     return ( this.state.timeRemainingString );
