@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import CurrentUser from "../components/CurrentUser";
+import CurrentUserInTeam from "../components/CurrentUserInTeam";
 import Container from "react-bootstrap/Container";
 import TeamBids from "../components/TeamBids";
 import NominationQueue from "../components/NominationQueue";
@@ -34,11 +34,11 @@ class Team extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <CurrentUser>
-              {currentUser => (
+            <CurrentUserInTeam teamId={ teamId }>
+              {currentUserInTeam => (
                 <Container>
                   <TeamBids teamId={ teamId } />
-                  {currentUser && (
+                  {currentUserInTeam && (
                     <NominationQueue teamId={ teamId } />
                   )}
                   <TeamRosteredPlayers teamId={ teamId } />
@@ -46,7 +46,7 @@ class Team extends Component {
                   <UserInfo teamId={ teamId } />
                 </Container>
               )}
-            </CurrentUser>
+            </CurrentUserInTeam>
           );
         }}
       </Query>

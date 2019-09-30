@@ -55,6 +55,12 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve &Resolvers.Accounts.me/3
     end
 
+    @desc "Return true if current user is in the team"
+    field :me_in_team, :boolean do
+      arg :team_id, non_null(:integer)
+      resolve &Resolvers.Accounts.me_in_team/3
+    end
+
     @desc "Get a bid by its id"
     field :bid, :bid do
       arg :id, non_null(:integer)

@@ -1,5 +1,6 @@
 defmodule SsauctionWeb.Resolvers.Accounts do
   alias Ssauction.Accounts
+  alias Ssauction.SingleAuction
 
   def signin(_, %{username: username, password: password}, _) do
     case Accounts.authenticate(username, password) do
@@ -22,5 +23,14 @@ defmodule SsauctionWeb.Resolvers.Accounts do
 
   def me(_, _, _) do
     {:ok, nil}
+  end
+
+  def me_in_team(_, %{team_id: team_id}, %{context: %{current_user: user}}) do
+    team = SingleAuction.get_team_by_id!(team_id)
+    {:ok, SingleAuction.user_is_team_member?(user, team)}
+  end
+
+  def me_in_team(_, _, _) do
+    {:ok, false}
   end
 end
