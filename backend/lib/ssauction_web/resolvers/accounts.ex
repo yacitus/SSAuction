@@ -25,6 +25,11 @@ defmodule SsauctionWeb.Resolvers.Accounts do
     {:ok, nil}
   end
 
+  def me_auction_admin(_, %{auction_id: auction_id}, %{context: %{current_user: user}}) do
+    auction = SingleAuction.get_auction_by_id!(auction_id)
+    {:ok, SingleAuction.user_is_auction_admin?(user, auction)}
+  end
+
   def me_in_team(_, %{team_id: team_id}, %{context: %{current_user: user}}) do
     team = SingleAuction.get_team_by_id!(team_id)
     {:ok, SingleAuction.user_is_team_member?(user, team)}
