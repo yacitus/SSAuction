@@ -200,9 +200,16 @@ defmodule Ssauction.SingleAuction do
     case user.super do
       true -> true
       false ->
-        # TODO - is there a way to make this more effecient with a query and/or dataloader
-        Enum.member?(Repo.preload(auction, [:admins]).admins, user)
+        query = from a in Auction,
+                  where: a.id == 1,
+                  join: user in assoc(a, :admins),
+                  select: user.id
+        Enum.any?(Repo.all(query), fn id -> id == user.id end)
     end
+  end
+
+  def user_is_auction_admin?(_, _) do
+    false
   end
 
   @doc """

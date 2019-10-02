@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
+import { Mutation } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
@@ -28,6 +29,48 @@ const AUCTION_INFO_QUERY = gql`
   }
 `;
 
+const TOGGLE_AUCTION_MUTATION = gql`
+  mutation SetAuctionActiveOrInactive($auctionId: Int!, $active: Boolean!) {
+    setAuctionActiveOrInactive(auctionId: $auctionId, active: $active) {
+      id
+      active
+    }
+  }
+`;
+
+class ToggleAuctionSwitch extends Component {
+  state = {
+    auctionActive: this.props.auctionActive
+  };
+
+  update() {
+    this.setState({ auctionActive: !this.state.auctionActive });
+  }
+
+  render() {
+    const { auctionId } = this.props;
+
+    return (
+      <Mutation
+        mutation={TOGGLE_AUCTION_MUTATION}
+        variables={{auctionId: parseInt(auctionId, 10),
+                    active: !this.state.auctionActive}}
+        update={this.update}>
+        {(toggleAuction, { loading, error }) => (
+          <div>
+            <Error error={error} />
+            <Switch
+              disabled={loading}
+              onChange={toggleAuction}
+              checked={this.state.auctionActive}
+            />
+          </div>
+        )}
+      </Mutation>
+    );
+  }
+}
+
 class AuctionInfo extends Component {
   render() {
     const { auctionId } = this.props;
@@ -54,9 +97,9 @@ class AuctionInfo extends Component {
                               data.auction.active ? '✅' : '❌'
                             )}
                             {currentUserAuctionAdmin && (
-                              <Switch
-                                onChange={() => {}}
-                                checked={data.auction.active}
+                              <ToggleAuctionSwitch
+                                auctionId={auctionId}
+                                auctionActive={data.auction.active}
                               />
                             )}
                           </td>

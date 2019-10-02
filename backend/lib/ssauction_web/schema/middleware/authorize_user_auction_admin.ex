@@ -6,7 +6,8 @@ defmodule SsauctionWeb.Schema.Middleware.AuthorizeUserAuctionAdmin do
   def call(resolution, _) do
     case resolution.context do
       %{current_user: user} ->
-        case SingleAuction.user_is_auction_admin?(user, resolution.source) do
+        auction = SingleAuction.get_auction_by_id!(resolution.arguments.auction_id)
+        case SingleAuction.user_is_auction_admin?(user, auction) do
           true ->
             resolution
           _ ->

@@ -42,6 +42,16 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.team_dollars_remaining_for_bids(team)}
   end
 
+  def set_auction_active_or_inactive(root, args, info) do
+    case args[:active] do
+      true ->
+        start_auction(root, args, info)
+
+      _ ->
+         pause_auction(root, args, info)
+     end
+  end
+
   def start_auction(_, args, %{context: %{current_user: user}}) do
     auction = SingleAuction.get_auction_by_id!(args[:auction_id])
 
