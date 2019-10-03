@@ -66,6 +66,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
           }
 
         {:ok, auction} ->
+          publish_auction_status_change(auction)
           {:ok, auction}
       end
     else
@@ -90,6 +91,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
           }
 
         {:ok, auction} ->
+          publish_auction_status_change(auction)
           {:ok, auction}
       end
     else
@@ -258,6 +260,14 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
       SsauctionWeb.Endpoint,
       team,
       nomination_queue_change: team.id
+    )
+  end
+
+  defp publish_auction_status_change(auction) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      auction,
+      auction_status_change: auction.id
     )
   end
 

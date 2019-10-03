@@ -139,6 +139,14 @@ defmodule SsauctionWeb.Schema.Schema do
       end
     end
 
+    @desc "Subscribe to changes to an auction's status"
+    field :auction_status_change, :auction do
+      arg :id, non_null(:id)
+      config fn args, _res ->
+        {:ok, topic: args.id}
+      end
+    end
+
     @desc "Subscribe to changes to an auction's bids"
     field :auction_bid_change, :auction do
       arg :id, non_null(:id)
