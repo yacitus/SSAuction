@@ -18,7 +18,6 @@ const AUCTION_INFO_QUERY = gql`
       id
       name
       yearRange
-      active
       startedOrPausedAt
       playersPerTeam
       dollarsPerTeam
@@ -39,30 +38,22 @@ const TOGGLE_AUCTION_MUTATION = gql`
 `;
 
 class ToggleAuctionSwitch extends Component {
-  state = {
-    auctionActive: this.props.auctionActive
-  };
-
-  update() {
-    this.setState({ auctionActive: !this.state.auctionActive });
-  }
-
   render() {
     const { auctionId } = this.props;
+    const { auctionActive } = this.props;
 
     return (
       <Mutation
         mutation={TOGGLE_AUCTION_MUTATION}
         variables={{auctionId: parseInt(auctionId, 10),
-                    active: !this.state.auctionActive}}
-        update={this.update}>
+                    active: !auctionActive}}>
         {(toggleAuction, { loading, error }) => (
           <div>
             <Error error={error} />
             <Switch
               disabled={loading}
               onChange={toggleAuction}
-              checked={this.state.auctionActive}
+              checked={auctionActive}
             />
           </div>
         )}
@@ -74,6 +65,7 @@ class ToggleAuctionSwitch extends Component {
 class AuctionInfo extends Component {
   render() {
     const { auctionId } = this.props;
+    const { auctionActive } = this.props;
 
     return (
       <Query
@@ -94,12 +86,12 @@ class AuctionInfo extends Component {
                           <td>Active:</td>
                           <td>
                             {!currentUserAuctionAdmin && (
-                              data.auction.active ? '✅' : '❌'
+                              auctionActive ? '✅' : '❌'
                             )}
                             {currentUserAuctionAdmin && (
                               <ToggleAuctionSwitch
                                 auctionId={auctionId}
-                                auctionActive={data.auction.active}
+                                auctionActive={auctionActive}
                               />
                             )}
                           </td>
