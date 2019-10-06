@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
-import PropTypes from "prop-types";
 import { Query } from "react-apollo";
+import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
@@ -9,7 +9,6 @@ import AuctionBids from "../components/AuctionBids";
 import AuctionRosteredPlayers from "../components/AuctionRosteredPlayers";
 import TeamsInfo from "../components/TeamsInfo";
 import AuctionInfo from "../components/AuctionInfo";
-
 
 const AUCTION_INFO_QUERY = gql`
   query AuctionInfo($auction_id: Int!) {
@@ -48,7 +47,7 @@ class Auction extends Component {
               auctionId={ auctionId }
               auctionActive={ data.auction.active }
               startedOrPausedAt={ data.auction.startedOrPausedAt }
-              subscribeToAuctionStatusChanges={subscribeToMore}
+              subscribeToAuctionStatusChanges={ subscribeToMore }
             />
           );
         }}

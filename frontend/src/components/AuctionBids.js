@@ -6,7 +6,6 @@ import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 import Countdown from "../components/Countdown";
-import * as Utilities from "../components/utilities.js";
 import './tables.css';
 
 const AUCTION_BIDS_QUERY = gql`
@@ -42,8 +41,6 @@ class AuctionBids extends Component {
 
   render() {
     const { auctionId } = this.props;
-    const { auctionActive } = this.props;
-    const { startedOrPausedAt } = this.props;
 
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
@@ -53,11 +50,13 @@ class AuctionBids extends Component {
       if (cell == null) {
         return "";
       }
-      else if (!auctionActive) {
-        return ( Utilities.getTimeRemainingString(cell, startedOrPausedAt) );
-      }
       else {
-        return ( <Countdown expires={cell}/> );
+        return (
+            <Countdown
+            expires={ cell }
+            auctionId={ auctionId }
+          />
+        );
       }
     }
 
