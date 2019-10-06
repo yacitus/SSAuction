@@ -6,12 +6,14 @@ import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 import Countdown from "../components/Countdown";
+import * as Utilities from "../components/utilities.js";
 import './tables.css';
 
 const AUCTION_BIDS_QUERY = gql`
   query AuctionBids($auction_id: Int!) {
     auction(id: $auction_id) {
       id
+      active
       bids {
         id
         bidAmount
@@ -31,21 +33,31 @@ const AUCTION_BIDS_QUERY = gql`
 `;
 
 class AuctionBids extends Component {
+  componentWillReceiveProps(props) {
+    const { auctionActive } = this.props;
+    if (props.auctionActive !== auctionActive) {
+      this.refetch();
+    }
+  }
+
   render() {
     const { auctionId } = this.props;
     const { auctionActive } = this.props;
+    const { startedOrPausedAt } = this.props;
 
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
     }
 
     function countdownFormatter(cell, row) {
-      if (!auctionActive || cell == null) {
+      if (cell == null) {
         return "";
-      } else {
-        return (
-          <Countdown expires={cell}/>
-        );
+      }
+      else if (!auctionActive) {
+        return ( Utilities.getTimeRemainingString(cell, startedOrPausedAt) );
+      }
+      else {
+        return ( <Countdown expires={cell}/> );
       }
     }
 
@@ -80,7 +92,8 @@ class AuctionBids extends Component {
       <Query
         query={AUCTION_BIDS_QUERY}
         variables={{ auction_id: parseInt(auctionId, 10) }}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, refetch }) => {
+          this.refetch = refetch;
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (

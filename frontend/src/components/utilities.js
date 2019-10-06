@@ -22,16 +22,20 @@ export function secondsToDaysHoursMinsSecsStr(seconds)
             ?(seconds+" second"+pluralize(seconds)+" "):"") );
 }
 
-export function secondsUntilExpiration(expires)
+export function secondsUntilExpiration(expires, start="")
 {
-  var offset = moment(expires).utcOffset(expires);
-  var duration = moment.duration(moment(offset).diff(moment.utc()));
+  var expiresUtc = moment(expires).utcOffset(expires);
+  var startUtc = moment.utc()
+  if (start !== "") {
+    startUtc = moment(start).utcOffset(start);
+  }
+  var duration = moment.duration(moment(expiresUtc).diff(startUtc));
   var seconds = duration.asSeconds();
   return ( seconds );
 }
 
-export function getTimeRemainingString(expires) {
-  var seconds = secondsUntilExpiration(expires);
+export function getTimeRemainingString(expires, start="") {
+  var seconds = secondsUntilExpiration(expires, start);
   if (seconds < 0) {
     return ( "" );
   } else {

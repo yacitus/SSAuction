@@ -17,6 +17,7 @@ const AUCTION_INFO_QUERY = gql`
       id
       name
       active
+      startedOrPausedAt
     }
   }
 `;
@@ -27,6 +28,7 @@ const AUCTION_STATUS_CHANGE_SUBSCRIPTION = gql`
       id
       name
       active
+      startedOrPausedAt
     }
 }`;
 
@@ -45,6 +47,7 @@ class Auction extends Component {
             <AuctionContainer
               auctionId={ auctionId }
               auctionActive={ data.auction.active }
+              startedOrPausedAt={ data.auction.startedOrPausedAt }
               subscribeToAuctionStatusChanges={subscribeToMore}
             />
           );
@@ -56,12 +59,14 @@ class Auction extends Component {
 
 class AuctionContainer extends Component {
   state = {
-    auctionActive:  this.props.auctionActive
+    auctionActive:  this.props.auctionActive,
+    startedOrPausedAt: this.props.startedOrPausedAt
   }
 
   static propTypes = {
     auctionId: PropTypes.number.isRequired,
     auctionActive: PropTypes.bool.isRequired,
+    startedOrPausedAt: PropTypes.string.isRequired,
     subscribeToAuctionStatusChanges: PropTypes.func.isRequired
   };
 
@@ -75,7 +80,11 @@ class AuctionContainer extends Component {
 
   handleAuctionStatusChange = (prev, { subscriptionData }) => {
     if (!subscriptionData.data) return prev;
-    this.setState({auctionActive: subscriptionData.data.auctionStatusChange.active});
+    this.setState({ auctionActive:
+                      subscriptionData.data.auctionStatusChange.active,
+                    startedOrPausedAt:
+                      subscriptionData.data.auctionStatusChange.startedOrPausedAt
+                  });
     return prev;
   };
 
@@ -86,7 +95,8 @@ class AuctionContainer extends Component {
       <Container>
         <AuctionBids
           auctionId={ auctionId }
-          auctionActive={ this.state.auctionActive } />
+          auctionActive={ this.state.auctionActive }
+          startedOrPausedAt={ this.state.startedOrPausedAt } />
         <AuctionRosteredPlayers auctionId={ auctionId } />
         <TeamsInfo auctionId={ auctionId } />
         <AuctionInfo

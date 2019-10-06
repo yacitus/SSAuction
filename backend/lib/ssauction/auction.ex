@@ -42,8 +42,8 @@ defmodule Ssauction.Auction do
     current_active_state = auction.active
 
     auction
-    |> cast(attrs, [:active])
-    |> validate_required([:active])
+    |> cast(attrs, [:active, :started_or_paused_at])
+    |> validate_required([:active, :started_or_paused_at])
     |> validate_active_changed(current_active_state)
   end
 

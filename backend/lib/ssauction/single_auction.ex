@@ -347,8 +347,11 @@ defmodule Ssauction.SingleAuction do
 
     update_bids_to_new_start_time(auction, utc_datetime)
 
+    IO.inspect utc_datetime, label: "start_auction"
+
     auction
-    |> Auction.active_changeset(%{active: true})
+    |> Auction.active_changeset(%{active: true,
+                                  started_or_paused_at: utc_datetime})
     |> Repo.update()
   end
 
@@ -370,6 +373,8 @@ defmodule Ssauction.SingleAuction do
   """
   def pause_auction(auction = %Auction{}) do
     {:ok, utc_datetime} = DateTime.now("Etc/UTC")
+
+    IO.inspect utc_datetime, label: "pause_auction"
 
     auction
     |> Auction.active_changeset(%{active: false,
