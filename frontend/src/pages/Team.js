@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
+import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import CurrentUserInTeam from "../components/CurrentUserInTeam";
@@ -19,9 +20,23 @@ const TEAM_INFO_QUERY = gql`
     team(id: $team_id) {
       id
       name
+      auction {
+        id
+        name
+        active
+      }
     }
   }
 `;
+
+const AUCTION_STATUS_CHANGE_SUBSCRIPTION = gql`
+  subscription AuctionStatusChange($auction_id: Int!) {
+    auctionStatusChange(id: $auction_id) {
+      id
+      name
+      active
+    }
+}`;
 
 class Team extends Component {
   render() {
@@ -31,31 +46,82 @@ class Team extends Component {
       <Query
         query={TEAM_INFO_QUERY}
         variables={{ team_id: parseInt(teamId, 10) }}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, subscribeToMore }) => {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <CurrentUserInTeam teamId={ teamId }>
-              {currentUserInTeam => (
-                <Container>
-                  {!currentUserInTeam && (
-                    <TeamBids teamId={ teamId } />
-                  )}
-                  {currentUserInTeam && (
-                    <>
-                      <TeamAuthorizedBids teamId={ teamId } />
-                      <NominationQueue teamId={ teamId } />
-                    </>
-                  )}
-                  <TeamRosteredPlayers teamId={ teamId } />
-                  <TeamInfo teamId={ teamId } />
-                  <UserInfo teamId={ teamId } />
-                </Container>
-              )}
-            </CurrentUserInTeam>
+            <TeamContainer
+              teamId={ teamId }
+              auctionId={ parseInt(data.team.auction.id, 10) }
+              auctionActive={ data.team.auction.active }
+              subscribeToAuctionStatusChanges={ subscribeToMore }
+            />
           );
         }}
       </Query>
+    );
+  }
+}
+
+class TeamContainer extends Component {
+  state = {
+    auctionActive: this.props.auctionActive,
+  }
+
+  static propTypes = {
+    teamId: PropTypes.number.isRequired,
+    auctionId: PropTypes.number.isRequired,
+    auctionActive: PropTypes.bool.isRequired,
+    subscribeToAuctionStatusChanges: PropTypes.func.isRequired
+  };
+
+  componentDidMount() {
+    this.props.subscribeToAuctionStatusChanges({
+      document: AUCTION_STATUS_CHANGE_SUBSCRIPTION,
+      variables: { auction_id: this.props.auctionId },
+      updateQuery: this.handleAuctionStatusChange
+    });
+  }
+
+  handleAuctionStatusChange = (prev, { subscriptionData }) => {
+    if (!subscriptionData.data) return prev;
+    this.setState({ auctionActive:
+                      subscriptionData.data.auctionStatusChange.active
+                  });
+    return prev;
+  };
+
+  render() {
+    const { teamId } = this.props;
+    const { auctionId } = this.props;
+
+    return (
+      <CurrentUserInTeam teamId={ teamId }>
+        {currentUserInTeam => (
+          <Container>
+            {!currentUserInTeam && (
+              <TeamBids
+                teamId={ teamId }
+                auctionId={ auctionId }
+                auctionActive={ this.state.auctionActive }
+              />
+            )}
+            {currentUserInTeam && (
+              <>
+                <TeamAuthorizedBids
+                  teamId={ teamId }
+                  auctionId={ auctionId }
+                  auctionActive={ this.state.auctionActive }
+                />
+                <NominationQueue teamId={ teamId } />
+              </>
+            )}
+            <TeamRosteredPlayers teamId={ teamId } />
+            <TeamInfo teamId={ teamId } />
+            <UserInfo teamId={ teamId } />
+          </Container>
+        )}
+      </CurrentUserInTeam>
     );
   }
 }

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import 'moment';
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
+import Countdown from "../components/Countdown";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 import './tables.css';
@@ -28,8 +28,16 @@ const TEAM_BIDS_QUERY = gql`
 `;
 
 class TeamAuthorizedBids extends Component {
+  componentWillReceiveProps(props) {
+    const { auctionActive } = this.props;
+    if (props.auctionActive !== auctionActive) {
+      this.refetch();
+    }
+  }
+
   render() {
     const { teamId } = this.props;
+    const { auctionId } = this.props;
 
     function dollarsFormatter(cell, row) {
       if ( cell == null ) {
@@ -39,13 +47,17 @@ class TeamAuthorizedBids extends Component {
       }
     }
 
-    var moment = require('moment');
-
-    function timestampFormatter(cell, row) {
+    function countdownFormatter(cell, row) {
       if (cell == null) {
-        return cell;
-      } else {
-        return (moment(cell).utcOffset(cell).local().format('llll'));
+        return "";
+      }
+      else {
+        return (
+            <Countdown
+            expires={ cell }
+            auctionId={ auctionId }
+          />
+        );
       }
     }
 
@@ -65,8 +77,8 @@ class TeamAuthorizedBids extends Component {
       formatter: dollarsFormatter
     }, {
       dataField: 'expiresAt',
-      text: 'Expires',
-      formatter: timestampFormatter
+      text: 'Expires In',
+      formatter: countdownFormatter
     }];
 
     const CaptionElement = () =>
@@ -81,7 +93,8 @@ class TeamAuthorizedBids extends Component {
       <Query
         query={TEAM_BIDS_QUERY}
         variables={{ team_id: parseInt(teamId, 10) }}>
-        {({ data, loading, error }) => {
+        {({ data, loading, error, refetch }) => {
+          this.refetch = refetch;
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (

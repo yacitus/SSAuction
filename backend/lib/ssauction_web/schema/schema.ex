@@ -221,6 +221,9 @@ defmodule SsauctionWeb.Schema.Schema do
       middleware Middleware.AuthorizeUserInTeam
       resolve dataloader(SingleAuction, :ordered_players, args: %{scope: :team})
     end
+    field :auction, non_null(:auction) do
+      resolve dataloader(SingleAuction, :auction, args: %{scope: :team})
+    end
   end
 
   object :bid do
