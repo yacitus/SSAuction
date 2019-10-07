@@ -9,6 +9,8 @@ defmodule Ssauction.SingleAuction do
   alias Ssauction.{Auction, Team, Player, Bid, OrderedPlayer, RosteredPlayer}
   alias Ssauction.User
 
+  alias SsauctionWeb.Resolvers.SingleAuction
+
   @doc """
   Returns all auctions.
 
@@ -16,6 +18,83 @@ defmodule Ssauction.SingleAuction do
   """
   def get_all_auctions() do
     Repo.all(Auction)
+  end
+
+  @doc """
+  Searches for expired bids in active auctions and roster them
+
+  """
+  def check_for_expired_bids() do
+    q = from a in Auction, where: a.active, select: a.id
+    Repo.all(q)
+    |> Enum.each(&check_for_expired_bids/1)
+  end
+
+  @doc """
+  Searches for expired bids in the auction and roster them
+
+  """
+  def check_for_expired_bids(auction_id) do
+    auction_bids = from a in Auction,
+                     where: a.id == ^auction_id,
+                     join: bids in assoc(a, :bids),
+                     select: bids
+    open_bids = from b in subquery(auction_bids),
+                  where: not b.closed
+    Repo.all(open_bids)
+    |> Enum.each(&check_for_expired_bid/1)
+  end
+
+  @doc """
+  If this bid is expired, close it and roster the player
+
+  """
+  def check_for_expired_bid(bid = %Bid{}) do
+    {:ok, now} = DateTime.now("Etc/UTC")
+    if DateTime.diff(now, bid.expires_at) >= 0 do
+      Bid.changeset(bid, %{closed: true})
+      |> Repo.update!()
+      roster_player_and_delete_bid(bid)
+    end
+  end
+
+  @doc """
+  Roster the player from this bid and delete the bid
+
+  """
+  def roster_player_and_delete_bid(bid = %Bid{}) do
+    bid = Repo.preload(bid, [:player, :team, :auction])
+    auction = bid.auction
+    team = bid.team
+    player = bid.player
+    IO.inspect bid, label: "roster_player_and_delete_bid"
+    rostered_player =
+      %RosteredPlayer{
+        cost: bid.bid_amount,
+        player: player
+      }
+    rostered_player = Ecto.build_assoc(team, :rostered_players, rostered_player)
+    rostered_player = Ecto.build_assoc(auction, :rostered_players, rostered_player)
+    Repo.insert!(rostered_player)
+    nominating_team = get_team_by_id!(bid.nominated_by)
+    nominating_team
+    |> Team.changeset(%{unused_nominations:
+                        nominating_team.unused_nominations-1})
+    |> Repo.update
+    team
+    |> Team.changeset(%{dollars_spent: team.dollars_spent + bid.bid_amount,
+                        dollars_bid: team.dollars_bid - bid.bid_amount})
+    |> Repo.update
+    player
+    |> Ecto.Changeset.change(%{bid_id: nil})
+    |> Repo.update
+    bid
+    |> Ecto.Changeset.change
+    |> Repo.delete
+    SingleAuction.publish_bid_change(auction)
+    SingleAuction.publish_roster_change(team)
+    SingleAuction.publish_team_info_change(team)
+    SingleAuction.publish_team_info_change(nominating_team)
   end
 
   @doc """
@@ -201,7 +280,7 @@ defmodule Ssauction.SingleAuction do
       true -> true
       false ->
         query = from a in Auction,
-                  where: a.id == 1,
+                  where: a.id == ^auction.id,
                   join: user in assoc(a, :admins),
                   select: user.id
         Enum.any?(Repo.all(query), fn id -> id == user.id end)
@@ -347,8 +426,6 @@ defmodule Ssauction.SingleAuction do
 
     update_bids_to_new_start_time(auction, utc_datetime)
 
-    IO.inspect utc_datetime, label: "start_auction"
-
     auction
     |> Auction.active_changeset(%{active: true,
                                   started_or_paused_at: utc_datetime})
@@ -374,8 +451,6 @@ defmodule Ssauction.SingleAuction do
   def pause_auction(auction = %Auction{}) do
     {:ok, utc_datetime} = DateTime.now("Etc/UTC")
 
-    IO.inspect utc_datetime, label: "pause_auction"
-
     auction
     |> Auction.active_changeset(%{active: false,
                                   started_or_paused_at: utc_datetime})
@@ -383,7 +458,7 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Submits a new bid
+  Adds the player to the team's nomination queue
 
   """
 
@@ -403,7 +478,7 @@ defmodule Ssauction.SingleAuction do
   """
   def submit_new_bid(auction = %Auction{}, team = %Team{}, player = %Player{}, attrs) do
     %Bid{}
-    |> Bid.changeset(attrs)
+    |> Bid.changeset(Map.put(attrs, :nominated_by, team.id))
     |> Ecto.Changeset.put_assoc(:auction, auction)
     |> Ecto.Changeset.put_assoc(:team, team)
     |> Ecto.Changeset.put_assoc(:player, player)

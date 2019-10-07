@@ -145,20 +145,20 @@ Repo.preload(auction, [:admins])
 #
 
 bid_amount = 2
-{:ok, utc_datetime} = DateTime.now("Etc/UTC")
+{:ok, now} = DateTime.now("Etc/UTC")
 attrs = %{bid_amount: bid_amount,
           # the commented line below is correct, but the line below that is for testing
-          # expires_at: DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second),
-          expires_at: DateTime.add(utc_datetime, 120, :second),
+          # expires_at: DateTime.add(now, auction.bid_timeout_seconds, :second),
+          expires_at: DateTime.add(now, 10, :second),
           player: player1}
 Ssauction.SingleAuction.submit_new_bid(auction, team_daryl, player1, attrs)
 
 Team.changeset(team_daryl, %{unused_nominations: team_daryl.unused_nominations-1,
                              dollars_bid: team_daryl.dollars_bid + bid_amount,
-                             time_of_last_nomination: utc_datetime})
+                             time_of_last_nomination: now})
 |> Repo.update!()
 
-Auction.changeset(auction, %{started_or_paused_at: utc_datetime})
+Auction.changeset(auction, %{started_or_paused_at: now})
 |> Repo.update!()
 
 #

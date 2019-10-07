@@ -13,10 +13,9 @@ defmodule Ssauction.Application do
       # Start the endpoint when the application starts
       supervisor(SsauctionWeb.Endpoint, []),
 
-      supervisor(Absinthe.Subscription, [SsauctionWeb.Endpoint])
+      supervisor(Absinthe.Subscription, [SsauctionWeb.Endpoint]),
 
-      # Start your own worker by calling: Ssauction.Worker.start_link(arg1, arg2, arg3)
-      # worker(Ssauction.Worker, [arg1, arg2, arg3]),
+      worker(Ssauction.PeriodicCheck, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -271,11 +271,27 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     )
   end
 
-  defp publish_bid_change(auction) do
+  def publish_bid_change(auction) do
     Absinthe.Subscription.publish(
       SsauctionWeb.Endpoint,
       auction,
       auction_bid_change: auction.id
+    )
+  end
+
+  def publish_roster_change(team) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      team,
+      team_roster_change: team.id
+    )
+  end
+
+  def publish_team_info_change(team) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      team,
+      team_info_change: team.id
     )
   end
 
