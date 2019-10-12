@@ -279,11 +279,16 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     )
   end
 
-  def publish_roster_change(team) do
+  def publish_roster_change(auction, team) do
     Absinthe.Subscription.publish(
       SsauctionWeb.Endpoint,
       team,
       team_roster_change: team.id
+    )
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      auction,
+      auction_roster_change: auction.id
     )
   end
 

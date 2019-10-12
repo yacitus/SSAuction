@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
+import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
@@ -27,9 +28,77 @@ const AUCTION_ROSTERED_PLAYERS_QUERY = gql`
   }
 `;
 
+const AUCTION_ROSTER_CHANGE_SUBSCRIPTION = gql`
+  subscription AuctionRosterChange($auction_id: Int!) {
+    auctionRosterChange(id: $auction_id) {
+      id
+      rosteredPlayers {
+        cost
+        player {
+          id
+          name
+          ssnum
+        }
+        team {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
 class AuctionRosteredPlayers extends Component {
   render() {
     const { auctionId } = this.props;
+
+    return (
+      <Query
+        query={AUCTION_ROSTERED_PLAYERS_QUERY}
+        variables={{ auction_id: parseInt(auctionId, 10) }}>
+        {({ data, loading, error, subscribeToMore }) => {
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+          return (
+            <AuctionRosteredPlayersTable
+              auctionId={ auctionId }
+              rosteredPlayers={ data.auction.rosteredPlayers }
+              subscribeToAuctionRosterChanges={ subscribeToMore }
+            />
+          );
+        }}
+      </Query>
+    );
+  }
+}
+
+class AuctionRosteredPlayersTable extends Component {
+  static propTypes = {
+    auctionId: PropTypes.string.isRequired,
+    rosteredPlayers: PropTypes.object.isRequired,
+    subscribeToAuctionRosterChanges: PropTypes.func.isRequired
+  };
+
+  componentDidMount() {
+    this.props.subscribeToAuctionRosterChanges({
+      document: AUCTION_ROSTER_CHANGE_SUBSCRIPTION,
+      variables: { auction_id: parseInt(this.props.auctionId, 10) },
+      updateQuery: this.handleAuctionRosterChange
+    });
+  }
+
+  handleAuctionRosterChange = (prev, { subscriptionData }) => {
+    if (!subscriptionData.data) return prev;
+    return {
+      auction: {
+        ...prev.auction,
+        bids: subscriptionData.data.auctionRosterChange.rosteredPlayers
+      }
+    };
+  };
+
+  render() {
+    const { rosteredPlayers } = this.props;
 
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
@@ -59,26 +128,16 @@ class AuctionRosteredPlayers extends Component {
         Rostered Players</h3>;
 
     return (
-      <Query
-        query={AUCTION_ROSTERED_PLAYERS_QUERY}
-        variables={{ auction_id: parseInt(auctionId, 10) }}>
-        {({ data, loading, error }) => {
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          return (
-            <Container>
-              <BootstrapTable
-                bootstrap4={ true }
-                caption={ <CaptionElement /> }
-                keyField='id'
-                data={ data.auction.rosteredPlayers }
-                columns={ columns }
-                striped
-                hover />
-            </Container>
-          );
-        }}
-      </Query>
+      <Container>
+        <BootstrapTable
+          bootstrap4={ true }
+          caption={ <CaptionElement /> }
+          keyField='id'
+          data={ rosteredPlayers }
+          columns={ columns }
+          striped
+          hover />
+      </Container>
     );
   }
 }
