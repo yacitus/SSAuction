@@ -139,6 +139,14 @@ defmodule SsauctionWeb.Schema.Schema do
       end
     end
 
+    @desc "Subscribe to changes to an team's bids"
+    field :team_bid_change, :team do
+      arg :id, non_null(:id)
+      config fn args, _res ->
+        {:ok, topic: args.id}
+      end
+    end
+
     @desc "Subscribe to changes to a team's roster"
     field :team_roster_change, :team do
       arg :id, non_null(:id)

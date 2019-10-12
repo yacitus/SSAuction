@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
+import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
@@ -26,6 +27,24 @@ const TEAM_BIDS_QUERY = gql`
   }
 `;
 
+const TEAM_BID_CHANGE_SUBSCRIPTION = gql`
+  subscription TeamBidChange($team_id: Int!) {
+    teamBidChange(id: $team_id) {
+      id
+      bids {
+        id
+        bidAmount
+        expiresAt
+        player {
+          id
+          ssnum
+          name
+        }
+      }
+    }
+  }
+`;
+
 class TeamBids extends Component {
   componentWillReceiveProps(props) {
     const { auctionActive } = this.props;
@@ -37,6 +56,58 @@ class TeamBids extends Component {
   render() {
     const { teamId } = this.props;
     const { auctionId } = this.props;
+
+    return (
+      <Query
+        query={TEAM_BIDS_QUERY}
+        variables={{ team_id: parseInt(teamId, 10) }}>
+        {({ data, loading, error, refetch, subscribeToMore }) => {
+          this.refetch = refetch;
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+          return (
+            <TeamBidsTable
+              teamId={ teamId }
+              auctionId={ auctionId }
+              bids={ data.team.bids }
+              subscribeToTeamBidChanges={ subscribeToMore }
+            />
+          );
+        }}
+      </Query>
+    );
+  }
+}
+
+class TeamBidsTable extends Component {
+  static propTypes = {
+    teamId: PropTypes.string.isRequired,
+    auctionId: PropTypes.string.isRequired,
+    bids: PropTypes.object.isRequired,
+    subscribeToTeamBidChanges: PropTypes.func.isRequired
+  };
+
+  componentDidMount() {
+    this.props.subscribeToTeamBidChanges({
+      document: TEAM_BID_CHANGE_SUBSCRIPTION,
+      variables: { team_id: parseInt(this.props.teamId, 10) },
+      updateQuery: this.handleTeamBidChange
+    });
+  }
+
+  handleTeamBidChange = (prev, { subscriptionData }) => {
+    if (!subscriptionData.data) return prev;
+    return {
+      team: {
+        ...prev.team,
+        bids: subscriptionData.data.teamBidChange.bids
+      }
+    };
+  };
+
+  render() {
+    const { auctionId } = this.props;
+    const { bids } = this.props;
 
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
@@ -81,27 +152,16 @@ class TeamBids extends Component {
         Bids</h3>;
 
     return (
-      <Query
-        query={TEAM_BIDS_QUERY}
-        variables={{ team_id: parseInt(teamId, 10) }}>
-        {({ data, loading, error, refetch }) => {
-          this.refetch = refetch;
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          return (
-            <Container>
-              <BootstrapTable
-                bootstrap4={ true }
-                caption={ <CaptionElement /> }
-                keyField='id'
-                data={ data.team.bids }
-                columns={ columns }
-                striped
-                hover />
-            </Container>
-          );
-        }}
-      </Query>
+      <Container>
+        <BootstrapTable
+          bootstrap4={ true }
+          caption={ <CaptionElement /> }
+          keyField='id'
+          data={ bids }
+          columns={ columns }
+          striped
+          hover />
+      </Container>
     );
   }
 }

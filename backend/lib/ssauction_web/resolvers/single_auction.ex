@@ -232,7 +232,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
 
       {:ok, bid} ->
-        publish_bid_change(auction)
+        publish_bid_change(auction, team)
         {:ok, bid}
     end
   end
@@ -250,7 +250,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
 
       {:ok, bid} ->
-        publish_bid_change(auction)
+        publish_bid_change(auction, team)
         {:ok, bid}
     end
   end
@@ -271,7 +271,12 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     )
   end
 
-  def publish_bid_change(auction) do
+  def publish_bid_change(auction, team) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      team,
+      team_bid_change: team.id
+    )
     Absinthe.Subscription.publish(
       SsauctionWeb.Endpoint,
       auction,

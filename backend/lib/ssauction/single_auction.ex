@@ -91,7 +91,7 @@ defmodule Ssauction.SingleAuction do
     bid
     |> Ecto.Changeset.change
     |> Repo.delete
-    SingleAuction.publish_bid_change(auction)
+    SingleAuction.publish_bid_change(auction, team)
     SingleAuction.publish_roster_change(auction, team)
     SingleAuction.publish_team_info_change(team)
     SingleAuction.publish_team_info_change(nominating_team)
