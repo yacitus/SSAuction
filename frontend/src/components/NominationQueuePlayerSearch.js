@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import 'moment';
 import gql from "graphql-tag";
+import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import { Mutation } from "react-apollo";
 import Error from "../components/Error";
@@ -12,11 +13,14 @@ import Button from 'react-bootstrap/Button'
 
 const TEAM_QUEUEABLE_PLAYERS_QUERY = gql`
   query TeamQueueablePlayers($team_id: Int!) {
-    queueablePlayers(teamId: $team_id) {
+    team(id: $team_id) {
       id
-      name
-      ssnum
-      position
+      queueablePlayers {
+        id
+        name
+        ssnum
+        position
+      }
     }
   }
 `;
@@ -32,6 +36,20 @@ const ADD_TO_NOMINATION_QUEUE_MUTATION = gql`
         id
         ssnum
         name
+      }
+    }
+  }
+`;
+
+const TEAM_QUEUEABLE_PLAYERS_SUBSCRIPTION = gql`
+  subscription TeamQueueablePlayersChange($team_id: Int!) {
+    queueablePlayersChange(id: $team_id) {
+      id
+      queueablePlayers {
+        id
+        name
+        ssnum
+        position
       }
     }
   }
@@ -67,15 +85,57 @@ class AddButton extends Component {
 }
 
 class NominationQueuePlayerSearch extends Component {
-  componentWillReceiveProps(props) {
-    const { refresh } = this.props;
-    if (props.refresh !== refresh) {
-      this.refetch();
-    }
+  render() {
+    const { teamId } = this.props;
+
+    return (
+      <Query
+        query={TEAM_QUEUEABLE_PLAYERS_QUERY}
+        variables={{ team_id: teamId }}>
+        {({ data, loading, error, subscribeToMore }) => {
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+          return (
+            <NominationQueuePlayerSearchableTable
+              teamId={ teamId }
+              queueablePlayers={ data.team.queueablePlayers }
+              subscribeToQueueablePlayersChange={ subscribeToMore }
+            />
+          );
+        }}
+      </Query>
+    );
   }
+}
+
+class NominationQueuePlayerSearchableTable extends Component {
+  static propTypes = {
+    teamId: PropTypes.number.isRequired,
+    queueablePlayers: PropTypes.array.isRequired,
+    subscribeToQueueablePlayersChange: PropTypes.func.isRequired
+  };
+
+  componentDidMount() {
+    this.props.subscribeToQueueablePlayersChange({
+      document: TEAM_QUEUEABLE_PLAYERS_SUBSCRIPTION,
+      variables: { team_id: this.props.teamId },
+      updateQuery: this.handleQueueablePlayersChange
+    });
+  }
+
+  handleQueueablePlayersChange = (prev, { subscriptionData }) => {
+    if (!subscriptionData.data) return prev;
+    return {
+      team: {
+        ...prev.team,
+        queueablePlayers: subscriptionData.data.queueablePlayersChange.queueablePlayers
+      }
+    };
+  };
 
   render() {
     const { teamId } = this.props;
+    const { queueablePlayers } = this.props;
 
     const { SearchBar } = Search;
 
@@ -100,41 +160,29 @@ class NominationQueuePlayerSearch extends Component {
     }];
 
     return (
-      <Query
-        query={TEAM_QUEUEABLE_PLAYERS_QUERY}
-        variables={{ team_id: teamId }}
-        fetchPolicy={'no-cache'}>
-        {({ data, loading, error, refetch }) => {
-          this.refetch = refetch;
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          return (
-            <ToolkitProvider
-              keyField="ssnum"
-              bootstrap4={ true }
-              data={ data.queueablePlayers }
-              columns={ players_columns }
-              striped
-              hover
-              search
-            >
-            {
-              props => (
-                <div>
-                  <h3>Search for a Scoresheet num, name, or position:</h3>
-                  <SearchBar { ...props.searchProps } />
-                  <hr />
-                  <BootstrapTable
-                    { ...props.baseProps }
-                    pagination={ paginationFactory() }
-                  />
-                </div>
-              )
-            }
-            </ToolkitProvider>
-          );
-        }}
-      </Query>
+      <ToolkitProvider
+        keyField="ssnum"
+        bootstrap4={ true }
+        data={ queueablePlayers }
+        columns={ players_columns }
+        striped
+        hover
+        search
+      >
+      {
+        props => (
+          <div>
+            <h3>Search for a Scoresheet num, name, or position:</h3>
+            <SearchBar { ...props.searchProps } />
+            <hr />
+            <BootstrapTable
+              { ...props.baseProps }
+              pagination={ paginationFactory() }
+            />
+          </div>
+        )
+      }
+      </ToolkitProvider>
     );
   }
 }

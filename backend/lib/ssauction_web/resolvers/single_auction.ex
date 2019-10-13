@@ -18,8 +18,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.get_team_by_id!(id)}
   end
 
-  def queueable_players(_, %{team_id: team_id}, _) do
-    {:ok, SingleAuction.get_team_by_id!(team_id) |> SingleAuction.queueable_players()}
+  def queueable_players(team, _, _) do
+    {:ok, SingleAuction.queueable_players(team)}
   end
 
   def users_in_team(_, %{team_id: team_id}, _) do
@@ -114,7 +114,6 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
 
       true ->
-        publish_nomination_queue_change(team)
         {:ok, SingleAuction.add_to_nomination_queue(player, team)}
     end
   end
@@ -255,11 +254,19 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
-  defp publish_nomination_queue_change(team) do
+  def publish_nomination_queue_change(team) do
     Absinthe.Subscription.publish(
       SsauctionWeb.Endpoint,
       team,
       nomination_queue_change: team.id
+    )
+  end
+
+  def publish_queueable_players_change(team) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      team,
+      queueable_players_change: team.id
     )
   end
 

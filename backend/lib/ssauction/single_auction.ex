@@ -93,6 +93,7 @@ defmodule Ssauction.SingleAuction do
     |> Repo.delete
     SingleAuction.publish_bid_change(auction, team)
     SingleAuction.publish_roster_change(auction, team)
+    SingleAuction.publish_queueable_players_change(team)
     SingleAuction.publish_team_info_change(team)
     SingleAuction.publish_team_info_change(nominating_team)
   end
@@ -469,7 +470,10 @@ defmodule Ssauction.SingleAuction do
         player: player
       }
     ordered_player = Ecto.build_assoc(team, :ordered_players, ordered_player)
-    Repo.insert!(ordered_player)
+    map = Repo.insert!(ordered_player)
+    SingleAuction.publish_nomination_queue_change(team)
+    SingleAuction.publish_queueable_players_change(team)
+    map
   end
 
   @doc """

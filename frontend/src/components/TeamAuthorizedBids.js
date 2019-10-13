@@ -82,9 +82,9 @@ class TeamAuthorizedBids extends Component {
 
 class TeamAuthorizedBidsTable extends Component {
   static propTypes = {
-    teamId: PropTypes.string.isRequired,
-    auctionId: PropTypes.string.isRequired,
-    bids: PropTypes.object.isRequired,
+    teamId: PropTypes.number.isRequired,
+    auctionId: PropTypes.number.isRequired,
+    bids: PropTypes.array.isRequired,
     subscribeToTeamBidChanges: PropTypes.func.isRequired
   };
 

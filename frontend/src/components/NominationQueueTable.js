@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
+import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
@@ -22,15 +23,75 @@ const TEAM_NOMINATION_QUEUE_QUERY = gql`
   }
 `;
 
-class NominationQueueTable extends Component {
-  componentWillReceiveProps(props) {
-    const { refresh } = this.props;
-    if (props.refresh !== refresh) {
-      this.refetch();
+const TEAM_NOMINATION_QUEUE_SUBSCRIPTION = gql`
+  subscription TeamNominationQueueChange($team_id: Int!) {
+    nominationQueueChange(id: $team_id) {
+      id
+      nominationQueue {
+        rank
+        player {
+          id
+          name
+          ssnum
+          position
+        }
+      }
     }
   }
+`;
+
+class NominationQueueTable extends Component {
+  render() {
+    const { teamId } = this.props;
+
+    return (
+      <Query
+        query={TEAM_NOMINATION_QUEUE_QUERY}
+        variables={{ team_id: teamId }}>
+        {({ data, loading, error, subscribeToMore }) => {
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+          return (
+            <NominationQueueBootstrapTable
+              teamId={ teamId }
+              nominationQueue={ data.team.nominationQueue }
+              subscribeToNominationQueueChanges={ subscribeToMore }
+            />
+          );
+        }}
+      </Query>
+    );
+  }
+}
+
+class NominationQueueBootstrapTable extends Component {
+  static propTypes = {
+    teamId: PropTypes.number.isRequired,
+    nominationQueue: PropTypes.array.isRequired,
+    subscribeToNominationQueueChanges: PropTypes.func.isRequired
+  };
+
+  componentDidMount() {
+    this.props.subscribeToNominationQueueChanges({
+      document: TEAM_NOMINATION_QUEUE_SUBSCRIPTION,
+      variables: { team_id: this.props.teamId },
+      updateQuery: this.handleNominationQueueChange
+    });
+  }
+
+  handleNominationQueueChange = (prev, { subscriptionData }) => {
+    if (!subscriptionData.data) return prev;
+    return {
+      team: {
+        ...prev.team,
+        nominationQueue: subscriptionData.data.nominationQueueChange.nominationQueue
+      }
+    };
+  };
 
   render() {
+    const { nominationQueue } = this.props;
+
     const queue_columns = [{
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
@@ -51,26 +112,14 @@ class NominationQueueTable extends Component {
         Nomination Queue</h3>;
 
     return (
-      <Query
-        query={TEAM_NOMINATION_QUEUE_QUERY}
-        variables={{ team_id: this.props.teamId }}
-        fetchPolicy={'no-cache'}>
-        {({ data, loading, error, refetch }) => {
-          this.refetch = refetch;
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          return (
-            <BootstrapTable
-              bootstrap4={ true }
-              caption={ <CaptionElement /> }
-              keyField='player.ssnum'
-              data={ data.team.nominationQueue }
-              columns={ queue_columns }
-              striped
-              hover />
-          );
-        }}
-      </Query>
+      <BootstrapTable
+        bootstrap4={ true }
+        caption={ <CaptionElement /> }
+        keyField='player.ssnum'
+        data={ nominationQueue }
+        columns={ queue_columns }
+        striped
+        hover />
     );
   }
 }

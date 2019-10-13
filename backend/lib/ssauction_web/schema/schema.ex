@@ -32,12 +32,6 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve &Resolvers.SingleAuction.team/3
     end
 
-    @desc "Get a list of players who can be added to a team's nomination queue"
-    field :queueable_players, list_of(:player) do
-      arg :team_id, non_null(:integer)
-      resolve &Resolvers.SingleAuction.queueable_players/3
-    end
-
     @desc "Get a list of users in a team"
     field :users, list_of(:user) do
       arg :team_id, non_null(:integer)
@@ -133,6 +127,14 @@ defmodule SsauctionWeb.Schema.Schema do
   subscription do
     @desc "Subscribe to changes to a team's nomination queue"
     field :nomination_queue_change, :team do
+      arg :id, non_null(:id)
+      config fn args, _res ->
+        {:ok, topic: args.id}
+      end
+    end
+
+    @desc "Subscribe to changes to a team's queueable players"
+    field :queueable_players_change, :team do
       arg :id, non_null(:id)
       config fn args, _res ->
         {:ok, topic: args.id}
@@ -249,9 +251,12 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve dataloader(SingleAuction, :rostered_players, args: %{scope: :team})
     end
     field :nomination_queue, list_of(:ordered_player) do
-      middleware Middleware.Authenticate
-      middleware Middleware.AuthorizeUserInTeam
+      # middleware Middleware.Authenticate
+      # middleware Middleware.AuthorizeUserInTeam
       resolve dataloader(SingleAuction, :ordered_players, args: %{scope: :team})
+    end
+    field :queueable_players, list_of(:player) do
+      resolve &Resolvers.SingleAuction.queueable_players/3
     end
     field :auction, non_null(:auction) do
       resolve dataloader(SingleAuction, :auction, args: %{scope: :team})

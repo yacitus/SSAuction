@@ -51,7 +51,7 @@ class Team extends Component {
           if (error) return <Error error={error} />;
           return (
             <TeamContainer
-              teamId={ teamId }
+              teamId={ parseInt(teamId, 10) }
               auctionId={ parseInt(data.team.auction.id, 10) }
               auctionActive={ data.team.auction.active }
               subscribeToAuctionStatusChanges={ subscribeToMore }

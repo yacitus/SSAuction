@@ -66,8 +66,8 @@ class TeamRosteredPlayers extends Component {
 
 class TeamRosteredPlayersTable extends Component {
   static propTypes = {
-    teamId: PropTypes.string.isRequired,
-    rosteredPlayers: PropTypes.object.isRequired,
+    teamId: PropTypes.number.isRequired,
+    rosteredPlayers: PropTypes.array.isRequired,
     subscribeToTeamRosterChanges: PropTypes.func.isRequired
   };
 

@@ -82,7 +82,7 @@ class TeamBids extends Component {
 class TeamBidsTable extends Component {
   static propTypes = {
     teamId: PropTypes.string.isRequired,
-    auctionId: PropTypes.string.isRequired,
+    auctionId: PropTypes.number.isRequired,
     bids: PropTypes.object.isRequired,
     subscribeToTeamBidChanges: PropTypes.func.isRequired
   };

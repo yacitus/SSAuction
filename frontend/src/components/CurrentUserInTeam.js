@@ -12,7 +12,7 @@ const CURRENT_USER_IN_TEAM_QUERY = gql`
 
 class CurrentUserInTeam extends Component {
   static propTypes = {
-    teamId: PropTypes.string,
+    teamId: PropTypes.number,
     children: PropTypes.func.isRequired
   };
 
@@ -22,7 +22,7 @@ class CurrentUserInTeam extends Component {
     return (
       <Query
         query={CURRENT_USER_IN_TEAM_QUERY}
-        variables={{ teamId: parseInt(teamId, 10) }}>
+        variables={{ teamId: teamId }}>
         {({ data, loading, error }) => {
           if (loading) return this.props.children(null);
           if (error) return <Error error={error} />;
