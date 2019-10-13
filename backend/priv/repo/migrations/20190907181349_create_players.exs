@@ -12,7 +12,5 @@ defmodule Ssauction.Repo.Migrations.CreatePlayers do
       add :rostered_player_id, references(:rostered_players)
       add :ordered_player_id, references(:ordered_players)
     end
-
-    create unique_index(:players, [:year_range, :ssnum])
   end
 end

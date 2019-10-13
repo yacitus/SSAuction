@@ -13,6 +13,7 @@ defmodule Ssauction.Auction do
     field :active, :boolean, default: false
     field :started_or_paused_at, :utc_datetime
 
+    has_many :players, Ssauction.Player
     has_many :teams, Ssauction.Team
     has_many :bids, Ssauction.Bid
     has_many :rostered_players, Ssauction.RosteredPlayer

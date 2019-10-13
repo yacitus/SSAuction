@@ -12,17 +12,18 @@
 
 alias Ssauction.Repo
 alias Ssauction.User
+alias Ssauction.AllPlayer
 alias Ssauction.Player
 alias Ssauction.Team
 alias Ssauction.Auction
 # alias Ssauction.Bid
 alias Ssauction.RosteredPlayer
 alias Ssauction.OrderedPlayer
+alias Ssauction.SingleAuction
 
 #
-# PLAYERS
+# ALL PLAYERS
 #
-
 
 year_range = "1985-1988-NL"
 
@@ -32,8 +33,8 @@ year_range = "1985-1988-NL"
 |> String.split("\n", trim: true)
 |> Enum.map(&String.split(&1, ","))
 |> Enum.map(fn [ssnum, name, position] ->
-     %Player{}
-     |> Player.changeset(%{
+     %AllPlayer{}
+     |> AllPlayer.changeset(%{
           year_range: year_range,
           name: name,
           ssnum: ssnum,
@@ -41,6 +42,19 @@ year_range = "1985-1988-NL"
         })
      |> Repo.insert!
    end)
+
+#
+# AUCTION
+#
+
+auction = SingleAuction.create_auction(name: "Test Auction",
+                                       year_range: year_range,
+                                       players_per_team: 2,
+                                       team_dollars_per_player: 10)
+
+#
+# PLAYERS FROM AUCTION
+#
 
 player1 = Repo.get!(Player, 1)
 player2 = Repo.get!(Player, 2)
@@ -109,18 +123,6 @@ Repo.preload(team_two, [:users])
 |> Ecto.Changeset.change()
 |> Ecto.Changeset.put_assoc(:users, [bob, fred])
 |> Repo.update!()
-
-#
-# AUCTION
-#
-
-auction =
-  %Auction{
-    name: "Test Auction",
-    year_range: year_range,
-    players_per_team: 2,
-    team_dollars_per_player: 10,
-    } |> Repo.insert!
 
 #
 # PUT TEAMS IN AUCTION

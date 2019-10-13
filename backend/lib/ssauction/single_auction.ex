@@ -6,10 +6,46 @@ defmodule Ssauction.SingleAuction do
   import Ecto.Query, warn: false
   alias Ssauction.Repo
 
-  alias Ssauction.{Auction, Team, Player, Bid, OrderedPlayer, RosteredPlayer}
+  alias Ssauction.{Auction, Team, AllPlayer, Player, Bid, OrderedPlayer, RosteredPlayer}
   alias Ssauction.User
 
   alias SsauctionWeb.Resolvers.SingleAuction
+
+  @doc """
+  Returns all auctions.
+
+  Raises `Ecto.NoResultsError` if no auction was found.
+  """
+  def create_auction(name: name,
+                     year_range: year_range,
+                     players_per_team: players_per_team,
+                     team_dollars_per_player: team_dollars_per_player) do
+    auction =
+      %Auction{
+        name: name,
+        year_range: year_range,
+        players_per_team: players_per_team,
+        team_dollars_per_player: team_dollars_per_player,
+        } |> Repo.insert!
+
+    IO.inspect auction.id, label: "create_action"
+
+    q = from p in AllPlayer,
+          where: p.year_range == ^year_range,
+          select: p
+    Repo.all(q)
+    |> Enum.each(fn player -> %Player{}
+                              |> Player.changeset(%{
+                                   year_range: player.year_range,
+                                   name: player.name,
+                                   ssnum: player.ssnum,
+                                   position: player.position,
+                                   auction_id: auction.id
+                                 })
+                              |> Repo.insert!
+                 end)
+    auction
+  end
 
   @doc """
   Returns all auctions.
@@ -154,7 +190,7 @@ defmodule Ssauction.SingleAuction do
   """
   def players_in_auction_query(auction = %Auction{}) do
     from player in Player,
-      where: player.year_range == ^auction.year_range,
+      where: player.auction_id == ^auction.id,
       select: player
   end
 
@@ -202,7 +238,7 @@ defmodule Ssauction.SingleAuction do
     queued_players = players_in_team_nomination_queue_query(team)
 
     from player in Player,
-      where: player.year_range == ^auction.year_range,
+      where: player.auction_id == ^auction.id,
       select: player,
       except_all: ^bid_players,
       except_all: ^rostered_players,
