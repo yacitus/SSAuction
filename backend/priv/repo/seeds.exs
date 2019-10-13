@@ -151,7 +151,7 @@ bid_amount = 2
 attrs = %{bid_amount: bid_amount,
           # the commented line below is correct, but the line below that is for testing
           # expires_at: DateTime.add(now, auction.bid_timeout_seconds, :second),
-          expires_at: DateTime.add(now, 10, :second),
+          expires_at: DateTime.add(now, 600, :second),
           player: player1}
 Ssauction.SingleAuction.submit_new_bid(auction, team_daryl, player1, attrs)
 

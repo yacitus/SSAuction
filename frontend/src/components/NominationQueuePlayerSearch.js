@@ -55,6 +55,30 @@ const TEAM_QUEUEABLE_PLAYERS_SUBSCRIPTION = gql`
   }
 `;
 
+class NominationQueuePlayerSearch extends Component {
+  render() {
+    const { teamId } = this.props;
+
+    return (
+      <Query
+        query={TEAM_QUEUEABLE_PLAYERS_QUERY}
+        variables={{ team_id: teamId }}>
+        {({ data, loading, error, subscribeToMore }) => {
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+          return (
+            <NominationQueuePlayerSearchableTable
+              teamId={ teamId }
+              queueablePlayers={ data.team.queueablePlayers }
+              subscribeToQueueablePlayersChange={ subscribeToMore }
+            />
+          );
+        }}
+      </Query>
+    );
+  }
+}
+
 class AddButton extends Component {
   render() {
     const { teamId } = this.props;
@@ -80,30 +104,6 @@ class AddButton extends Component {
           </div>
         )}
       </Mutation>
-    );
-  }
-}
-
-class NominationQueuePlayerSearch extends Component {
-  render() {
-    const { teamId } = this.props;
-
-    return (
-      <Query
-        query={TEAM_QUEUEABLE_PLAYERS_QUERY}
-        variables={{ team_id: teamId }}>
-        {({ data, loading, error, subscribeToMore }) => {
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          return (
-            <NominationQueuePlayerSearchableTable
-              teamId={ teamId }
-              queueablePlayers={ data.team.queueablePlayers }
-              subscribeToQueueablePlayersChange={ subscribeToMore }
-            />
-          );
-        }}
-      </Query>
     );
   }
 }

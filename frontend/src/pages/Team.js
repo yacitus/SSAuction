@@ -113,7 +113,7 @@ class TeamContainer extends Component {
                   auctionId={ auctionId }
                   auctionActive={ this.state.auctionActive }
                 />
-                <NominationQueue teamId={ teamId } />
+                <NominationQueue teamId={ teamId } auctionId={ auctionId } />
               </>
             )}
             <TeamRosteredPlayers teamId={ teamId } />

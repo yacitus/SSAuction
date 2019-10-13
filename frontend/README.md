@@ -1,3 +1,25 @@
+## Known Bugs
+- Bids table on team page doesn't update after Nomination button pressed
+	- prev in handleTeamBidChange function in TeamAuthorizedBidsTable component in TeamAuthorizedBids.js is undefined in debugger
+	- does the auctionn Bids table auto-update?
+- Unused Nominations (and other team info) on team page doesn't auto-update after a bid closes or a Nomination button is pressed
+- Nomination button is not disabled when auction is paused
+
+# MVP Unfinished Features
+- set bid and hidden max bid in nomination table for Nomination button
+- update bids in Bids table on team and auction pages
+- make header presentable
+
+# Post MVP Feature Priority
+- user invitations (including to new or existing team)
+- create new auction mutation
+- database backup
+- auction auto-nomination queue
+- admin page (with create new auction)
+- archive auction mutation (and add to admin page)
+
+----
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

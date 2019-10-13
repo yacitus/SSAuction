@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import gql from "graphql-tag";
 import PropTypes from "prop-types";
 import { Query } from "react-apollo";
+import { Mutation } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import BootstrapTable from 'react-bootstrap-table-next';
+import Button from 'react-bootstrap/Button'
 
 const TEAM_NOMINATION_QUEUE_QUERY = gql`
   query TeamNominationQueue($team_id: Int!) {
@@ -19,6 +21,23 @@ const TEAM_NOMINATION_QUEUE_QUERY = gql`
           position
         }
       }
+    }
+  }
+`;
+
+const SUBMIT_BID_MUTATION = gql`
+  mutation SubmitBid(
+    $auction_id: Int!
+    $team_id: Int!
+    $player_id: Int!
+    $bid_amount: Int!
+  ) {
+    submitBid(auctionId: $auction_id,
+            teamId: $team_id,
+            playerId: $player_id,
+            bidAmount: $bid_amount) {
+      id
+      expiresAt
     }
   }
 `;
@@ -43,6 +62,7 @@ const TEAM_NOMINATION_QUEUE_SUBSCRIPTION = gql`
 class NominationQueueTable extends Component {
   render() {
     const { teamId } = this.props;
+    const { auctionId } = this.props;
 
     return (
       <Query
@@ -53,6 +73,7 @@ class NominationQueueTable extends Component {
           if (error) return <Error error={error} />;
           return (
             <NominationQueueBootstrapTable
+              auctionId={ auctionId }
               teamId={ teamId }
               nominationQueue={ data.team.nominationQueue }
               subscribeToNominationQueueChanges={ subscribeToMore }
@@ -64,8 +85,42 @@ class NominationQueueTable extends Component {
   }
 }
 
+class NominateButton extends Component {
+  render() {
+    const { auctionId } = this.props;
+    const { teamId } = this.props;
+    const playerId = parseInt(this.props.row.player.id, 10);
+    const bidAmount = 1;
+
+    return (
+      <Mutation
+        mutation={SUBMIT_BID_MUTATION}
+        variables={{
+          auction_id: auctionId,
+          team_id: teamId,
+          player_id: playerId,
+          bid_amount: bidAmount
+        }}
+      >
+        {(submitBid, { loading, error }) => (
+          <div>
+            <Error error={error} />
+            <Button
+              disabled={loading}
+              onClick={submitBid}
+              variant="outline-success">
+              Nominate
+            </Button>
+          </div>
+        )}
+      </Mutation>
+    );
+  }
+}
+
 class NominationQueueBootstrapTable extends Component {
   static propTypes = {
+    auctionId: PropTypes.number.isRequired,
     teamId: PropTypes.number.isRequired,
     nominationQueue: PropTypes.array.isRequired,
     subscribeToNominationQueueChanges: PropTypes.func.isRequired
@@ -90,7 +145,15 @@ class NominationQueueBootstrapTable extends Component {
   };
 
   render() {
+    const { auctionId } = this.props;
+    const { teamId } = this.props;
     const { nominationQueue } = this.props;
+
+    function buttonFormatter(cell, row) {
+      return (
+        <NominateButton row={row} auctionId={auctionId} teamId={teamId}/>
+      );
+    }
 
     const queue_columns = [{
       dataField: 'player.ssnum',
@@ -101,6 +164,9 @@ class NominationQueueBootstrapTable extends Component {
     }, {
       dataField: 'player.position',
       text: 'Position',
+    }, {
+      text: 'Nominate',
+      formatter: buttonFormatter
     }];
 
     const CaptionElement = () =>

@@ -128,11 +128,11 @@ class TeamBidsTable extends Component {
     }
 
     const columns = [{
-      dataField: 'player.name',
-      text: 'Player'
-    }, {
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
+    }, {
+      dataField: 'player.name',
+      text: 'Player'
     }, {
       dataField: 'bidAmount',
       text: '$ Bid',

@@ -115,7 +115,7 @@ defmodule Ssauction.SingleAuction do
     nominating_team = get_team_by_id!(bid.nominated_by)
     nominating_team
     |> Team.changeset(%{unused_nominations:
-                        nominating_team.unused_nominations-1})
+                        nominating_team.unused_nominations+1})
     |> Repo.update
     team
     |> Team.changeset(%{dollars_spent: team.dollars_spent + bid.bid_amount,
@@ -132,6 +132,21 @@ defmodule Ssauction.SingleAuction do
     SingleAuction.publish_queueable_players_change(team)
     SingleAuction.publish_team_info_change(team)
     SingleAuction.publish_team_info_change(nominating_team)
+  end
+
+  @doc """
+  Update a team's info after a nomination
+
+  """
+
+  def update_team_info_post_nomination(team = %Team{}, args) do
+    {:ok, now} = DateTime.now("Etc/UTC")
+    team
+    |> Team.changeset(%{unused_nominations: team.unused_nominations-1,
+                        dollars_bid: team.dollars_bid+args.bid_amount,
+                        time_of_last_nomination: now})
+    |> Repo.update
+    SingleAuction.publish_team_info_change(team)
   end
 
   @doc """
@@ -419,11 +434,9 @@ defmodule Ssauction.SingleAuction do
 
   def team_dollars_remaining_for_bids(auction = %Auction{}, team = %Team{}) do
     dollars_left = dollars_per_team(auction) - (team.dollars_spent + team.dollars_bid)
-    dollars_left - \
-      (auction.players_per_team \
-       - number_of_rostered_players_in_team(team) \
-       - number_of_bids_for_team(team) \
-       - 1) # the -1 is because a bid would remove the need to save a dollar for that one player
+    dollars_left - (auction.players_per_team \
+                    - number_of_rostered_players_in_team(team) \
+                    - number_of_bids_for_team(team))
   end
 
   @doc """
@@ -510,6 +523,31 @@ defmodule Ssauction.SingleAuction do
     SingleAuction.publish_nomination_queue_change(team)
     SingleAuction.publish_queueable_players_change(team)
     map
+  end
+
+  @doc """
+  Removes the player from the team's nomination queue
+
+  """
+
+  defp find_ordered_player(player = %Player{}, team = %Team{}) do
+    nomination_queue_query = from op in OrderedPlayer,
+                               where: op.team_id == ^team.id,
+                               preload: [:player]
+    Repo.all(nomination_queue_query)
+    |> Enum.find(fn ordered_player -> ordered_player.player.id == player.id end)
+  end
+
+  def remove_from_nomination_queue(player = %Player{}, team = %Team{}) do
+    ordered_player = find_ordered_player(player, team)
+    if ordered_player != nil do
+      player
+      |> Ecto.Changeset.change(%{ordered_player_id: nil})
+      |> Repo.update
+      ordered_player
+      |> Ecto.Changeset.change
+      |> Repo.delete
+    end
   end
 
   @doc """

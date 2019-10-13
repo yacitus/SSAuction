@@ -6,11 +6,13 @@ import NominationQueuePlayerSearch from "../components/NominationQueuePlayerSear
 class NominationQueue extends Component {
   render() {
     const teamId = parseInt(this.props.teamId, 10);
+    const auctionId = parseInt(this.props.auctionId, 10);
 
     return (
       <Container>
         <NominationQueueTable
-          teamId={ teamId } />
+          teamId={ teamId }
+          auctionId={ auctionId } />
         <NominationQueuePlayerSearch
           teamId={ teamId } />
       </Container>
