@@ -28,8 +28,6 @@ defmodule Ssauction.SingleAuction do
         team_dollars_per_player: team_dollars_per_player,
         } |> Repo.insert!
 
-    IO.inspect auction.id, label: "create_action"
-
     q = from p in AllPlayer,
           where: p.year_range == ^year_range,
           select: p
@@ -103,7 +101,6 @@ defmodule Ssauction.SingleAuction do
     auction = bid.auction
     team = bid.team
     player = bid.player
-    IO.inspect bid, label: "roster_player_and_delete_bid"
     rostered_player =
       %RosteredPlayer{
         cost: bid.bid_amount,
@@ -113,10 +110,6 @@ defmodule Ssauction.SingleAuction do
     rostered_player = Ecto.build_assoc(auction, :rostered_players, rostered_player)
     Repo.insert!(rostered_player)
     nominating_team = get_team_by_id!(bid.nominated_by)
-    nominating_team
-    |> Team.changeset(%{unused_nominations:
-                        nominating_team.unused_nominations+1})
-    |> Repo.update
     team
     |> Team.changeset(%{dollars_spent: team.dollars_spent + bid.bid_amount,
                         dollars_bid: team.dollars_bid - bid.bid_amount})
@@ -127,12 +120,29 @@ defmodule Ssauction.SingleAuction do
     bid
     |> Ecto.Changeset.change
     |> Repo.delete
+    update_unused_nominations(nominating_team, auction)
     SingleAuction.publish_bid_change(auction, team)
     SingleAuction.publish_roster_change(auction, team)
     SingleAuction.publish_queueable_players_change(team)
     SingleAuction.publish_team_info_change(team)
     SingleAuction.publish_team_info_change(nominating_team)
   end
+
+  @doc """
+  Update a team's unused nominations after bidding closed on a nomination
+
+  """
+
+  defp update_unused_nominations(team = %Team{}, auction = %Auction{}) do
+    team = Repo.get(Team, team.id)
+    open_roster_spots = open_roster_spots(team, auction)
+    new_unused_nominations = Enum.min([team.unused_nominations+1,
+                                       open_roster_spots])
+    team
+    |> Team.changeset(%{unused_nominations: new_unused_nominations})
+    |> Repo.update
+  end
+
 
   @doc """
   Update a team's info after a nomination

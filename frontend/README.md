@@ -1,5 +1,4 @@
 ## Known Bugs
-- team's unused nominations should never be higher than empty roster spots
 - Unused Nominations (and other team info) on team page doesn't auto-update after a bid closes or a Nomination button is pressed
 - Nomination button is not disabled when auction is paused
 - Nomination button is not disabled when team has no unused nominations
