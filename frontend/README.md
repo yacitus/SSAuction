@@ -1,5 +1,5 @@
 ## Known Bugs
-- Unused Nominations (and other team info) on team page doesn't auto-update after a bid closes or a Nomination button is pressed
+- teams info on auction page is not updated when it changes
 - Nomination button is not disabled when auction is paused
 - Nomination button is not disabled when team has no unused nominations
 
