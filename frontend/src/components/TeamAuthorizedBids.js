@@ -16,7 +16,6 @@ const TEAM_BIDS_QUERY = gql`
       bids {
         id
         bidAmount
-        hiddenHighBid
         expiresAt
         player {
           id
