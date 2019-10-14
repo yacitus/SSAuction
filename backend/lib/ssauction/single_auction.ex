@@ -124,15 +124,14 @@ defmodule Ssauction.SingleAuction do
     SingleAuction.publish_bid_change(auction, team)
     SingleAuction.publish_roster_change(auction, team)
     SingleAuction.publish_queueable_players_change(team)
-    SingleAuction.publish_team_info_change(team)
-    SingleAuction.publish_team_info_change(nominating_team)
+    publish_team_info_change(team.id)
+    publish_team_info_change(nominating_team.id)
   end
 
   @doc """
   Update a team's unused nominations after bidding closed on a nomination
 
   """
-
   defp update_unused_nominations(team = %Team{}, auction = %Auction{}) do
     team = Repo.get(Team, team.id)
     open_roster_spots = open_roster_spots(team, auction)
@@ -143,12 +142,10 @@ defmodule Ssauction.SingleAuction do
     |> Repo.update
   end
 
-
   @doc """
   Update a team's info after a nomination
 
   """
-
   def update_team_info_post_nomination(team = %Team{}, args) do
     {:ok, now} = DateTime.now("Etc/UTC")
     team
@@ -156,7 +153,16 @@ defmodule Ssauction.SingleAuction do
                         dollars_bid: team.dollars_bid+args.bid_amount,
                         time_of_last_nomination: now})
     |> Repo.update
-    SingleAuction.publish_team_info_change(team)
+    publish_team_info_change(team.id)
+  end
+
+  @doc """
+  Reload the team and publish that its info has changed
+
+  """
+  defp publish_team_info_change(team_id) do
+    Repo.get(Team, team_id)
+    |> SingleAuction.publish_team_info_change()
   end
 
   @doc """

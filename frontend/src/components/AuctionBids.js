@@ -55,7 +55,6 @@ const AUCTION_BID_CHANGE_SUBSCRIPTION = gql`
   }
 `;
 
-
 class AuctionBids extends Component {
   componentWillReceiveProps(props) {
     const { auctionActive } = this.props;
