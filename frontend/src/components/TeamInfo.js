@@ -24,7 +24,7 @@ const TEAM_INFO_QUERY = gql`
 `;
 
 const TEAM_INFO_CHANGE_SUBSCRIPTION = gql`
-  subscription AuctionBidChange($team_id: Int!) {
+  subscription TeamInfoChange($team_id: Int!) {
     teamInfoChange(id: $team_id) {
       id
       name

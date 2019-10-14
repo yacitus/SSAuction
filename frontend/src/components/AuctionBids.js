@@ -89,15 +89,15 @@ class AuctionBids extends Component {
 
 class AuctionBidsTable extends Component {
   static propTypes = {
-    auctionId: PropTypes.string.isRequired,
-    bids: PropTypes.object.isRequired,
+    auctionId: PropTypes.number.isRequired,
+    bids: PropTypes.array.isRequired,
     subscribeToAuctionBidChanges: PropTypes.func.isRequired
   };
 
   componentDidMount() {
     this.props.subscribeToAuctionBidChanges({
       document: AUCTION_BID_CHANGE_SUBSCRIPTION,
-      variables: { auction_id: parseInt(this.props.auctionId, 10) },
+      variables: { auction_id: this.props.auctionId },
       updateQuery: this.handleAuctionBidChange
     });
   }

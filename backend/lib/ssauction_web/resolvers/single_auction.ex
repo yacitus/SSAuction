@@ -315,6 +315,14 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     )
   end
 
+  def publish_auction_teams_info_change(auction) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      SingleAuction.list_teams(auction),
+      auction_teams_info_change: auction.id
+    )
+  end
+
   defp hidden_high_bid_legal?(nil, _) do
     true
   end

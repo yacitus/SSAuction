@@ -126,12 +126,9 @@ defmodule Ssauction.SingleAuction do
     SingleAuction.publish_queueable_players_change(team)
     publish_team_info_change(team.id)
     publish_team_info_change(nominating_team.id)
+    SingleAuction.publish_auction_teams_info_change(auction)
   end
 
-  @doc """
-  Update a team's unused nominations after bidding closed on a nomination
-
-  """
   defp update_unused_nominations(team = %Team{}, auction = %Auction{}) do
     team = Repo.get(Team, team.id)
     open_roster_spots = open_roster_spots(team, auction)
@@ -154,12 +151,10 @@ defmodule Ssauction.SingleAuction do
                         time_of_last_nomination: now})
     |> Repo.update
     publish_team_info_change(team.id)
+    Repo.get(Auction, team.auction_id)
+    |> SingleAuction.publish_auction_teams_info_change
   end
 
-  @doc """
-  Reload the team and publish that its info has changed
-
-  """
   defp publish_team_info_change(team_id) do
     Repo.get(Team, team_id)
     |> SingleAuction.publish_team_info_change()
@@ -540,11 +535,6 @@ defmodule Ssauction.SingleAuction do
     SingleAuction.publish_queueable_players_change(team)
     map
   end
-
-  @doc """
-  Removes the player from the team's nomination queue
-
-  """
 
   defp find_ordered_player(player = %Player{}, team = %Team{}) do
     nomination_queue_query = from op in OrderedPlayer,

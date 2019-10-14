@@ -1,5 +1,4 @@
 ## Known Bugs
-- teams info on auction page is not updated when it changes
 - Nomination button is not disabled when auction is paused
 - Nomination button is not disabled when team has no unused nominations
 

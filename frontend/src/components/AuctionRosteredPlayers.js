@@ -74,15 +74,15 @@ class AuctionRosteredPlayers extends Component {
 
 class AuctionRosteredPlayersTable extends Component {
   static propTypes = {
-    auctionId: PropTypes.string.isRequired,
-    rosteredPlayers: PropTypes.object.isRequired,
+    auctionId: PropTypes.number.isRequired,
+    rosteredPlayers: PropTypes.array.isRequired,
     subscribeToAuctionRosterChanges: PropTypes.func.isRequired
   };
 
   componentDidMount() {
     this.props.subscribeToAuctionRosterChanges({
       document: AUCTION_ROSTER_CHANGE_SUBSCRIPTION,
-      variables: { auction_id: parseInt(this.props.auctionId, 10) },
+      variables: { auction_id: this.props.auctionId },
       updateQuery: this.handleAuctionRosterChange
     });
   }

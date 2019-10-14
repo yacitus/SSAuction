@@ -45,7 +45,7 @@ class ToggleAuctionSwitch extends Component {
     return (
       <Mutation
         mutation={TOGGLE_AUCTION_MUTATION}
-        variables={{auctionId: parseInt(auctionId, 10),
+        variables={{auctionId: auctionId,
                     active: !auctionActive}}>
         {(toggleAuction, { loading, error }) => (
           <div>
@@ -70,7 +70,7 @@ class AuctionInfo extends Component {
     return (
       <Query
         query={AUCTION_INFO_QUERY}
-        variables={{ auction_id: parseInt(auctionId, 10) }}>
+        variables={{ auction_id: auctionId }}>
         {({ data, loading, error }) => {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
@@ -90,8 +90,8 @@ class AuctionInfo extends Component {
                             )}
                             {currentUserAuctionAdmin && (
                               <ToggleAuctionSwitch
-                                auctionId={auctionId}
-                                auctionActive={auctionActive}
+                                auctionId={ auctionId }
+                                auctionActive={ auctionActive }
                               />
                             )}
                           </td>

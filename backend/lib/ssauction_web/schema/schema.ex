@@ -188,6 +188,14 @@ defmodule SsauctionWeb.Schema.Schema do
         {:ok, topic: args.id}
       end
     end
+
+    @desc "Subscribe to changes to an auction's teams' info"
+    field :auction_teams_info_change, list_of(:team) do
+      arg :id, non_null(:id)
+      config fn args, _res ->
+        {:ok, topic: args.id}
+      end
+    end
   end
 
   #

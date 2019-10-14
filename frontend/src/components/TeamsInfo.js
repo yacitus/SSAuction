@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import 'moment';
 import gql from "graphql-tag";
+import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
@@ -20,9 +21,70 @@ const TEAMS_INFO_QUERY = gql`
   }
 `;
 
+const TEAMS_INFO_CHANGE_SUBSCRIPTION = gql`
+  subscription AuctionTeamsInfoChange($auction_id: Int!) {
+    auctionTeamsInfoChange(id: $auction_id) {
+      id
+      name
+      dollarsSpent
+      dollarsBid
+      unusedNominations
+      timeOfLastNomination
+    }
+  }
+`;
+
 class TeamsInfo extends Component {
   render() {
     const { auctionId } = this.props;
+
+    return (
+      <Query
+        query={TEAMS_INFO_QUERY}
+        variables={{ auction_id: parseInt(auctionId, 10) }}>
+        {({ data, loading, error, subscribeToMore }) => {
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+          return (
+            <TeamsInfoTable
+              auctionId={ auctionId }
+              teams={ data.teams }
+              subscribeToTeamsInfoChanges={ subscribeToMore }
+            />
+          );
+        }}
+      </Query>
+    );
+  }
+}
+
+class TeamsInfoTable extends Component {
+  static propTypes = {
+    auctionId: PropTypes.number.isRequired,
+    teams: PropTypes.array.isRequired,
+    subscribeToTeamsInfoChanges: PropTypes.func.isRequired
+  };
+
+  componentDidMount() {
+    this.props.subscribeToTeamsInfoChanges({
+      document: TEAMS_INFO_CHANGE_SUBSCRIPTION,
+      variables: { auction_id: this.props.auctionId },
+      updateQuery: this.handleTeamsInfoChange
+    });
+  }
+
+  handleTeamsInfoChange = (prev, { subscriptionData }) => {
+    if (!subscriptionData.data) return prev;
+    return {
+      teams: {
+        ...prev.teams,
+        ...subscriptionData.data.teamsInfoChange.teams,
+      }
+    };
+  };
+
+  render() {
+    const { teams } = this.props;
 
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
@@ -73,27 +135,17 @@ class TeamsInfo extends Component {
     };
 
     return (
-      <Query
-        query={TEAMS_INFO_QUERY}
-        variables={{ auction_id: parseInt(auctionId, 10) }}>
-        {({ data, loading, error }) => {
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          return (
-            <Container>
-              <BootstrapTable
-                bootstrap4={ true }
-                caption={ <CaptionElement /> }
-                keyField='id'
-                data={ data.teams }
-                columns={ columns }
-                rowEvents={ rowEvents }
-                striped
-                hover />
-            </Container>
-          );
-        }}
-      </Query>
+      <Container>
+        <BootstrapTable
+          bootstrap4={ true }
+          caption={ <CaptionElement /> }
+          keyField='id'
+          data={ teams }
+          columns={ columns }
+          rowEvents={ rowEvents }
+          striped
+          hover />
+      </Container>
     );
   }
 }
