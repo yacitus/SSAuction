@@ -1,5 +1,6 @@
 defmodule SsauctionWeb.Resolvers.SingleAuction do
   alias Ssauction.SingleAuction
+  alias Ssauction.{Auction, Team}
   alias SsauctionWeb.Schema.ChangesetErrors
 
   def auction(_, %{id: id}, _) do
@@ -67,6 +68,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
         {:ok, auction} ->
           publish_auction_status_change(auction)
+          publish_nomination_queue_change(auction)
           {:ok, auction}
       end
     else
@@ -92,6 +94,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
         {:ok, auction} ->
           publish_auction_status_change(auction)
+          publish_nomination_queue_change(auction)
           {:ok, auction}
       end
     else
@@ -115,6 +118,20 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
       true ->
         {:ok, SingleAuction.add_to_nomination_queue(player, team)}
+    end
+  end
+
+  def nominations_open?(team, _, _) do
+    auction = SingleAuction.get_auction_by_id!(team.auction_id)
+    cond do
+      not auction.active ->
+        {:ok, false}
+      not SingleAuction.team_has_open_roster_spot?(team, auction) ->
+        {:ok, false}
+      team.unused_nominations == 0 ->
+        {:ok, false}
+      true ->
+        {:ok, true}
     end
   end
 
@@ -257,7 +274,13 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
-  def publish_nomination_queue_change(team) do
+  def publish_nomination_queue_change(auction = %Auction{}) do
+    for team <- SingleAuction.list_teams(auction) do
+      publish_nomination_queue_change(team)
+    end
+  end
+
+  def publish_nomination_queue_change(team = %Team{}) do
     Absinthe.Subscription.publish(
       SsauctionWeb.Endpoint,
       team,
@@ -313,6 +336,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
       team,
       team_info_change: team.id
     )
+    publish_nomination_queue_change(team)
   end
 
   def publish_auction_teams_info_change(auction) do

@@ -263,6 +263,9 @@ defmodule SsauctionWeb.Schema.Schema do
       # middleware Middleware.AuthorizeUserInTeam
       resolve dataloader(SingleAuction, :ordered_players, args: %{scope: :team})
     end
+    field :nominations_open, non_null(:boolean) do
+      resolve &Resolvers.SingleAuction.nominations_open?/3
+    end
     field :queueable_players, list_of(:player) do
       resolve &Resolvers.SingleAuction.queueable_players/3
     end

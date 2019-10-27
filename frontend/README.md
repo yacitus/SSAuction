@@ -1,6 +1,4 @@
 ## Known Bugs
-- Nomination button is not disabled when auction is paused
-- Nomination button is not disabled when team has no unused nominations
 
 # MVP Unfinished Features
 - set bid and hidden max bid in nomination table for Nomination button

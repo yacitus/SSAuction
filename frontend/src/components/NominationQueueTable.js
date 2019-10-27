@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import gql from "graphql-tag";
 import PropTypes from "prop-types";
 import { Query } from "react-apollo";
-import { Mutation } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import BootstrapTable from 'react-bootstrap-table-next';
-import Button from 'react-bootstrap/Button'
+import NominateButton from "../components/NominateButton";
 
 const TEAM_NOMINATION_QUEUE_QUERY = gql`
   query TeamNominationQueue($team_id: Int!) {
@@ -21,23 +20,6 @@ const TEAM_NOMINATION_QUEUE_QUERY = gql`
           position
         }
       }
-    }
-  }
-`;
-
-const SUBMIT_BID_MUTATION = gql`
-  mutation SubmitBid(
-    $auction_id: Int!
-    $team_id: Int!
-    $player_id: Int!
-    $bid_amount: Int!
-  ) {
-    submitBid(auctionId: $auction_id,
-            teamId: $team_id,
-            playerId: $player_id,
-            bidAmount: $bid_amount) {
-      id
-      expiresAt
     }
   }
 `;
@@ -85,39 +67,6 @@ class NominationQueueTable extends Component {
   }
 }
 
-class NominateButton extends Component {
-  render() {
-    const { auctionId } = this.props;
-    const { teamId } = this.props;
-    const playerId = parseInt(this.props.row.player.id, 10);
-    const bidAmount = 1;
-
-    return (
-      <Mutation
-        mutation={SUBMIT_BID_MUTATION}
-        variables={{
-          auction_id: auctionId,
-          team_id: teamId,
-          player_id: playerId,
-          bid_amount: bidAmount
-        }}
-      >
-        {(submitBid, { loading, error }) => (
-          <div>
-            <Error error={error} />
-            <Button
-              disabled={loading}
-              onClick={submitBid}
-              variant="outline-success">
-              Nominate
-            </Button>
-          </div>
-        )}
-      </Mutation>
-    );
-  }
-}
-
 class NominationQueueBootstrapTable extends Component {
   static propTypes = {
     auctionId: PropTypes.number.isRequired,
@@ -151,7 +100,11 @@ class NominationQueueBootstrapTable extends Component {
 
     function buttonFormatter(cell, row) {
       return (
-        <NominateButton row={row} auctionId={auctionId} teamId={teamId}/>
+        <NominateButton
+          row={ row }
+          auctionId={ auctionId }
+          teamId={ teamId }
+        />
       );
     }
 

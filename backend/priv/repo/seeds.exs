@@ -49,7 +49,7 @@ year_range = "1985-1988-NL"
 
 auction = SingleAuction.create_auction(name: "Test Auction",
                                        year_range: year_range,
-                                       players_per_team: 2,
+                                       players_per_team: 3,
                                        team_dollars_per_player: 10)
 
 #

@@ -13,8 +13,6 @@ import TeamRosteredPlayers from "../components/TeamRosteredPlayers";
 import TeamInfo from "../components/TeamInfo";
 import UserInfo from "../components/UserInfo";
 
-
-
 const TEAM_INFO_QUERY = gql`
   query TeamInfo($team_id: Int!) {
     team(id: $team_id) {
@@ -64,10 +62,6 @@ class Team extends Component {
 }
 
 class TeamContainer extends Component {
-  state = {
-    auctionActive: this.props.auctionActive,
-  }
-
   static propTypes = {
     teamId: PropTypes.number.isRequired,
     auctionId: PropTypes.number.isRequired,
@@ -85,15 +79,22 @@ class TeamContainer extends Component {
 
   handleAuctionStatusChange = (prev, { subscriptionData }) => {
     if (!subscriptionData.data) return prev;
-    this.setState({ auctionActive:
-                      subscriptionData.data.auctionStatusChange.active
-                  });
-    return prev;
+    return {
+      team: {
+        ...prev.team,
+        auction: {
+          active: subscriptionData.data.auctionStatusChange.active,
+          id: subscriptionData.data.auctionStatusChange.id,
+          name: subscriptionData.data.auctionStatusChange.name
+        }
+      }
+    };
   };
 
   render() {
     const { teamId } = this.props;
     const { auctionId } = this.props;
+    const { auctionActive } = this.props;
 
     return (
       <CurrentUserInTeam teamId={ teamId }>
@@ -103,7 +104,7 @@ class TeamContainer extends Component {
               <TeamBids
                 teamId={ teamId }
                 auctionId={ auctionId }
-                auctionActive={ this.state.auctionActive }
+                auctionActive={ auctionActive }
               />
             )}
             {currentUserInTeam && (
@@ -111,9 +112,12 @@ class TeamContainer extends Component {
                 <TeamAuthorizedBids
                   teamId={ teamId }
                   auctionId={ auctionId }
-                  auctionActive={ this.state.auctionActive }
+                  auctionActive={ auctionActive }
                 />
-                <NominationQueue teamId={ teamId } auctionId={ auctionId } />
+                <NominationQueue
+                  teamId={ teamId }
+                  auctionId={ auctionId }
+                />
               </>
             )}
             <TeamRosteredPlayers teamId={ teamId } />
