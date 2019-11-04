@@ -98,7 +98,6 @@ const NominateButtonMutator = (props) => {
         disabled={ !props.nominationsOpen }
         onClick={ () => {
           let initialBid = props.getInitialBid(props.row);
-          console.log('initialBid: ' + initialBid);
           submitBid({ variables: { auction_id: props.auctionId,
                                    team_id: props.teamId,
                                    player_id: props.playerId,
