@@ -4,8 +4,9 @@
 - hidden high bid works
 
 # MVP Unfinished Features
-- set hidden max bid in nomination table for Nominate button
-- update bids in Bids table on team and auction pages
+- make bid editable and add submit button to Bids table on auction page
+- display hidden high bid (and make editable) on Bids table on auction page for players where the logged in user's team has the bigh bid
+- make hidden high bids in Bids table on team pages editable (with submit button) if user logged in is in the displayed team
 - make header presentable
 
 # Post MVP Feature Priority
