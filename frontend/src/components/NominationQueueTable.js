@@ -102,12 +102,16 @@ class NominationQueueBootstrapTable extends Component {
   }
 
   updateState(nominationQueue) {
-    let newData = nominationQueue.map(obj=> ({ ...obj, initialBid: 1 }));
+    let newData = nominationQueue.map(obj=> ({ ...obj,
+                                               initialBid: 1,
+                                               hiddenMaxBid: '' }));
     this.setState({data: newData});
   }
 
   getInitialBid = (row) => {
-    return this.state.data.find(r => r.rank === row.rank).initialBid;
+    let data_row = this.state.data.find(r => r.rank === row.rank);
+    return { initialBid: data_row.initialBid,
+             hiddenMaxBid: data_row.hiddenMaxBid };
   }
 
   render() {
@@ -141,6 +145,9 @@ class NominationQueueBootstrapTable extends Component {
       dataField: 'initialBid',
       text: 'Initial Bid',
     }, {
+      dataField: 'hiddenMaxBid',
+      text: 'Hidden Max Bid',
+     }, {
       text: 'Nominate',
       formatter: buttonFormatter,
       editable: false

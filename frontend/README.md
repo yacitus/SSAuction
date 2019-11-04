@@ -1,5 +1,8 @@
 ## Known Bugs
 
+# To Test
+- hidden high bid works
+
 # MVP Unfinished Features
 - set hidden max bid in nomination table for Nominate button
 - update bids in Bids table on team and auction pages
@@ -12,6 +15,7 @@
 - auction auto-nomination queue
 - admin page (with create new auction)
 - archive auction mutation (and add to admin page)
+- re-enable authentication and authorization checks for hidden_high_bid field in teamBidChange subscription
 
 ----
 

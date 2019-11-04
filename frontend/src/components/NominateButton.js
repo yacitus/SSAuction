@@ -31,11 +31,13 @@ const SUBMIT_BID_MUTATION = gql`
     $team_id: Int!
     $player_id: Int!
     $bid_amount: Int!
+    $hidden_high_bid: Int
   ) {
     submitBid(auctionId: $auction_id,
-            teamId: $team_id,
-            playerId: $player_id,
-            bidAmount: $bid_amount) {
+              teamId: $team_id,
+              playerId: $player_id,
+              bidAmount: $bid_amount,
+              hiddenHighBid: $hidden_high_bid) {
       id
       expiresAt
     }
@@ -97,11 +99,12 @@ const NominateButtonMutator = (props) => {
       <Button
         disabled={ !props.nominationsOpen }
         onClick={ () => {
-          let initialBid = props.getInitialBid(props.row);
+          let bid = props.getInitialBid(props.row);
           submitBid({ variables: { auction_id: props.auctionId,
                                    team_id: props.teamId,
                                    player_id: props.playerId,
-                                   bid_amount: parseInt(initialBid, 10) } });
+                                   bid_amount: parseInt(bid.initialBid, 10),
+                                   hidden_high_bid: parseInt(bid.hiddenMaxBid, 10) } });
         }}
         variant="outline-success">
         Nominate
