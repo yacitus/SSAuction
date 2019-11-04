@@ -1,7 +1,7 @@
 ## Known Bugs
 
 # MVP Unfinished Features
-- set bid and hidden max bid in nomination table for Nomination button
+- set hidden max bid in nomination table for Nominate button
 - update bids in Bids table on team and auction pages
 - make header presentable
 

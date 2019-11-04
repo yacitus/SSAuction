@@ -5,6 +5,7 @@ import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import BootstrapTable from 'react-bootstrap-table-next';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 import NominateButton from "../components/NominateButton";
 
 const TEAM_NOMINATION_QUEUE_QUERY = gql`
@@ -68,6 +69,8 @@ class NominationQueueTable extends Component {
 }
 
 class NominationQueueBootstrapTable extends Component {
+  state = { data: this.props.nominationQueue }
+
   static propTypes = {
     auctionId: PropTypes.number.isRequired,
     teamId: PropTypes.number.isRequired,
@@ -81,6 +84,7 @@ class NominationQueueBootstrapTable extends Component {
       variables: { team_id: this.props.teamId },
       updateQuery: this.handleNominationQueueChange
     });
+    this.updateState(this.props.nominationQueue);
   }
 
   handleNominationQueueChange = (prev, { subscriptionData }) => {
@@ -93,33 +97,53 @@ class NominationQueueBootstrapTable extends Component {
     };
   };
 
+  componentWillReceiveProps(nextProps) {
+    this.updateState(nextProps.nominationQueue);
+  }
+
+  updateState(nominationQueue) {
+    let newData = nominationQueue.map(obj=> ({ ...obj, initialBid: 1 }));
+    this.setState({data: newData});
+  }
+
+  getInitialBid = (row) => {
+    return this.state.data.find(r => r.rank === row.rank).initialBid;
+  }
+
   render() {
     const { auctionId } = this.props;
     const { teamId } = this.props;
-    const { nominationQueue } = this.props;
 
-    function buttonFormatter(cell, row) {
+    const buttonFormatter = (cell, row) => {
       return (
         <NominateButton
           row={ row }
           auctionId={ auctionId }
           teamId={ teamId }
+          getInitialBid={ this.getInitialBid }
         />
       );
     }
 
     const queue_columns = [{
       dataField: 'player.ssnum',
-      text: 'Scoresheet num',
+      text: 'Scoresheet Num',
+      editable: false
     }, {
       dataField: 'player.name',
       text: 'Player',
+      editable: false
     }, {
       dataField: 'player.position',
       text: 'Position',
+      editable: false
+    }, {
+      dataField: 'initialBid',
+      text: 'Initial Bid',
     }, {
       text: 'Nominate',
-      formatter: buttonFormatter
+      formatter: buttonFormatter,
+      editable: false
     }];
 
     const CaptionElement = () =>
@@ -135,8 +159,10 @@ class NominationQueueBootstrapTable extends Component {
         bootstrap4={ true }
         caption={ <CaptionElement /> }
         keyField='player.ssnum'
-        data={ nominationQueue }
+        data={ this.state.data }
         columns={ queue_columns }
+        cellEdit={ cellEditFactory({ mode: 'click',
+                                     blurToSave: true }) }
         striped
         hover />
     );

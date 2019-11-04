@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
-import { Mutation } from "react-apollo";
+import { useMutation } from '@apollo/react-hooks';
 import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
@@ -44,10 +44,10 @@ const SUBMIT_BID_MUTATION = gql`
 
 class NominateButton extends Component {
   render() {
+    const { row } = this.props;
     const { auctionId } = this.props;
     const { teamId } = this.props;
     const playerId = parseInt(this.props.row.player.id, 10);
-    const bidAmount = 1;
 
     return (
       <Query
@@ -61,9 +61,10 @@ class NominateButton extends Component {
               auctionId={ auctionId }
               teamId={ teamId }
               playerId={ playerId }
-              bidAmount={ bidAmount }
+              row={ row }
               nominationsOpen={ data.team.nominationsOpen }
               subscribeToNominationsOpenChanges={ subscribeToMore }
+              getInitialBid={ this.props.getInitialBid }
             />
           );
         }}
@@ -72,65 +73,52 @@ class NominateButton extends Component {
   }
 }
 
-class NominateButtonMutator extends Component {
-  static propTypes = {
-    auctionId: PropTypes.number.isRequired,
-    teamId: PropTypes.number.isRequired,
-    playerId: PropTypes.number.isRequired,
-    bidAmount: PropTypes.number.isRequired,
-    nominationsOpen: PropTypes.bool.isRequired,
-    subscribeToNominationsOpenChanges: PropTypes.func.isRequired
-  };
-
-  componentDidMount() {
-    this.props.subscribeToNominationsOpenChanges({
+const NominateButtonMutator = (props) => {
+  React.useEffect(() => {
+    props.subscribeToNominationsOpenChanges({
       document: TEAM_NOMINATIONS_OPEN_SUBSCRIPTION,
-      variables: { team_id: this.props.teamId },
-      updateQuery: this.handleNominationsOpenChange
-    });
-  }
-
-  handleNominationsOpenChange = (prev, { subscriptionData }) => {
-    if (!subscriptionData.data) return prev;
-    return {
-      team: {
-        ...prev.team,
-        nominationsOpen: subscriptionData.data.nominationQueueChange.nominationsOpen
+      variables: { team_id: props.teamId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        return {
+          team: {
+            ...prev.team,
+            nominationsOpen: subscriptionData.data.nominationQueueChange.nominationsOpen
+          }
+        };
       }
-    };
-  };
+    });
+  }, [props]);
 
-  render() {
-    const { auctionId } = this.props;
-    const { teamId } = this.props;
-    const { playerId } = this.props;
-    const { bidAmount } = this.props;
-    const { nominationsOpen } = this.props;
+  const [submitBid] = useMutation(SUBMIT_BID_MUTATION);
 
-    return (
-      <Mutation
-        mutation={SUBMIT_BID_MUTATION}
-        variables={{
-          auction_id: auctionId,
-          team_id: teamId,
-          player_id: playerId,
-          bid_amount: bidAmount
+  return (
+    <div>
+      <Button
+        disabled={ !props.nominationsOpen }
+        onClick={ () => {
+          let initialBid = props.getInitialBid(props.row);
+          console.log('initialBid: ' + initialBid);
+          submitBid({ variables: { auction_id: props.auctionId,
+                                   team_id: props.teamId,
+                                   player_id: props.playerId,
+                                   bid_amount: parseInt(initialBid, 10) } });
         }}
-      >
-        {(submitBid, { loading, error }) => (
-          <div>
-            <Error error={error} />
-            <Button
-              disabled={ loading || !nominationsOpen }
-              onClick={ submitBid }
-              variant="outline-success">
-              Nominate
-            </Button>
-          </div>
-        )}
-      </Mutation>
-    );
-  }
-}
+        variant="outline-success">
+        Nominate
+      </Button>
+    </div>
+  );
+};
+
+NominateButtonMutator.propTypes = {
+  auctionId: PropTypes.number.isRequired,
+  teamId: PropTypes.number.isRequired,
+  playerId: PropTypes.number.isRequired,
+  row: PropTypes.object.isRequired,
+  nominationsOpen: PropTypes.bool.isRequired,
+  subscribeToNominationsOpenChanges: PropTypes.func.isRequired,
+  getInitialBid: PropTypes.func.isRequired
+};
 
 export default NominateButton;
