@@ -1,10 +1,11 @@
 ## Known Bugs
+- new high bids don't reset expiresAt
 
 # To Test
 - hidden high bid works
 
 # MVP Unfinished Features
-- make bid editable and add submit button to Bids table on auction page
+- change editable table in Auction page Bids table and Team page Nomination Queue table to a modal form instead
 - display hidden high bid (and make editable) on Bids table on auction page for players where the logged in user's team has the bigh bid
 - make hidden high bids in Bids table on team pages editable (with submit button) if user logged in is in the displayed team
 - make header presentable

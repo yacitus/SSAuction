@@ -42,4 +42,13 @@ defmodule SsauctionWeb.Resolvers.Accounts do
   def me_in_team(_, _, _) do
     {:ok, false}
   end
+
+  def me_team(_, %{auction_id: auction_id}, %{context: %{current_user: user}}) do
+    auction = SingleAuction.get_auction_by_id!(auction_id)
+    {:ok, SingleAuction.get_team_by_user_and_auction(user, auction)}
+  end
+
+  def me_team(_, _, _) do
+    {:ok, nil}
+  end
 end

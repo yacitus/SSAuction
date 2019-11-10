@@ -187,7 +187,22 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns a query of all players in thhe auction's bids
+  Returns the team in the indicated auction with the indicated user.
+
+  """
+  def get_team_by_user_and_auction(user = %User{}, auction = %Auction{}) do
+    q = from t in Team,
+          where: t.auction_id == ^auction.id,
+          join: users in assoc(t, :users),
+          select: users
+    Repo.one(from u in subquery(q),
+               where: u.id == ^user.id,
+               join: teams in assoc(u, :teams),
+               select: teams)
+  end
+
+  @doc """
+  Returns a query of all players in the auction's bids
 
   """
   def players_in_auction_bids_query(auction = %Auction{}) do
