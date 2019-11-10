@@ -257,8 +257,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
   end
 
   defp submit_bid_changeset(auction, team, _player, args, existing_bid) do
-    args
-    |> add_expires_at_to_args(auction)
+    args = add_expires_at_to_args(args, auction)
 
     case SingleAuction.update_existing_bid(existing_bid, team, args) do
       {:error, changeset} ->
