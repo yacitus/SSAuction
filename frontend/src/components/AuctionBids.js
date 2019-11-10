@@ -9,6 +9,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import Countdown from "../components/Countdown";
 import BidButton from "../components/BidButton";
+import PlusOneButton from "../components/PlusOneButton";
 import './tables.css';
 
 const AUCTION_BIDS_QUERY = gql`
@@ -122,12 +123,21 @@ class AuctionBidsTable extends Component {
   render() {
     const { auctionId } = this.props;
 
-    const buttonFormatter = (cell, row) => {
+    const bidButtonFormatter = (cell, row) => {
       return (
         <BidButton
           row={ row }
           auctionId={ auctionId }
           getBid={ this.getBid }
+        />
+      );
+    }
+
+    const plusOneButtonFormatter = (cell, row) => {
+      return (
+        <PlusOneButton
+          row={ row }
+          auctionId={ auctionId }
         />
       );
     }
@@ -155,7 +165,11 @@ class AuctionBidsTable extends Component {
       editable: false
      }, {
       text: '',
-      formatter: buttonFormatter,
+      formatter: bidButtonFormatter,
+      editable: false
+     }, {
+      text: '',
+      formatter: plusOneButtonFormatter,
       editable: false
     }];
 
