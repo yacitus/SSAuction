@@ -108,7 +108,6 @@ class Error extends Component {
     }
 
     return (
-      // errorMessage
       <VerticallyCenteredModal
         message={errorMessage}
       />

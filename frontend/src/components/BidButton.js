@@ -1,12 +1,13 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
+import Modal from "react-bootstrap/Modal";
 import Button from 'react-bootstrap/Button'
-
+import Form from 'react-bootstrap/Form'
 
 const LOGGED_IN_TEAM_QUERY = gql`
   query MeTeam($auction_id: Int!) {
@@ -71,7 +72,6 @@ class BidButton extends Component {
               auctionId={ auctionId }
               teamId={ data.meTeam.id }
               row={ row }
-              getBid={ this.props.getBid }
             />
           );
         }}
@@ -94,13 +94,12 @@ class TeamBidButton extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <BidButtonMutator
+            <SubmitBidFormModal
               auctionId={ auctionId }
               teamId={ teamId }
               row={ row }
               auctionActive={ data.auction.active }
               subscribeToAuctionActiveChanges={ subscribeToMore }
-              getBid={ this.props.getBid }
             />
           );
         }}
@@ -109,7 +108,15 @@ class TeamBidButton extends Component {
   }
 }
 
-const BidButtonMutator = (props) => {
+const SubmitBidFormModal = (props) => {
+  const [show, setShow] = useState(false);
+
+  const bidAmountRef = React.createRef();
+
+  const handleClose = () => {
+    setShow(false);
+  }
+
   React.useEffect(() => {
     props.subscribeToAuctionActiveChanges({
       document: AUCTION_ACTIVE_CHANGE_SUBSCRIPTION,
@@ -128,30 +135,63 @@ const BidButtonMutator = (props) => {
 
   const [submitBid] = useMutation(SUBMIT_BID_MUTATION);
 
+  const handleSubmitBid = () => {
+    submitBid({ variables: { auction_id: parseInt(props.auctionId, 10),
+                             team_id: parseInt(props.teamId, 10),
+                             player_id: parseInt(props.row.player.id, 10),
+                             bid_amount: bidAmountRef.current.valueAsNumber } });
+    handleClose();
+  }
+
   return (
     <div>
+      <Modal
+        show={ show }
+        onHide={ handleClose }
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            { props.teamId === props.row.team.id ? "Update Bid" : "New Bid" }
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formBidAmount">
+              <Form.Label>Bid Amount</Form.Label>
+              <Form.Control
+                type="number"
+                disabled={ props.teamId === props.row.team.id }
+                ref={bidAmountRef}
+                value={ props.row.bidAmount
+                        + (props.teamId === props.row.team.id ? 0 : 1) } />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={ handleClose }>Cancel</Button>
+          <Button onClick={ handleSubmitBid }>
+            { props.teamId === props.row.team.id ? "Update Bid" : "New Bid" }
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Button
         disabled={ !props.auctionActive }
-        onClick={ () => {
-          let bid = props.getBid(props.row);
-          submitBid({ variables: { auction_id: parseInt(props.auctionId, 10),
-                                   team_id: parseInt(props.teamId, 10),
-                                   player_id: parseInt(props.row.player.id, 10),
-                                   bid_amount: parseInt(bid.newBid, 10) } });
-        }}
+        onClick={ () => { setShow(true); }}
         variant="outline-success">
-        New Bid
+        { props.teamId === props.row.team.id ? "Update Bid" : "New Bid" }
       </Button>
     </div>
   );
 };
 
-BidButtonMutator.propTypes = {
+SubmitBidFormModal.propTypes = {
   auctionId: PropTypes.number.isRequired,
   row: PropTypes.object.isRequired,
   auctionActive: PropTypes.bool.isRequired,
   subscribeToAuctionActiveChanges: PropTypes.func.isRequired,
-  getBid: PropTypes.func.isRequired
 };
 
 export default BidButton;

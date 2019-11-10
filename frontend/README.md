@@ -2,12 +2,17 @@
 
 # To Test
 - hidden high bid works
+- error messages
 
 # MVP Unfinished Features
-- change editable table in Auction page Bids table and Team page Nomination Queue table to a modal form instead
+- change editable table in Team page Nomination Queue table to a modal form instead
+- add bid button and modal bid form to Team page Bids table
+- add hidden high bid to Auction page Bids table modal bid form
+- add hidden high bid to Team page Bids table modal bid form
+- validate input in the modal bid forms
 - display hidden high bid (and make editable) on Bids table on auction page for players where the logged in user's team has the bigh bid
-- in Auction page Bids table, change "New Bid" button's name to "Update Bid" if the logged in team already has the high bid
 - make hidden high bids in Bids table on team pages editable (with submit button) if user logged in is in the displayed team
+- change Nomination table on Team page to work like Auction page Bids table (use modal form instead of editable table)
 - make header presentable
 
 # Post MVP Feature Priority

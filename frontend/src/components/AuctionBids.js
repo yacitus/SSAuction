@@ -6,7 +6,6 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import Countdown from "../components/Countdown";
 import BidButton from "../components/BidButton";
 import PlusOneButton from "../components/PlusOneButton";
@@ -115,11 +114,6 @@ class AuctionBidsTable extends Component {
     };
   };
 
-  getBid = (row) => {
-    let data_row = this.props.bids.find(r => r.id === row.id);
-    return { newBid: data_row.bidAmount };
-  }
-
   render() {
     const { auctionId } = this.props;
 
@@ -128,7 +122,6 @@ class AuctionBidsTable extends Component {
         <BidButton
           row={ row }
           auctionId={ auctionId }
-          getBid={ this.getBid }
         />
       );
     }
@@ -145,15 +138,12 @@ class AuctionBidsTable extends Component {
     const columns = [{
       dataField: 'team.name',
       text: 'Team',
-      editable: false
     }, {
       dataField: 'player.name',
       text: 'Player',
-      editable: false
     }, {
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
-      editable: false
     }, {
       dataField: 'bidAmount',
       text: '$ Bid',
@@ -162,15 +152,12 @@ class AuctionBidsTable extends Component {
       dataField: 'expiresAt',
       text: 'Expires In',
       formatter: countdownFormatter,
-      editable: false
      }, {
       text: '',
       formatter: bidButtonFormatter,
-      editable: false
      }, {
       text: '',
       formatter: plusOneButtonFormatter,
-      editable: false
     }];
 
     function dollarsFormatter(cell, row) {
@@ -207,8 +194,6 @@ class AuctionBidsTable extends Component {
           keyField='id'
           data={ this.props.bids }
           columns={ columns }
-          cellEdit={ cellEditFactory({ mode: 'click',
-                                       blurToSave: true }) }
           striped
           hover />
       </Container>
