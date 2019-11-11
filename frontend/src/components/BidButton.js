@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Modal from "react-bootstrap/Modal";
-import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 const LOGGED_IN_TEAM_QUERY = gql`
   query MeTeam($auction_id: Int!) {
@@ -67,13 +67,14 @@ class BidButton extends Component {
         {({ data, loading, error }) => {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
-          if (data.meTeam.id != null) return (
+          if (data.meTeam != null) return (
             <TeamBidButton
               auctionId={ auctionId }
               teamId={ data.meTeam.id }
               row={ row }
             />
           );
+          return null;
         }}
       </Query>
     );

@@ -5,7 +5,6 @@ import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import BootstrapTable from 'react-bootstrap-table-next';
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import NominateButton from "../components/NominateButton";
 
 const TEAM_NOMINATION_QUEUE_QUERY = gql`
@@ -108,12 +107,6 @@ class NominationQueueBootstrapTable extends Component {
     this.setState({data: newData});
   }
 
-  getInitialBid = (row) => {
-    let data_row = this.state.data.find(r => r.rank === row.rank);
-    return { initialBid: data_row.initialBid,
-             hiddenMaxBid: data_row.hiddenMaxBid };
-  }
-
   render() {
     const { auctionId } = this.props;
     const { teamId } = this.props;
@@ -124,7 +117,6 @@ class NominationQueueBootstrapTable extends Component {
           row={ row }
           auctionId={ auctionId }
           teamId={ teamId }
-          getInitialBid={ this.getInitialBid }
         />
       );
     }
@@ -132,25 +124,15 @@ class NominationQueueBootstrapTable extends Component {
     const queue_columns = [{
       dataField: 'player.ssnum',
       text: 'Scoresheet Num',
-      editable: false
     }, {
       dataField: 'player.name',
       text: 'Player',
-      editable: false
     }, {
       dataField: 'player.position',
       text: 'Position',
-      editable: false
     }, {
-      dataField: 'initialBid',
-      text: 'Initial Bid',
-    }, {
-      dataField: 'hiddenMaxBid',
-      text: 'Hidden Max Bid',
-     }, {
       text: 'Nominate',
       formatter: buttonFormatter,
-      editable: false
     }];
 
     const CaptionElement = () =>
@@ -168,8 +150,6 @@ class NominationQueueBootstrapTable extends Component {
         keyField='player.ssnum'
         data={ this.state.data }
         columns={ queue_columns }
-        cellEdit={ cellEditFactory({ mode: 'click',
-                                     blurToSave: true }) }
         striped
         hover />
     );

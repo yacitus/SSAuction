@@ -66,13 +66,14 @@ class PlusOneButton extends Component {
         {({ data, loading, error }) => {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
-          if (data.meTeam.id != null) return (
+          if (data.meTeam != null) return (
             <TeamPlusOneButton
               auctionId={ auctionId }
               teamId={ data.meTeam.id }
               row={ row }
             />
           );
+          return null;
         }}
       </Query>
     );

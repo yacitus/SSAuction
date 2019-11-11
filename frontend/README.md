@@ -1,27 +1,33 @@
 ## Known Bugs
+- two teams can't have the same player in their nomination queue
+- don't display columns for buttons in Auction page table if no one is logged in to a team in the auction
 
 # To Test
 - hidden high bid works
 - error messages
 
 # MVP Unfinished Features
-- change editable table in Team page Nomination Queue table to a modal form instead
 - add bid button and modal bid form to Team page Bids table
 - add hidden high bid to Auction page Bids table modal bid form
 - add hidden high bid to Team page Bids table modal bid form
+- add hidden high bid to Team page Nomination Queue table modal bid form
 - validate input in the modal bid forms
 - display hidden high bid (and make editable) on Bids table on auction page for players where the logged in user's team has the bigh bid
 - make hidden high bids in Bids table on team pages editable (with submit button) if user logged in is in the displayed team
-- change Nomination table on Team page to work like Auction page Bids table (use modal form instead of editable table)
 - make header presentable
+
+# Post MVP Technical Debt Cleanup
+- remove duplicated code in BidButton.js and NominateButton.js
 
 # Post MVP Feature Priority
 - user invitations (including to new or existing team)
 - create new auction mutation
 - database backup
 - auction auto-nomination queue
-- admin page (with create new auction)
-- archive auction mutation (and add to admin page)
+- site admin page (with create new auction, create invites)
+- add Team page feature to add invited user to team
+- auction admin page (that allows invites, shows nomination status)
+- archive auction mutation (and add to site admin page)
 - re-enable authentication and authorization checks for hidden_high_bid field in teamBidChange subscription
 
 ----

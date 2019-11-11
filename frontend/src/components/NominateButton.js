@@ -1,10 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
+import Modal from "react-bootstrap/Modal";
+import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
 const TEAM_NOMINATIONS_OPEN_QUERY = gql`
@@ -59,14 +61,13 @@ class NominateButton extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <NominateButtonMutator
+            <NominateBidFormModal
               auctionId={ auctionId }
               teamId={ teamId }
               playerId={ playerId }
               row={ row }
               nominationsOpen={ data.team.nominationsOpen }
               subscribeToNominationsOpenChanges={ subscribeToMore }
-              getInitialBid={ this.props.getInitialBid }
             />
           );
         }}
@@ -75,7 +76,15 @@ class NominateButton extends Component {
   }
 }
 
-const NominateButtonMutator = (props) => {
+const NominateBidFormModal = (props) => {
+  const [show, setShow] = useState(false);
+
+  const bidAmountRef = React.createRef();
+
+  const handleClose = () => {
+    setShow(false);
+  }
+
   React.useEffect(() => {
     props.subscribeToNominationsOpenChanges({
       document: TEAM_NOMINATIONS_OPEN_SUBSCRIPTION,
@@ -94,18 +103,46 @@ const NominateButtonMutator = (props) => {
 
   const [submitBid] = useMutation(SUBMIT_BID_MUTATION);
 
+  const handleSubmitBid = () => {
+    submitBid({ variables: { auction_id: parseInt(props.auctionId, 10),
+                             team_id: parseInt(props.teamId, 10),
+                             player_id: parseInt(props.row.player.id, 10),
+                             bid_amount: bidAmountRef.current.valueAsNumber } });
+    handleClose();
+  }
+
   return (
     <div>
+      <Modal
+        show={ show }
+        onHide={ handleClose }
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Nominate
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formBidAmount">
+              <Form.Label>Bid Amount</Form.Label>
+              <Form.Control
+                type="number"
+                ref={bidAmountRef} />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={ handleClose }>Cancel</Button>
+          <Button onClick={ handleSubmitBid }>Nominate</Button>
+        </Modal.Footer>
+      </Modal>
       <Button
         disabled={ !props.nominationsOpen }
-        onClick={ () => {
-          let bid = props.getInitialBid(props.row);
-          submitBid({ variables: { auction_id: props.auctionId,
-                                   team_id: props.teamId,
-                                   player_id: props.playerId,
-                                   bid_amount: parseInt(bid.initialBid, 10),
-                                   hidden_high_bid: parseInt(bid.hiddenMaxBid, 10) } });
-        }}
+        onClick={ () => { setShow(true); }}
         variant="outline-success">
         Nominate
       </Button>
@@ -113,14 +150,13 @@ const NominateButtonMutator = (props) => {
   );
 };
 
-NominateButtonMutator.propTypes = {
+NominateBidFormModal.propTypes = {
   auctionId: PropTypes.number.isRequired,
   teamId: PropTypes.number.isRequired,
   playerId: PropTypes.number.isRequired,
   row: PropTypes.object.isRequired,
   nominationsOpen: PropTypes.bool.isRequired,
   subscribeToNominationsOpenChanges: PropTypes.func.isRequired,
-  getInitialBid: PropTypes.func.isRequired
 };
 
 export default NominateButton;
