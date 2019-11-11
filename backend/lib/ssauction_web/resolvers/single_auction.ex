@@ -249,8 +249,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
       {:ok, bid} ->
         SingleAuction.update_team_info_post_nomination(team, args)
-        SingleAuction.remove_from_nomination_queue(player, team)
-        publish_nomination_queue_change(team)
+        SingleAuction.remove_from_nomination_queues(player, auction)
+        publish_nomination_queue_change(auction)
         publish_bid_change(auction, team)
         {:ok, bid}
     end

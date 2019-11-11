@@ -5,7 +5,7 @@ defmodule Ssauction.OrderedPlayer do
   schema "ordered_players" do
     field :rank, :integer
 
-    has_one :player, Ssauction.Player
+    belongs_to :player, Ssauction.Player
     belongs_to :team, Ssauction.Team
     belongs_to :auction, Ssauction.Auction
   end

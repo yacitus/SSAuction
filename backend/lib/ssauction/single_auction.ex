@@ -552,19 +552,19 @@ defmodule Ssauction.SingleAuction do
   end
 
   defp find_ordered_player(player = %Player{}, team = %Team{}) do
-    nomination_queue_query = from op in OrderedPlayer,
-                               where: op.team_id == ^team.id,
-                               preload: [:player]
-    Repo.all(nomination_queue_query)
-    |> Enum.find(fn ordered_player -> ordered_player.player.id == player.id end)
+    Repo.one(from op in OrderedPlayer,
+             where: op.team_id == ^team.id and op.player_id == ^player.id)
+  end
+
+  def remove_from_nomination_queues(player = %Player{}, auction = %Auction{}) do
+    for team <- list_teams(auction) do
+      remove_from_nomination_queue(player, team)
+    end
   end
 
   def remove_from_nomination_queue(player = %Player{}, team = %Team{}) do
     ordered_player = find_ordered_player(player, team)
     if ordered_player != nil do
-      player
-      |> Ecto.Changeset.change(%{ordered_player_id: nil})
-      |> Repo.update
       ordered_player
       |> Ecto.Changeset.change
       |> Repo.delete

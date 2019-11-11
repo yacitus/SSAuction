@@ -12,7 +12,7 @@ defmodule Ssauction.Player do
     belongs_to :auction, Ssauction.Auction
     belongs_to :bid, Ssauction.Bid
     belongs_to :rostered_player, Ssauction.RosteredPlayer
-    belongs_to :ordered_player, Ssauction.OrderedPlayer
+    has_many :ordered_players, Ssauction.OrderedPlayer
   end
 
   def changeset(player, params \\ %{}) do

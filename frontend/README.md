@@ -1,5 +1,4 @@
 ## Known Bugs
-- two teams can't have the same player in their nomination queue
 - don't display columns for buttons in Auction page table if no one is logged in to a team in the auction
 
 # To Test
@@ -7,13 +6,11 @@
 - error messages
 
 # MVP Unfinished Features
-- add bid button and modal bid form to Team page Bids table
 - add hidden high bid to Auction page Bids table modal bid form
-- add hidden high bid to Team page Bids table modal bid form
+- display hidden high bid (and make editable) on Bids table on auction page for players where the logged in user's team has the bigh bid
+- add bid button and modal bid form (with only hidden high bid enabled) to Team page Bids table
 - add hidden high bid to Team page Nomination Queue table modal bid form
 - validate input in the modal bid forms
-- display hidden high bid (and make editable) on Bids table on auction page for players where the logged in user's team has the bigh bid
-- make hidden high bids in Bids table on team pages editable (with submit button) if user logged in is in the displayed team
 - make header presentable
 
 # Post MVP Technical Debt Cleanup
