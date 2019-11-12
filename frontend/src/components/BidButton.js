@@ -79,6 +79,7 @@ const SubmitBidFormModal = (props) => {
   const [show, setShow] = useState(false);
 
   const bidAmountRef = React.createRef();
+  const hiddenHighBidRef = React.createRef();
 
   const handleClose = () => {
     setShow(false);
@@ -106,7 +107,8 @@ const SubmitBidFormModal = (props) => {
     submitBid({ variables: { auction_id: parseInt(props.auctionId, 10),
                              team_id: parseInt(props.teamId, 10),
                              player_id: parseInt(props.row.player.id, 10),
-                             bid_amount: bidAmountRef.current.valueAsNumber } });
+                             bid_amount: bidAmountRef.current.valueAsNumber,
+                             hidden_high_bid: hiddenHighBidRef.current.valueAsNumber } });
     handleClose();
   }
 
@@ -132,8 +134,16 @@ const SubmitBidFormModal = (props) => {
                 type="number"
                 disabled={ props.teamId === props.row.team.id }
                 ref={bidAmountRef}
-                value={ props.row.bidAmount
-                        + (props.teamId === props.row.team.id ? 0 : 1) } />
+                defaultValue={ props.row.bidAmount
+                               + (props.teamId === props.row.team.id ? 0 : 1) } />
+            </Form.Group>
+            <Form.Group controlId="formHiddenHighBid">
+              <Form.Label>Hidden Max Bid</Form.Label>
+              <Form.Control
+                type="number"
+                ref={hiddenHighBidRef}
+                defaultValue={ props.row.hiddenHighBid === null
+                               ? "" : props.row.hiddenHighBid } />
             </Form.Group>
           </Form>
         </Modal.Body>

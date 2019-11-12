@@ -19,6 +19,7 @@ const AUCTION_BIDS_QUERY = gql`
       bids {
         id
         bidAmount
+        hiddenHighBid
         expiresAt
         player {
           id
@@ -42,6 +43,7 @@ const AUCTION_BID_CHANGE_SUBSCRIPTION = gql`
       bids {
         id
         bidAmount
+        hiddenHighBid
         expiresAt
         player {
           id
@@ -65,6 +67,15 @@ class AuctionBids extends Component {
     }
   }
 
+  eraseNonTeamHiddenHighBids = (teamId, bids) => {
+    var bid;
+    for (bid of bids) {
+      if (bid.team.id !== teamId) {
+        bid.hiddenHighBid = null;
+      }
+    }
+  };
+
   render() {
     const { auctionId } = this.props;
 
@@ -76,6 +87,7 @@ class AuctionBids extends Component {
           this.refetch = refetch;
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
+          this.eraseNonTeamHiddenHighBids(this.props.teamId, data.auction.bids);
           return (
             <AuctionBidsTable
               auctionId={ auctionId }
@@ -155,6 +167,10 @@ class AuctionBidsTable extends Component {
         text: '$ Bid',
         formatter: dollarsFormatter
       }, {
+        dataField: 'hiddenHighBid',
+        text: '$ Hidden Max Bid',
+        formatter: dollarsFormatter
+      }, {
         dataField: 'expiresAt',
         text: 'Expires In',
         formatter: countdownFormatter,
@@ -174,7 +190,8 @@ class AuctionBidsTable extends Component {
     }
 
     function dollarsFormatter(cell, row) {
-        return (`$${cell}`);
+      if (cell === null) return '';
+      return (`$${cell}`);
     }
 
     function countdownFormatter(cell, row) {

@@ -6,10 +6,8 @@
 - error messages
 
 # MVP Unfinished Features
-- add hidden high bid to Auction page Bids table modal bid form
-- display hidden high bid (and make editable) on Bids table on auction page for players where the logged in user's team has the bigh bid
-- add bid button and modal bid form (with only hidden high bid enabled) to Team page Bids table
 - add hidden high bid to Team page Nomination Queue table modal bid form
+- add bid button and modal bid form (with only hidden high bid enabled) to Team page Bids table
 - validate input in the modal bid forms
 - make header presentable
 
