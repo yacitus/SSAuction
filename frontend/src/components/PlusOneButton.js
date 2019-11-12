@@ -7,16 +7,6 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Button from 'react-bootstrap/Button'
 
-
-const LOGGED_IN_TEAM_QUERY = gql`
-  query MeTeam($auction_id: Int!) {
-    meTeam(auctionId: $auction_id) {
-      id
-      name
-    }
-  }
-`;
-
 const AUCTION_ACTIVE_QUERY = gql`
   query AuctionActive($auction_id: Int!) {
     auction(id: $auction_id) {
@@ -58,34 +48,9 @@ class PlusOneButton extends Component {
   render() {
     const { row } = this.props;
     const { auctionId } = this.props;
-
-    return (
-      <Query
-        query={LOGGED_IN_TEAM_QUERY}
-        variables={{ auction_id: auctionId }}>
-        {({ data, loading, error }) => {
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          if (data.meTeam != null) return (
-            <TeamPlusOneButton
-              auctionId={ auctionId }
-              teamId={ data.meTeam.id }
-              row={ row }
-            />
-          );
-          return null;
-        }}
-      </Query>
-    );
-  }
-}
-
-class TeamPlusOneButton extends Component {
-  render() {
-    const { row } = this.props;
-    const { auctionId } = this.props;
     const { teamId } = this.props;
 
+    if (teamId === null) return null;
     return (
       <Query
         query={AUCTION_ACTIVE_QUERY}

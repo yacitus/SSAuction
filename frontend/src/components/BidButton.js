@@ -9,15 +9,6 @@ import Modal from "react-bootstrap/Modal";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-const LOGGED_IN_TEAM_QUERY = gql`
-  query MeTeam($auction_id: Int!) {
-    meTeam(auctionId: $auction_id) {
-      id
-      name
-    }
-  }
-`;
-
 const AUCTION_ACTIVE_QUERY = gql`
   query AuctionActive($auction_id: Int!) {
     auction(id: $auction_id) {
@@ -59,34 +50,9 @@ class BidButton extends Component {
   render() {
     const { row } = this.props;
     const { auctionId } = this.props;
-
-    return (
-      <Query
-        query={LOGGED_IN_TEAM_QUERY}
-        variables={{ auction_id: auctionId }}>
-        {({ data, loading, error }) => {
-          if (loading) return <Loading />;
-          if (error) return <Error error={error} />;
-          if (data.meTeam != null) return (
-            <TeamBidButton
-              auctionId={ auctionId }
-              teamId={ data.meTeam.id }
-              row={ row }
-            />
-          );
-          return null;
-        }}
-      </Query>
-    );
-  }
-}
-
-class TeamBidButton extends Component {
-  render() {
-    const { row } = this.props;
-    const { auctionId } = this.props;
     const { teamId } = this.props;
 
+    if (teamId === null) return null;
     return (
       <Query
         query={AUCTION_ACTIVE_QUERY}

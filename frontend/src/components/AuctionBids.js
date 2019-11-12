@@ -79,6 +79,7 @@ class AuctionBids extends Component {
           return (
             <AuctionBidsTable
               auctionId={ auctionId }
+              teamId={ this.props.teamId }
               bids={ data.auction.bids }
               subscribeToAuctionBidChanges={ subscribeToMore }
             />
@@ -92,6 +93,7 @@ class AuctionBids extends Component {
 class AuctionBidsTable extends Component {
   static propTypes = {
     auctionId: PropTypes.number.isRequired,
+    teamId: PropTypes.string,
     bids: PropTypes.array.isRequired,
     subscribeToAuctionBidChanges: PropTypes.func.isRequired
   };
@@ -116,12 +118,14 @@ class AuctionBidsTable extends Component {
 
   render() {
     const { auctionId } = this.props;
+    const { teamId } = this.props;
 
     const bidButtonFormatter = (cell, row) => {
       return (
         <BidButton
           row={ row }
           auctionId={ auctionId }
+          teamId={ teamId }
         />
       );
     }
@@ -131,34 +135,43 @@ class AuctionBidsTable extends Component {
         <PlusOneButton
           row={ row }
           auctionId={ auctionId }
+          teamId={ teamId }
         />
       );
     }
 
-    const columns = [{
-      dataField: 'team.name',
-      text: 'Team',
-    }, {
-      dataField: 'player.name',
-      text: 'Player',
-    }, {
-      dataField: 'player.ssnum',
-      text: 'Scoresheet num',
-    }, {
-      dataField: 'bidAmount',
-      text: '$ Bid',
-      formatter: dollarsFormatter
-    }, {
-      dataField: 'expiresAt',
-      text: 'Expires In',
-      formatter: countdownFormatter,
-     }, {
-      text: '',
-      formatter: bidButtonFormatter,
-     }, {
-      text: '',
-      formatter: plusOneButtonFormatter,
-    }];
+    const getColumns = () => {
+      let columns = [{
+        dataField: 'team.name',
+        text: 'Team',
+      }, {
+        dataField: 'player.name',
+        text: 'Player',
+      }, {
+        dataField: 'player.ssnum',
+        text: 'Scoresheet num',
+      }, {
+        dataField: 'bidAmount',
+        text: '$ Bid',
+        formatter: dollarsFormatter
+      }, {
+        dataField: 'expiresAt',
+        text: 'Expires In',
+        formatter: countdownFormatter,
+      }];
+
+      if (teamId != null) {
+        columns = columns.concat([{
+          text: '',
+          formatter: bidButtonFormatter,
+         }, {
+          text: '',
+          formatter: plusOneButtonFormatter,
+        }]);
+      }
+
+      return columns;
+    }
 
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
@@ -193,7 +206,7 @@ class AuctionBidsTable extends Component {
           caption={ <CaptionElement /> }
           keyField='id'
           data={ this.props.bids }
-          columns={ columns }
+          columns={ getColumns() }
           striped
           hover />
       </Container>

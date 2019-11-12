@@ -31,6 +31,15 @@ const AUCTION_STATUS_CHANGE_SUBSCRIPTION = gql`
     }
 }`;
 
+const LOGGED_IN_TEAM_QUERY = gql`
+  query MeTeam($auction_id: Int!) {
+    meTeam(auctionId: $auction_id) {
+      id
+      name
+    }
+  }
+`;
+
 class Auction extends Component {
   render() {
     const auctionId = parseInt(this.props.match.params.auctionId, 10);
@@ -91,17 +100,26 @@ class AuctionContainer extends Component {
     const { auctionId } = this.props;
 
     return (
-      <Container>
-        <AuctionBids
-          auctionId={ auctionId }
-          auctionActive={ this.state.auctionActive }
-          startedOrPausedAt={ this.state.startedOrPausedAt } />
-        <AuctionRosteredPlayers auctionId={ auctionId } />
-        <TeamsInfo auctionId={ auctionId } />
-        <AuctionInfo
-          auctionId={ auctionId }
-          auctionActive={ this.state.auctionActive } />
-      </Container>
+      <Query
+        query={LOGGED_IN_TEAM_QUERY}
+        variables={{ auction_id: auctionId }}>
+        {({ data, loading, error }) => {
+          return (
+            <Container>
+              <AuctionBids
+                auctionId={ auctionId }
+                teamId={ data && data.meTeam ? data.meTeam.id : null }
+                auctionActive={ this.state.auctionActive }
+                startedOrPausedAt={ this.state.startedOrPausedAt } />
+              <AuctionRosteredPlayers auctionId={ auctionId } />
+              <TeamsInfo auctionId={ auctionId } />
+              <AuctionInfo
+                auctionId={ auctionId }
+                auctionActive={ this.state.auctionActive } />
+            </Container>
+          );
+        }}
+      </Query>
     );
   }
 }

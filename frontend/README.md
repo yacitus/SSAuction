@@ -1,5 +1,5 @@
 ## Known Bugs
-- don't display columns for buttons in Auction page table if no one is logged in to a team in the auction
+- have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 
 # To Test
 - hidden high bid works
