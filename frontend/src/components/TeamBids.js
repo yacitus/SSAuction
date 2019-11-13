@@ -159,8 +159,7 @@ class TeamBidsTable extends Component {
           keyField='id'
           data={ bids }
           columns={ columns }
-          striped
-          hover />
+          striped />
       </Container>
     );
   }

@@ -8,7 +8,6 @@
 
 # MVP Unfinished Features
 - validate input in the modal bid forms
-- remove hover from all tables where clicking on a row does nothing
 - make header presentable
 
 # Post MVP Technical Debt Cleanup

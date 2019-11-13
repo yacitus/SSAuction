@@ -225,8 +225,7 @@ class AuctionBidsTable extends Component {
           keyField='id'
           data={ this.props.bids }
           columns={ getColumns() }
-          striped
-          hover />
+          striped />
       </Container>
     );
   }

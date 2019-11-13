@@ -150,8 +150,7 @@ class NominationQueueBootstrapTable extends Component {
         keyField='player.ssnum'
         data={ this.state.data }
         columns={ queue_columns }
-        striped
-        hover />
+        striped />
     );
   }
 }

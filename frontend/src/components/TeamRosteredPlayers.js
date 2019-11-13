@@ -124,8 +124,7 @@ class TeamRosteredPlayersTable extends Component {
           keyField='id'
           data={ rosteredPlayers }
           columns={ columns }
-          striped
-          hover />
+          striped />
       </Container>
     );
   }

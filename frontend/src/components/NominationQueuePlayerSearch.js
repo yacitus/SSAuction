@@ -166,7 +166,6 @@ class NominationQueuePlayerSearchableTable extends Component {
         data={ queueablePlayers }
         columns={ players_columns }
         striped
-        hover
         search
       >
       {

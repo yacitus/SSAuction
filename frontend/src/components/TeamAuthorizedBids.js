@@ -184,8 +184,7 @@ class TeamAuthorizedBidsTable extends Component {
           keyField='id'
           data={ bids }
           columns={ columns }
-          striped
-          hover />
+          striped />
       </Container>
     );
   }

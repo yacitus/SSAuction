@@ -77,8 +77,7 @@ class UserInfo extends Component {
                 keyField='id'
                 data={ data.team.users }
                 columns={ columns }
-                striped
-                hover />
+                striped />
             </Container>
           );
         }}
