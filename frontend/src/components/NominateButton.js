@@ -80,6 +80,7 @@ const NominateBidFormModal = (props) => {
   const [show, setShow] = useState(false);
 
   const bidAmountRef = React.createRef();
+  const hiddenHighBidRef = React.createRef();
 
   const handleClose = () => {
     setShow(false);
@@ -107,7 +108,8 @@ const NominateBidFormModal = (props) => {
     submitBid({ variables: { auction_id: parseInt(props.auctionId, 10),
                              team_id: parseInt(props.teamId, 10),
                              player_id: parseInt(props.row.player.id, 10),
-                             bid_amount: bidAmountRef.current.valueAsNumber } });
+                             bid_amount: bidAmountRef.current.valueAsNumber,
+                             hidden_high_bid: hiddenHighBidRef.current.valueAsNumber } });
     handleClose();
   }
 
@@ -132,6 +134,12 @@ const NominateBidFormModal = (props) => {
               <Form.Control
                 type="number"
                 ref={bidAmountRef} />
+            </Form.Group>
+            <Form.Group controlId="formHiddenHighBid">
+              <Form.Label>Hidden Max Bid</Form.Label>
+              <Form.Control
+                type="number"
+                ref={hiddenHighBidRef} />
             </Form.Group>
           </Form>
         </Modal.Body>

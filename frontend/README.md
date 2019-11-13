@@ -6,7 +6,6 @@
 - error messages
 
 # MVP Unfinished Features
-- add hidden high bid to Team page Nomination Queue table modal bid form
 - add bid button and modal bid form (with only hidden high bid enabled) to Team page Bids table
 - validate input in the modal bid forms
 - make header presentable
