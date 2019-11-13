@@ -1,9 +1,10 @@
 ## Known Bugs
+- hidden high bid doesn't work
+- previous hidden high bid isn't clear when new team makes high bid
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
-- bid buttons have a dark outline (still focussed?) after the modal is closed
+- bid buttons have a dark outline (still focused?) after the modal is closed
 
 # To Test
-- hidden high bid works
 - error messages
 
 # MVP Unfinished Features
