@@ -1,13 +1,14 @@
 ## Known Bugs
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
+- bid buttons have a dark outline (still focussed?) after the modal is closed
 
 # To Test
 - hidden high bid works
 - error messages
 
 # MVP Unfinished Features
-- add bid button and modal bid form (with only hidden high bid enabled) to Team page Bids table
 - validate input in the modal bid forms
+- remove hover from all tables where clicking on a row does nothing
 - make header presentable
 
 # Post MVP Technical Debt Cleanup

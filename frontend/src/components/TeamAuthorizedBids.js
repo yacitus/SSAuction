@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import Countdown from "../components/Countdown";
 import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
+import BidButton from "../components/BidButton";
 import './tables.css';
 
 const TEAM_BIDS_QUERY = gql`
@@ -133,6 +134,17 @@ class TeamAuthorizedBidsTable extends Component {
       }
     }
 
+    const bidButtonFormatter = (cell, row) => {
+      return (
+        <BidButton
+          row={ row }
+          auctionId={ auctionId }
+          teamId={ this.props.teamId }
+          teamPage={ true }
+        />
+      );
+    }
+
     const columns = [{
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
@@ -151,6 +163,9 @@ class TeamAuthorizedBidsTable extends Component {
       dataField: 'expiresAt',
       text: 'Expires In',
       formatter: countdownFormatter
+    }, {
+      text: '',
+      formatter: bidButtonFormatter,
     }];
 
     const CaptionElement = () =>

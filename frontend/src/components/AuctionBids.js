@@ -138,6 +138,7 @@ class AuctionBidsTable extends Component {
           row={ row }
           auctionId={ auctionId }
           teamId={ teamId }
+          teamPage={ false }
         />
       );
     }

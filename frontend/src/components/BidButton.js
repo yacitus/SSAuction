@@ -64,6 +64,7 @@ class BidButton extends Component {
             <SubmitBidFormModal
               auctionId={ auctionId }
               teamId={ teamId }
+              teamPage={ this.props.teamPage }
               row={ row }
               auctionActive={ data.auction.active }
               subscribeToAuctionActiveChanges={ subscribeToMore }
@@ -123,7 +124,8 @@ const SubmitBidFormModal = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            { props.teamId === props.row.team.id ? "Update Bid" : "New Bid" }
+            { props.teamPage || props.teamId === props.row.team.id
+              ? "Update Bid" : "New Bid" }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -132,10 +134,11 @@ const SubmitBidFormModal = (props) => {
               <Form.Label>Bid Amount</Form.Label>
               <Form.Control
                 type="number"
-                disabled={ props.teamId === props.row.team.id }
+                disabled={ props.teamPage || props.teamId === props.row.team.id }
                 ref={bidAmountRef}
                 defaultValue={ props.row.bidAmount
-                               + (props.teamId === props.row.team.id ? 0 : 1) } />
+                               + (props.teamPage || props.teamId === props.row.team.id
+                                  ? 0 : 1) } />
             </Form.Group>
             <Form.Group controlId="formHiddenHighBid">
               <Form.Label>Hidden Max Bid</Form.Label>
@@ -150,7 +153,8 @@ const SubmitBidFormModal = (props) => {
         <Modal.Footer>
           <Button onClick={ handleClose }>Cancel</Button>
           <Button onClick={ handleSubmitBid }>
-            { props.teamId === props.row.team.id ? "Update Bid" : "New Bid" }
+            { props.teamPage || props.teamId === props.row.team.id
+              ? "Update Bid" : "New Bid" }
           </Button>
         </Modal.Footer>
       </Modal>
@@ -158,7 +162,8 @@ const SubmitBidFormModal = (props) => {
         disabled={ !props.auctionActive }
         onClick={ () => { setShow(true); }}
         variant="outline-success">
-        { props.teamId === props.row.team.id ? "Update Bid" : "New Bid" }
+        { props.teamPage || props.teamId === props.row.team.id
+          ? "Update Bid" : "New Bid" }
       </Button>
     </div>
   );
