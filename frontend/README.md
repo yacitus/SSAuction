@@ -1,5 +1,4 @@
 ## Known Bugs
-- previous hidden high bid isn't cleared when new team makes high bid with +1 button
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - error messages not displayed after pressing Bid button in a modal
