@@ -102,7 +102,7 @@ const SubmitBidFormModal = (props) => {
     });
   }, [props]);
 
-  const [submitBid] = useMutation(SUBMIT_BID_MUTATION);
+  const [submitBid, {error: mutationError}] = useMutation(SUBMIT_BID_MUTATION);
 
   const handleSubmitBid = () => {
     submitBid({ variables: { auction_id: parseInt(props.auctionId, 10),
@@ -165,6 +165,7 @@ const SubmitBidFormModal = (props) => {
         { props.teamPage || props.teamId === props.row.team.id
           ? "Update Bid" : "New Bid" }
       </Button>
+      { mutationError && <Error error={mutationError} /> }
     </div>
   );
 };
