@@ -1,11 +1,10 @@
 ## Known Bugs
-- hidden high bid doesn't work
 - previous hidden high bid isn't cleared when new team makes high bid with +1 button
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 - bid buttons have a dark outline (still focused?) after the modal is closed
+- error messages not displayed after pressing Bid button in a modal
 
 # To Test
-- error messages
 
 # MVP Unfinished Features
 - validate input in the modal bid forms
@@ -13,6 +12,7 @@
 
 # Post MVP Technical Debt Cleanup
 - remove duplicated code in BidButton.js and NominateButton.js
+- use Dataloader wherever possible
 
 # Post MVP Feature Priority
 - user invitations (including to new or existing team)

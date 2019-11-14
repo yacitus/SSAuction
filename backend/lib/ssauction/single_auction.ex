@@ -596,6 +596,15 @@ defmodule Ssauction.SingleAuction do
     |> Repo.update()
   end
 
+  @doc """
+  Updates the bid amount of an existing bid
+
+  """
+  def update_existing_bid_amount(bid, bid_amount) do
+    bid
+    |> Bid.changeset(%{bid_amount: bid_amount})
+    |> Repo.update()
+  end
 
   # Dataloader - TODO: there are more functions in ~/dev/pragstudio-unpacked-graphql-code/backend/lib/getaways/vacation.ex
 

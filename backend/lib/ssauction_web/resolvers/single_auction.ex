@@ -207,6 +207,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
                   :error,
                   message: "Team does not have open roster spot for another bid"
                 }
+              existing_bid.hidden_high_bid != nil and not(args[:bid_amount] > existing_bid.hidden_high_bid) ->
+                  submit_new_bid_amount_changeset(auction, existing_bid, args)
               true ->
                 submit_bid_changeset(auction, team, player, args, existing_bid)
             end
@@ -258,6 +260,11 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
   defp submit_bid_changeset(auction, team, _player, args, existing_bid) do
     args = add_expires_at_to_args(args, auction)
+    args = if not Map.has_key?(args, :hidden_high_bid) do
+      Map.put(args, :hidden_high_bid, nil)
+    else
+      args
+    end
 
     case SingleAuction.update_existing_bid(existing_bid, team, args) do
       {:error, changeset} ->
@@ -268,6 +275,22 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
 
       {:ok, bid} ->
+        publish_bid_change(auction, team)
+        {:ok, bid}
+    end
+  end
+
+  defp submit_new_bid_amount_changeset(auction, existing_bid, args) do
+    case SingleAuction.update_existing_bid_amount(existing_bid, args.bid_amount) do
+      {:error, changeset} ->
+        {
+          :error,
+          message: "Could not update bid!",
+          details: ChangesetErrors.error_details(changeset)
+        }
+
+      {:ok, bid} ->
+        team = SingleAuction.get_team_by_id!(existing_bid.team_id)
         publish_bid_change(auction, team)
         {:ok, bid}
     end
