@@ -5,23 +5,26 @@
 # To Test
 
 # MVP Unfinished Features
-- validate input in the modal bid forms
+- show max bid in team info on team page (if current user in team)
+- show max bid in the modal bid forms
 - make header presentable
 
 # Post MVP Technical Debt Cleanup
 - remove duplicated code in BidButton.js and NominateButton.js
 - use Dataloader wherever possible
+- (re-)enable authentication and authorization checks for nominationQueue field of queries returning team info
+- (re-)enable authentication and authorization checks for hidden_high_bid field in all queries and subscriptions
 
 # Post MVP Feature Priority
 - user invitations (including to new or existing team)
 - create new auction mutation
 - database backup
 - auction auto-nomination queue
-- site admin page (with create new auction, create invites)
+- site admin page (with create new auction, create team, create invites)
 - add Team page feature to add invited user to team
 - auction admin page (that allows invites, shows nomination status)
 - archive auction mutation (and add to site admin page)
-- re-enable authentication and authorization checks for hidden_high_bid field in teamBidChange subscription
+- database backup and restore
 
 ----
 
