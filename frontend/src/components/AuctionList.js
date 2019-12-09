@@ -33,6 +33,14 @@ class AuctionList extends Component {
       formatter: activeFormatter
     }];
 
+    const CaptionElement = () =>
+      <h3 style={{ borderRadius: '0.25em',
+                   textAlign: 'center',
+                   color: 'green',
+                   border: '1px solid green',
+                   padding: '0.5em' }}>
+        Auctions</h3>;
+
     const rowEvents = {
       onClick: (e, row, rowIndex) => {
         window.location = `/auction/${row.id}`
@@ -41,9 +49,9 @@ class AuctionList extends Component {
 
     return (
       <Container>
-        <h1 className="header">Auctions</h1>
         <BootstrapTable
           bootstrap4={ true }
+          caption={ <CaptionElement /> }
           keyField='id'
           data={ auctions }
           columns={ columns }
