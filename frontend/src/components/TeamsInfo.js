@@ -123,7 +123,7 @@ class TeamsInfoTable extends Component {
     const CaptionElement = () =>
       <h3 style={{ borderRadius: '0.25em',
                    textAlign: 'center',
-                   color: 'purple',
+                   color: 'green',
                    border: '1px solid green',
                    padding: '0.5em' }}>
         Teams</h3>;

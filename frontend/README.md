@@ -6,11 +6,13 @@
 
 # MVP Unfinished Features
 - put breadcrumbs in the header
-- put a ships wheel icon in the header
 - make table background white
 - change auction info and team info cards to tables
 - show max bid in team info on team page (if current user in team)
 - show max bid in the modal bid forms
+
+# Pre MVP-Deploy Fixes
+- fix `http://localhost:4000/...` in Header.js Image src
 
 # Post MVP Technical Debt Cleanup
 - run `npm audit` and `npm audit fix`

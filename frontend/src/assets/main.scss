@@ -138,7 +138,7 @@ header {
 			.navbar, 
 			.navbar-expand,
 			.navbar-dark,
-			.bg-dark;
+			.bg-success;
 
 		a.button {
 			@extend .btn;
@@ -154,6 +154,10 @@ header {
 			background: linear-gradient(.25turn, $primary 55%, #08B270);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;			
+
+			.icon {
+				margin-top: -5px;
+			}
 
 			.head {
 				font-weight: 600;
@@ -208,7 +212,7 @@ header {
 				}
 
 				&.user {
-					color: #96a1aa; 
+					color: #666;
 					padding-top: 8px;
 					i {
 						margin-right: 5px;
