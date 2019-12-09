@@ -5,11 +5,15 @@
 # To Test
 
 # MVP Unfinished Features
+- put breadcrumbs in the header
+- put a ships wheel icon in the header
+- make table background white
+- change auction info and team info cards to tables
 - show max bid in team info on team page (if current user in team)
 - show max bid in the modal bid forms
-- make header presentable
 
 # Post MVP Technical Debt Cleanup
+- run `npm audit` and `npm audit fix`
 - remove duplicated code in BidButton.js and NominateButton.js
 - use Dataloader wherever possible
 - (re-)enable authentication and authorization checks for nominationQueue field of queries returning team info

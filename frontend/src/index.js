@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
@@ -10,6 +9,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // GraphQL-specific
 import { ApolloProvider } from "react-apollo";
 import client from "./client";
+
+import "./assets/main.scss";
 
 // ApolloProvider wraps the React app and places the Apollo client
 // on the React context so the client can be conveniently accessed
