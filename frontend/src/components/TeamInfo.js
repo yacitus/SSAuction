@@ -5,8 +5,7 @@ import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Table from "react-bootstrap/Table";
+import BootstrapTable from 'react-bootstrap-table-next';
 import Moment from 'react-moment';
 
 const TEAM_INFO_QUERY = gql`
@@ -92,43 +91,71 @@ class TeamInfoTable extends Component {
   };
 
   render() {
-    const { team} = this.props;
+    const { team } = this.props;
+
+    function valueFormatter(cell, row) {
+      if (row.id === 4) {
+        if (cell === null) {
+          return '';
+        } else {
+          return (<Moment format="llll">
+                    {cell}
+                  </Moment>);
+        }
+      } else {
+        return (`${cell}`);
+      }
+    }
+
+    const columns = [{
+      dataField: 'label',
+      text: ''
+    }, {
+      dataField: 'value',
+      text: '',
+      formatter: valueFormatter
+    }];
+
+    const data = [{
+      label: '$ Spent',
+      value: `$${team.dollarsSpent}`,
+      id: 0
+    }, {
+      label: '$ Bid',
+      value: `$${team.dollarsBid}`,
+      id: 1
+    }, {
+      label: '$ Remaining for Bids',
+      value: `$${team.dollarsRemainingForBids}`,
+      id: 2
+    }, {
+      label: 'Unused Nominations',
+      value: `${team.unusedNominations}`,
+      id: 3
+    }, {
+      label: 'Time of Last Nomination',
+      value: `${team.timeOfLastNomination}`,
+      id: 4
+    }];
+
+    const CaptionElement = () =>
+      <h3 style={{ borderRadius: '0.25em',
+                   textAlign: 'center',
+                   color: 'green',
+                   border: '1px solid green',
+                   padding: '0.5em' }}>
+        Team Info</h3>;
 
     return (
       <Container>
-        <Card border="light" style={{ width: '36rem' }}>
-          <Card.Header>Team Info</Card.Header>
-          <Table bordered>
-            <tbody>
-              <tr>
-                <td>$ Spent</td>
-                <td>${team.dollarsSpent}</td>
-              </tr>
-              <tr>
-                <td>$ Bid</td>
-                <td>${team.dollarsBid}</td>
-              </tr>
-              <tr>
-                <td>$ Remaining for Bids</td>
-                <td>${team.dollarsRemainingForBids}</td>
-              </tr>
-              <tr>
-                <td>Unused Nominations</td>
-                <td>{team.unusedNominations}</td>
-              </tr>
-              <tr>
-                <td>Time of Last Nomination</td>
-                <td>
-                  {team.timeOfLastNomination != null &&
-                    <Moment format="llll">
-                      {team.timeOfLastNomination}
-                    </Moment>
-                  }
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </Card>
+        <BootstrapTable
+          bootstrap4={ true }
+          caption={ <CaptionElement /> }
+          keyField='id'
+          data={ data }
+          columns={ columns }
+          striped
+          headerClasses="team-info-header" />
       </Container>
     );
   }

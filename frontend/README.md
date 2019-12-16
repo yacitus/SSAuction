@@ -6,8 +6,7 @@
 
 # MVP Unfinished Features
 - put breadcrumbs in the header
-- make table background white
-- change auction info and team info cards to tables
+- change auction info card to a table
 - show max bid in team info on team page (if current user in team)
 - show max bid in the modal bid forms
 

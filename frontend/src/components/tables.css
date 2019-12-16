@@ -1,3 +1,5 @@
 table caption {
   caption-side: top;
 }
+
+.team-info-header  { display: none }
