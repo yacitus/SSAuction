@@ -5,8 +5,7 @@ import { Mutation } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Table from "react-bootstrap/Table";
+import BootstrapTable from 'react-bootstrap-table-next';
 import Moment from 'react-moment';
 import CurrentUserAuctionAdmin from "../components/CurrentUserAuctionAdmin";
 import Switch from "react-switch";
@@ -75,74 +74,118 @@ class AuctionInfo extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <CurrentUserAuctionAdmin auctionId={ auctionId }>
-              {currentUserAuctionAdmin => (
-                <Container>
-                  <Card border="light" style={{ width: '36rem' }}>
-                    <Card.Header>Auction Info</Card.Header>
-                    <Table bordered>
-                      <tbody>
-                        <tr>
-                          <td>Active:</td>
-                          <td>
-                            {!currentUserAuctionAdmin && (
-                              auctionActive ? '✅' : '❌'
-                            )}
-                            {currentUserAuctionAdmin && (
-                              <ToggleAuctionSwitch
-                                auctionId={ auctionId }
-                                auctionActive={ auctionActive }
-                              />
-                            )}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Last Started or Paused:</td>
-                          <td>
-                            <Moment format="llll">
-                              {data.auction.startedOrPausedAt}
-                            </Moment>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Years:</td>
-                          <td>{data.auction.yearRange}</td>
-                        </tr>
-                        <tr>
-                          <td>Players Per Team:</td>
-                          <td>{data.auction.playersPerTeam}</td>
-                        </tr>
-                        <tr>
-                          <td>Dollars Per Team:</td>
-                          <td>${data.auction.dollarsPerTeam}</td>
-                        </tr>
-                        <tr>
-                          <td>Nominations Per Team:</td>
-                          <td>{data.auction.nominationsPerTeam}</td>
-                        </tr>
-                        <tr>
-                          <td>Time Before Auto-nomination:</td>
-                          <td>
-                            {Utilities.secondsToDaysHoursMinsSecsStr(
-                                data.auction.secondsBeforeAutonomination)}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Time Before Bids Expire:</td>
-                          <td>
-                            {Utilities.secondsToDaysHoursMinsSecsStr(
-                                data.auction.bidTimeoutSeconds)}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </Card>
-                </Container>
-              )}
-            </CurrentUserAuctionAdmin>
+            <AuctionInfoTable
+              info={ data }
+              auctionId={ auctionId }
+              auctionActive={ auctionActive }
+            />
           );
         }}
       </Query>
+    );
+  }
+}
+
+class AuctionInfoTable extends Component {
+  render() {
+    const { info } = this.props;
+    const { auctionId } = this.props;
+    const { auctionActive } = this.props;
+
+    function valueFormatter(cell, row) {
+      if (row.id === 0) {
+        return (
+          <CurrentUserAuctionAdmin auctionId={ auctionId }>
+            {currentUserAuctionAdmin => (
+              <Container>
+                {currentUserAuctionAdmin && (
+                    <ToggleAuctionSwitch
+                      auctionId={ auctionId }
+                      auctionActive={ auctionActive }
+                    />
+                )}
+                {!currentUserAuctionAdmin && (
+                  auctionActive ? '✅' : '❌'
+                )}
+              </Container>
+            )}
+          </CurrentUserAuctionAdmin>
+        );
+      } else if (row.id === 1) {
+        return (
+          <Moment format="llll">
+            {info.auction.startedOrPausedAt}
+          </Moment>
+        );
+      } else {
+        return (`${cell}`);
+      }
+    }
+
+    const columns = [{
+      dataField: 'label',
+      text: ''
+    }, {
+      dataField: 'value',
+      text: '',
+      formatter: valueFormatter
+    }];
+
+    const data = [{
+      label: 'Active:',
+      value: '',
+      id: 0
+    }, {
+      label: 'Last Started or Paused:',
+      value: '',
+      id: 1
+    }, {
+      label: 'Years:',
+      value: `${info.auction.yearRange}`,
+      id: 2
+    }, {
+      label: 'Players Per Team:',
+      value: `${info.auction.playersPerTeam}`,
+      id: 3
+    }, {
+      label: 'Dollars Per Team:',
+      value: `${info.auction.dollarsPerTeam}`,
+      id: 4
+    }, {
+      label: 'Nominations Per Team:',
+      value: `${info.auction.nominationsPerTeam}`,
+      id: 5
+    }, {
+      label: 'Time Before Auto-nomination:',
+      value: `${Utilities.secondsToDaysHoursMinsSecsStr(
+                  info.auction.secondsBeforeAutonomination)}`,
+      id: 6
+    }, {
+      label: 'Time Before Bids Expire:',
+      value: `${Utilities.secondsToDaysHoursMinsSecsStr(
+                  info.auction.bidTimeoutSeconds)}`,
+      id: 7
+    }];
+
+    const CaptionElement = () =>
+      <h3 style={{ borderRadius: '0.25em',
+                   textAlign: 'center',
+                   color: 'green',
+                   border: '1px solid green',
+                   padding: '0.5em' }}>
+        Auction Info</h3>;
+
+    return (
+      <Container>
+        <BootstrapTable
+          bootstrap4={ true }
+          caption={ <CaptionElement /> }
+          keyField='id'
+          data={ data }
+          columns={ columns }
+          striped
+          headerClasses="auction-info-header" />
+      </Container>
     );
   }
 }
