@@ -3,6 +3,8 @@ import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
+import Container from "react-bootstrap/Container";
+import Header from "../components/Header";
 import AuctionList from "../components/AuctionList";
 
 const GET_AUCTIONS_QUERY = gql`
@@ -21,7 +23,14 @@ const Home = () => (
     {({ data, loading, error }) => {
       if (loading) return <Loading />;
       if (error) return <Error error={error} />;
-      return <AuctionList auctions={data.auctions} />;
+      return (
+        <Container>
+          <Header
+            home='auctionlist'
+          />
+          <AuctionList auctions={data.auctions} />
+        </Container>
+      );
     }}
   </Query>
 );

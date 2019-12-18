@@ -4,6 +4,7 @@ import { Query } from "react-apollo";
 import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
+import Header from "../components/Header";
 import CurrentUserInTeam from "../components/CurrentUserInTeam";
 import Container from "react-bootstrap/Container";
 import TeamBids from "../components/TeamBids";
@@ -48,12 +49,18 @@ class Team extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <TeamContainer
-              teamId={ parseInt(teamId, 10) }
-              auctionId={ parseInt(data.team.auction.id, 10) }
-              auctionActive={ data.team.auction.active }
-              subscribeToAuctionStatusChanges={ subscribeToMore }
-            />
+            <Container>
+              <Header
+                home='team'
+                data={data.team}
+              />
+              <TeamContainer
+                teamId={ parseInt(teamId, 10) }
+                auctionId={ parseInt(data.team.auction.id, 10) }
+                auctionActive={ data.team.auction.active }
+                subscribeToAuctionStatusChanges={ subscribeToMore }
+              />
+            </Container>
           );
         }}
       </Query>

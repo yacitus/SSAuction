@@ -4,6 +4,7 @@ import { Query } from "react-apollo";
 import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
+import Header from "../components/Header";
 import Container from "react-bootstrap/Container";
 import AuctionBids from "../components/AuctionBids";
 import AuctionRosteredPlayers from "../components/AuctionRosteredPlayers";
@@ -52,12 +53,18 @@ class Auction extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <AuctionContainer
-              auctionId={ auctionId }
-              auctionActive={ data.auction.active }
-              startedOrPausedAt={ data.auction.startedOrPausedAt }
-              subscribeToAuctionStatusChanges={ subscribeToMore }
-            />
+            <Container>
+              <Header
+                home='auction'
+                data={data.auction}
+              />
+              <AuctionContainer
+                auctionId={ auctionId }
+                auctionActive={ data.auction.active }
+                startedOrPausedAt={ data.auction.startedOrPausedAt }
+                subscribeToAuctionStatusChanges={ subscribeToMore }
+              />
+            </Container>
           );
         }}
       </Query>

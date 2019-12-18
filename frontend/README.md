@@ -5,7 +5,6 @@
 # To Test
 
 # MVP Unfinished Features
-- put breadcrumbs in the header
 - show max bid in team info on team page (if current user in team)
 - show max bid in the modal bid forms
 

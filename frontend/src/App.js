@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Header from "./components/Header";
 import Home from "./pages/Home";
 import Auction from "./pages/Auction";
 import Team from "./pages/Team";
@@ -10,7 +9,6 @@ import NotFound from "./pages/NotFound";
 const App = () => (
   <BrowserRouter>
     <div id="app">
-      <Header />
       <div id="content">
         <Switch>
           <Route path="/" exact component={Home} />

@@ -177,7 +177,7 @@ header {
 			
 			li {
 				@extend .nav-item;
-        margin-right: 10px;
+				margin-right: 10px;
 
 				a {
 				 @extend .nav-link;
@@ -217,6 +217,30 @@ header {
 					i {
 						margin-right: 5px;
 					}
+				}
+			}
+		}
+
+		nav {
+			padding-top: 24px;
+			margin-bottom: 0px;
+
+			ol {
+				@extend .navbar-nav;
+				margin-left: auto;
+				text-transform: uppercase;
+				letter-spacing: 2px;
+
+				&.breadcrumb {
+					margin-top: 2px;
+					background: transparent;
+					color: $off-white;
+					border: 1px solid;
+					padding: 6px 10px;
+					letter-spacing: 2px;
+					border-radius: 12px;
+					text-transform: uppercase;
+					cursor: pointer;
 				}
 			}
 		}
