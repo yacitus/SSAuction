@@ -49,7 +49,8 @@ defmodule Ssauction.Mixfile do
       {:jason, "~> 1.0"},
       {:dataloader, "~> 1.0.6"},
       {:cors_plug, "~> 2.0"},
-      {:ecto_sql, "~> 3.0"}
+      {:ecto_sql, "~> 3.0"},
+      {:distillery, "~> 2.1"}
     ]
   end
 
