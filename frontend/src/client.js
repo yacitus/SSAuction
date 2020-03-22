@@ -10,12 +10,12 @@ import { Socket as PhoenixSocket } from "phoenix";
 
 const HTTP_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "https://your-unique-app-id.gigalixirapp.com/api"
+    ? "https://compassionate-live-arrowworm.gigalixirapp.com/api"
     : "http://localhost:4000/api";
 
 const WS_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "wss://your-unique-app-id.gigalixirapp.com/socket"
+    ? "wss://compassionate-live-arrowworm.gigalixirapp.com/socket"
     : "ws://localhost:4000/socket";
 
 // Create an HTTP link to the Phoenix app's HTTP endpoint URL.
