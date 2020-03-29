@@ -13,10 +13,14 @@ const HTTP_ENDPOINT =
     ? "https://compassionate-live-arrowworm.gigalixirapp.com/api"
     : "http://localhost:4000/api";
 
+console.log('HTTP_ENDPOINT: ' + HTTP_ENDPOINT);
+
 const WS_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? "wss://compassionate-live-arrowworm.gigalixirapp.com/socket"
     : "ws://localhost:4000/socket";
+
+console.log('WS_ENDPOINT: ' + WS_ENDPOINT);
 
 // Create an HTTP link to the Phoenix app's HTTP endpoint URL.
 const httpLink = createHttpLink({

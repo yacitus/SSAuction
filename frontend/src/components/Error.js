@@ -99,6 +99,7 @@ class Error extends Component {
         </>
       );
     } else {
+      console.log('ERROR (misc): ' + error.message);
       errorMessage = (
         <>
           <h3>Whoops!</h3>
