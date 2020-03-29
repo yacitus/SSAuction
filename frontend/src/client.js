@@ -8,6 +8,8 @@ import * as AbsintheSocket from "@absinthe/socket";
 import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
 import { Socket as PhoenixSocket } from "phoenix";
 
+console.log('process.env.NODE_ENV: ' + process.env.NODE_ENV);
+
 const HTTP_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? "https://compassionate-live-arrowworm.gigalixirapp.com/api"
