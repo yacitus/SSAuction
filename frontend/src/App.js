@@ -6,6 +6,8 @@ import Team from "./pages/Team";
 import Signin from "./pages/Signin";
 import NotFound from "./pages/NotFound";
 
+console.log('top of App.js');
+
 const App = () => (
   <BrowserRouter>
     <div id="app">
