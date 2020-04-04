@@ -5,7 +5,7 @@ const express = require('express');
 let wss;
 let server;
 const app = express();
-app.use(express.static(path.join(__dirname, './../build')));
+app.use(express.static(path.join(__dirname, './build')));
 
 server = new http.createServer(app);
 
