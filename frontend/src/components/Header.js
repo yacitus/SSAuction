@@ -42,7 +42,7 @@ class Header extends Component {
           <header>
             <nav>
               <NavLink className="logo" to="/">
-                <Image className="icon" src="http://localhost:4000/images/ship-steering-wheel-32.png" />
+                <Image className="icon" src="public/ship-steering-wheel-32.png" />
                 <span className="head">SS</span>
                 <span className="tail">auction</span>
               </NavLink>
