@@ -15,7 +15,7 @@ defmodule Ssauction.Application do
 
       supervisor(Absinthe.Subscription, [SsauctionWeb.Endpoint]),
 
-      # worker(Ssauction.PeriodicCheck, [])
+      worker(Ssauction.PeriodicCheck, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
