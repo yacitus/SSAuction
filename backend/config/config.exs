@@ -6,7 +6,7 @@
 use Mix.Config
 
 config :cors_plug,
-  origin: ["https://ssauction.herokuapp.com"],
+  origin: ["https://ssauction.herokuapp.com", "http://localhost:3000"],
   max_age: 86400,
   methods: ["GET", "POST"]
 

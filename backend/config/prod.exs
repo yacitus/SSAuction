@@ -33,8 +33,13 @@ config :ssauction, Ssauction.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: "${DATABASE_URL}",
   database: "",
-  ssl: true,
+  ssl: false,
   pool_size: 2 # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections where n is the number of app replicas.
+
+config :cors_plug,
+  origin: ["https://ssauction.herokuapp.com"],
+  max_age: 86400,
+  methods: ["GET", "POST"]
 
 # Do not print debug messages in production
 config :logger, level: :info
