@@ -19,13 +19,17 @@ defmodule Ssauction.SingleAuction do
   def create_auction(name: name,
                      year_range: year_range,
                      players_per_team: players_per_team,
-                     team_dollars_per_player: team_dollars_per_player) do
+                     team_dollars_per_player: team_dollars_per_player,
+                     bid_timeout_seconds: bid_timeout_seconds,
+                     started_or_paused_at: started_or_paused_at) do
     auction =
       %Auction{
         name: name,
         year_range: year_range,
         players_per_team: players_per_team,
         team_dollars_per_player: team_dollars_per_player,
+        bid_timeout_seconds: bid_timeout_seconds,
+        started_or_paused_at: started_or_paused_at
         } |> Repo.insert!
 
     q = from p in AllPlayer,
