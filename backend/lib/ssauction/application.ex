@@ -14,9 +14,14 @@ defmodule Ssauction.Application do
       supervisor(SsauctionWeb.Endpoint, []),
 
       supervisor(Absinthe.Subscription, [SsauctionWeb.Endpoint]),
-
-      worker(Ssauction.PeriodicCheck, [])
     ]
+
+    children
+    = if System.get_env("PERIODIC_CHECK") == "ON" do
+        Enum.concat(children, [worker(Ssauction.PeriodicCheck, [])])
+      else
+        children
+      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
