@@ -53,9 +53,9 @@ now = DateTime.truncate(now, :second)
 
 auction = SingleAuction.create_auction(name: "Test Auction",
                                        year_range: year_range,
-                                       players_per_team: 3,
+                                       players_per_team: 10,
                                        team_dollars_per_player: 10,
-                                       bid_timeout_seconds: 60*10,
+                                       bid_timeout_seconds: 60*60,
                                        started_or_paused_at: now)
 
 #
