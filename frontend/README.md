@@ -22,6 +22,7 @@
 - use Dataloader wherever possible
 - (re-)enable authentication and authorization checks for nominationQueue field of queries returning team info
 - (re-)enable authentication and authorization checks for hidden_high_bid field in all queries and subscriptions
+- Supervisor.Spec module used in backend/lib/ssauction/application.ex is deprecated: https://stackoverflow.com/a/61312844/4766
 
 # Post MVP Feature Priority
 - user invitations (including to new or existing team)

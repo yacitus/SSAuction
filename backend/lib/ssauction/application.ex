@@ -1,6 +1,10 @@
 defmodule Ssauction.Application do
   use Application
 
+  defp append_if(list, condition, item) do
+    if condition, do: list ++ [item], else: list
+  end
+
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
@@ -15,13 +19,8 @@ defmodule Ssauction.Application do
 
       supervisor(Absinthe.Subscription, [SsauctionWeb.Endpoint]),
     ]
-
-    children
-    = if System.get_env("PERIODIC_CHECK") == "ON" do
-        Enum.concat(children, [worker(Ssauction.PeriodicCheck, [])])
-      else
-        children
-      end
+    |> append_if(System.get_env("PERIODIC_CHECK") == "ON",
+                 worker(Ssauction.PeriodicCheck, []))
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
