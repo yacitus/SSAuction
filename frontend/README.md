@@ -1,5 +1,9 @@
 ## Known Bugs
 - the "Expires In" time is reset if the team with the current high bid changes their hidden max bid
+- "$ Bid" in the Teams table of the auction page is not calculated correctly after bidding closes on players——it will even show negative numbers
+- any click that opens a new page should be a link:
+  • team names on the auction page
+  • auction names on the index page
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 
