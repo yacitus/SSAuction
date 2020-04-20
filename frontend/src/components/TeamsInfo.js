@@ -86,6 +86,10 @@ class TeamsInfoTable extends Component {
   render() {
     const { teams } = this.props;
 
+    function nameFormatter(cell, row) {
+      return ( <a href={'/team/' + row.id}>{cell}</a> );
+    }
+
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
     }
@@ -102,7 +106,8 @@ class TeamsInfoTable extends Component {
 
     const columns = [{
       dataField: 'name',
-      text: 'Team'
+      text: 'Team',
+      formatter: nameFormatter
     }, {
       dataField: 'dollarsSpent',
       text: '$ Spent',

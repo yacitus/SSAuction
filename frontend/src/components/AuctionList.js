@@ -18,12 +18,17 @@ class AuctionList extends Component {
       return (cell ? '✅' : '❌');
     }
 
+    function nameFormatter(cell, row) {
+      return ( <a href={'auction/' + row.id}>{cell}</a> );
+    }
+
     const columns = [{
       dataField: 'id',
       text: 'ID'
     }, {
       dataField: 'name',
-      text: 'Name'
+      text: 'Name',
+      formatter: nameFormatter
     }, {
       dataField: 'yearRange',
       text: 'Years'
