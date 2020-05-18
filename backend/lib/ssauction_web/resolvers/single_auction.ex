@@ -39,6 +39,14 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.list_bids_in_auction!(auction)}
   end
 
+  def team_dollars_spent(team, _, _) do
+    {:ok, SingleAuction.team_dollars_spent(team)}
+  end
+
+  def team_dollars_bid(team, _, _) do
+    {:ok, SingleAuction.team_dollars_bid(team)}
+  end
+
   def team_dollars_remaining_for_bids(team, _, _) do
     {:ok, SingleAuction.team_dollars_remaining_for_bids(team)}
   end

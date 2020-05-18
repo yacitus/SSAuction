@@ -248,8 +248,12 @@ defmodule SsauctionWeb.Schema.Schema do
   object :team do
     field :id, non_null(:id)
     field :name, non_null(:string)
-    field :dollars_spent, non_null(:integer)
-    field :dollars_bid, non_null(:integer)
+    field :dollars_spent, non_null(:integer) do
+      resolve &Resolvers.SingleAuction.team_dollars_spent/3
+    end
+    field :dollars_bid, non_null(:integer) do
+      resolve &Resolvers.SingleAuction.team_dollars_bid/3
+    end
     field :dollars_remaining_for_bids, non_null(:integer) do
       resolve &Resolvers.SingleAuction.team_dollars_remaining_for_bids/3
     end

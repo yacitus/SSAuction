@@ -114,10 +114,10 @@ defmodule Ssauction.SingleAuction do
     rostered_player = Ecto.build_assoc(auction, :rostered_players, rostered_player)
     Repo.insert!(rostered_player)
     nominating_team = get_team_by_id!(bid.nominated_by)
-    team
-    |> Team.changeset(%{dollars_spent: team.dollars_spent + bid.bid_amount,
-                        dollars_bid: team.dollars_bid - bid.bid_amount})
-    |> Repo.update
+    # team
+    # |> Team.changeset(%{dollars_spent: team.dollars_spent + bid.bid_amount,
+    #                     dollars_bid: team.dollars_bid - bid.bid_amount})
+    # |> Repo.update
     player
     |> Ecto.Changeset.change(%{bid_id: nil})
     |> Repo.update
@@ -151,7 +151,7 @@ defmodule Ssauction.SingleAuction do
     {:ok, now} = DateTime.now("Etc/UTC")
     team
     |> Team.changeset(%{unused_nominations: team.unused_nominations-1,
-                        dollars_bid: team.dollars_bid+args.bid_amount,
+                        # dollars_bid: team.dollars_bid+args.bid_amount,
                         time_of_last_nomination: now})
     |> Repo.update
     publish_team_info_change(team.id)
@@ -453,6 +453,40 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Returns all open bids for a team
+
+  """
+  def open_bids(team = %Team{}) do
+    team_bids = from t in Team,
+                  where: t.id == ^team.id,
+                  join: bids in assoc(t, :bids),
+                  select: bids
+    Repo.all(from b in subquery(team_bids), where: not b.closed)
+  end
+
+  @doc """
+  Returns the number of dollars the team has in open bids (not counting hidden high bids)
+
+  """
+
+  def team_dollars_bid(team = %Team{}) do
+    Enum.sum(for b <- open_bids(team), do: b.bid_amount)
+  end
+
+  @doc """
+  Returns the number of dollars the team has spent
+
+  """
+
+  def team_dollars_spent(team = %Team{}) do
+    rostered_players =
+    team
+    |> Ecto.assoc(:rostered_players)
+    |> Repo.all
+    Enum.sum(for p <- rostered_players, do: p.cost)
+  end
+
+  @doc """
   Returns the number of dollars the team has left to bid
 
   """
@@ -463,7 +497,8 @@ defmodule Ssauction.SingleAuction do
   end
 
   def team_dollars_remaining_for_bids(auction = %Auction{}, team = %Team{}) do
-    dollars_left = dollars_per_team(auction) - (team.dollars_spent + team.dollars_bid)
+    dollars_left = dollars_per_team(auction) \
+                    - (team_dollars_spent(team) + team_dollars_bid(team))
     dollars_left - (auction.players_per_team \
                     - number_of_rostered_players_in_team(team) \
                     - number_of_bids_for_team(team))

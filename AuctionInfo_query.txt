@@ -1,0 +1,8 @@
+query AuctionInfo($id: Int!) {
+  auction(id: $id) {
+    id
+    name
+    active
+    bidTimeoutSeconds
+  }
+}

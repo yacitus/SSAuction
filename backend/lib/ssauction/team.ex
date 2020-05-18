@@ -4,8 +4,6 @@ defmodule Ssauction.Team do
 
   schema "teams" do
     field :name, :string
-    field :dollars_spent, :integer, default: 0
-    field :dollars_bid, :integer, default: 0
     field :unused_nominations, :integer, default: 2
     field :time_of_last_nomination, :utc_datetime
 

@@ -1,2 +1,4 @@
 misc/*
 env/*
+db.dump
+db.sql
