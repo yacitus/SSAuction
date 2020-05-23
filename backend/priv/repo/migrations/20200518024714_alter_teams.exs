@@ -3,8 +3,8 @@ defmodule Ssauction.Repo.Migrations.AlterTeams do
 
   def change do
     alter table(:teams) do
-	  remove :dollars_spent
-	  remove :dollars_bid
-	end
+      remove :dollars_spent
+      remove :dollars_bid
+    end
   end
 end

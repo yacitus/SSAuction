@@ -37,7 +37,7 @@ config :ssauction, Ssauction.Repo,
   pool_size: 2 # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections where n is the number of app replicas.
 
 config :cors_plug,
-  origin: ["https://ssauction.herokuapp.com"],
+  origin: ["https://ssauction.herokuapp.com", "http://localhost:3000"],
   max_age: 86400,
   methods: ["GET", "POST"]
 
