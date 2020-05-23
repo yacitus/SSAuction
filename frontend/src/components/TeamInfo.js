@@ -95,7 +95,7 @@ class TeamInfoTable extends Component {
 
     function valueFormatter(cell, row) {
       if (row.id === 4) {
-        if (cell === null) {
+        if (cell === "null") {
           return '';
         } else {
           return (<Moment format="llll">
