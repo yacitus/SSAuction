@@ -23,7 +23,7 @@ class Header extends Component {
     } else if (home === 'team') {
       breadcrumbs = (<Breadcrumb>
                        <Breadcrumb.Item href={"/auction/" + this.props.data.auction.id}>
-                         Auction: {this.props.data.auction.name} ({this.props.data.auction.id})
+                         Auction: {this.props.data.auction.name} (#{this.props.data.auction.id})
                        </Breadcrumb.Item>
                        <Breadcrumb.Item active>Team: {this.props.data.name}</Breadcrumb.Item>
                      </Breadcrumb>);
