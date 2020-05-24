@@ -17,7 +17,7 @@ defmodule Ssauction.Team do
   end
 
   def changeset(team, params \\ %{}) do
-    required_fields = [:name, :dollars_spent, :dollars_bid, :unused_nominations]
+    required_fields = [:name, :unused_nominations]
     optional_fields = [:time_of_last_nomination]
 
     team
