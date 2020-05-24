@@ -1,10 +1,15 @@
 ## Known Bugs
+- Tom was able to set Hidden Max Bids totaling more than the limit
+- nominated players remain in the nomination queue
+- "Unused Nominations" unchanged after nominations
 - the "Expires In" time is reset if the team with the current high bid changes their hidden max bid
-- "$ Bid" in the Teams table of the auction page is not calculated correctly after bidding closes on players——it will even show negative numbers
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 
 # To Test
+
+# Fixed?
+- "$ Bid" in the Teams table of the auction page is not calculated correctly after bidding closes on players——it will even show negative numbers
 
 # MVP Unfinished Features
 - show max bid in team info on team page (if current user in team)
