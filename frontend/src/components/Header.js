@@ -17,7 +17,7 @@ class Header extends Component {
     } else if (home === 'auction') {
       breadcrumbs = (<Breadcrumb>
                        <Breadcrumb.Item active>
-                         Auction: {this.props.data.name} ({this.props.data.id})
+                         Auction: {this.props.data.name} (#{this.props.data.id})
                        </Breadcrumb.Item>
                      </Breadcrumb>);
     } else if (home === 'team') {

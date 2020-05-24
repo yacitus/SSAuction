@@ -10,19 +10,17 @@ import { Socket as PhoenixSocket } from "phoenix";
 
 console.log('process.env.NODE_ENV: ' + process.env.NODE_ENV);
 
-const HTTP_ENDPOINT = "https://compassionate-live-arrowworm.gigalixirapp.com/api";
-// const HTTP_ENDPOINT =
-//   process.env.NODE_ENV === "production"
-//     ? "https://compassionate-live-arrowworm.gigalixirapp.com/api"
-//     : "http://localhost:4000/api";
+const HTTP_ENDPOINT =
+  process.env.NODE_ENV === "production"
+    ? "https://compassionate-live-arrowworm.gigalixirapp.com/api"
+    : "http://localhost:4000/api";
 
 console.log('HTTP_ENDPOINT: ' + HTTP_ENDPOINT);
 
-const WS_ENDPOINT = "wss://compassionate-live-arrowworm.gigalixirapp.com/socket";
-// const WS_ENDPOINT =
-//   process.env.NODE_ENV === "production"
-//     ? "wss://compassionate-live-arrowworm.gigalixirapp.com/socket"
-//     : "ws://localhost:4000/socket";
+const WS_ENDPOINT =
+  process.env.NODE_ENV === "production"
+    ? "wss://compassionate-live-arrowworm.gigalixirapp.com/socket"
+    : "ws://localhost:4000/socket";
 
 console.log('WS_ENDPOINT: ' + WS_ENDPOINT);
 
