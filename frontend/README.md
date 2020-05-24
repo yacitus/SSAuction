@@ -3,6 +3,7 @@
 - nominated players remain in the nomination queue
 - "Unused Nominations" unchanged after nominations
 - the "Expires In" time is reset if the team with the current high bid changes their hidden max bid
+- Rostered Players not auto-updating after a bid expires
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 
