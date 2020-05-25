@@ -1,6 +1,6 @@
 ## Known Bugs
-- Tom was able to set Hidden Max Bids totaling more than the limit
-- bid not removed from team bids table when another team outbids
+- bid not removed from team page bids table when another team outbids
+- toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 

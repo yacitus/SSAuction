@@ -474,6 +474,16 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Returns the number of dollars the team has in open bids (counting hidden high bids)
+
+  """
+
+  defp team_dollars_bid_including_hidden(team = %Team{}) do
+    Enum.sum(for b <- open_bids(team),
+             do: calculate_max_bid_vs_hidden_high_bid(b.bid_amount, b.hidden_high_bid))
+  end
+
+  @doc """
   Returns the number of dollars the team has spent
 
   """
@@ -498,7 +508,7 @@ defmodule Ssauction.SingleAuction do
 
   def team_dollars_remaining_for_bids(auction = %Auction{}, team = %Team{}) do
     dollars_left = dollars_per_team(auction) \
-                    - (team_dollars_spent(team) + team_dollars_bid(team))
+                    - (team_dollars_spent(team) + team_dollars_bid_including_hidden(team))
     dollars_left - (auction.players_per_team \
                     - number_of_rostered_players_in_team(team) \
                     - number_of_bids_for_team(team))
