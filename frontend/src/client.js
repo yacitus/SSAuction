@@ -10,6 +10,7 @@ import { Socket as PhoenixSocket } from "phoenix";
 
 console.log('process.env.NODE_ENV: ' + process.env.NODE_ENV);
 
+// const HTTP_ENDPOINT = "https://compassionate-live-arrowworm.gigalixirapp.com/api";
 const HTTP_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? "https://compassionate-live-arrowworm.gigalixirapp.com/api"
@@ -17,6 +18,7 @@ const HTTP_ENDPOINT =
 
 console.log('HTTP_ENDPOINT: ' + HTTP_ENDPOINT);
 
+// const WS_ENDPOINT = "wss://compassionate-live-arrowworm.gigalixirapp.com/socket";
 const WS_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? "wss://compassionate-live-arrowworm.gigalixirapp.com/socket"

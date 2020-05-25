@@ -18,6 +18,7 @@ const TEAM_INFO_QUERY = gql`
       dollarsRemainingForBids
       unusedNominations
       timeOfLastNomination
+      numRosteredPlayers
     }
   }
 `;
@@ -32,6 +33,7 @@ const TEAM_INFO_CHANGE_SUBSCRIPTION = gql`
       dollarsRemainingForBids
       unusedNominations
       timeOfLastNomination
+      numRosteredPlayers
     }
   }
 `;
@@ -136,6 +138,10 @@ class TeamInfoTable extends Component {
       label: 'Time of Last Nomination',
       value: `${team.timeOfLastNomination}`,
       id: 4
+    }, {
+      label: 'Players Rostered',
+      value: `${team.numRosteredPlayers}`,
+      id: 5
     }];
 
     const CaptionElement = () =>
