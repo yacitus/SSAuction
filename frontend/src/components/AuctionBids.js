@@ -157,6 +157,7 @@ class AuctionBidsTable extends Component {
       let columns = [{
         dataField: 'team.name',
         text: 'Team',
+        formatter: nameFormatter
       }, {
         dataField: 'player.name',
         text: 'Player',
@@ -188,6 +189,10 @@ class AuctionBidsTable extends Component {
       }
 
       return columns;
+    }
+
+    function nameFormatter(cell, row) {
+      return ( <a href={'/team/' + row.team.id}>{cell}</a> );
     }
 
     function dollarsFormatter(cell, row) {

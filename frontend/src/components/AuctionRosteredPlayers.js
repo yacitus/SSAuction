@@ -100,13 +100,18 @@ class AuctionRosteredPlayersTable extends Component {
   render() {
     const { rosteredPlayers } = this.props;
 
+    function nameFormatter(cell, row) {
+      return ( <a href={'/team/' + row.team.id}>{cell}</a> );
+    }
+
     function dollarsFormatter(cell, row) {
         return (`$${cell}`);
     }
 
     const columns = [{
       dataField: 'team.name',
-      text: 'Team'
+      text: 'Team',
+      formatter: nameFormatter
     }, {
       dataField: 'cost',
       text: 'Cost',
