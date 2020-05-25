@@ -129,6 +129,10 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
+  def num_rostered_players(team, _, _) do
+    {:ok, SingleAuction.number_of_rostered_players_in_team(team)}
+  end
+
   def nominations_open?(team, _, _) do
     auction = SingleAuction.get_auction_by_id!(team.auction_id)
     cond do

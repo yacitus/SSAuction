@@ -268,6 +268,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :rostered_players, list_of(:rostered_player) do
       resolve dataloader(SingleAuction, :rostered_players, args: %{scope: :team})
     end
+    field :num_rostered_players, non_null(:integer) do
+      resolve &Resolvers.SingleAuction.num_rostered_players/3
+    end
     field :nomination_queue, list_of(:ordered_player) do
       # middleware Middleware.Authenticate
       # middleware Middleware.AuthorizeUserInTeam
