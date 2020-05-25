@@ -253,6 +253,12 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
   defp submit_bid_changeset(auction, team, player, args, nil) do
     args = add_expires_at_to_args(args, auction)
 
+    args = if not Map.has_key?(args, :hidden_high_bid) do
+      Map.put(args, :hidden_high_bid, nil)
+    else
+      args
+    end
+
     case SingleAuction.submit_new_bid(auction, team, player, args) do
       {:error, changeset} ->
         {
@@ -271,7 +277,12 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
   end
 
   defp submit_bid_changeset(auction, team, _player, args, existing_bid) do
-    args = add_expires_at_to_args(args, auction)
+    args = if team.id != existing_bid.team_id do
+      add_expires_at_to_args(args, auction)
+    else
+      args
+    end
+
     args = if not Map.has_key?(args, :hidden_high_bid) do
       Map.put(args, :hidden_high_bid, nil)
     else

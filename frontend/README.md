@@ -1,7 +1,6 @@
 ## Known Bugs
 - Tom was able to set Hidden Max Bids totaling more than the limit
-- the "Expires In" time is reset if the team with the current high bid changes their hidden max bid
-- Rostered Players not auto-updating after a bid expires
+- bid not removed from team bids table when another team outbids
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
 
@@ -16,6 +15,7 @@
 # MVP Unfinished Features
 - show max bid in team info on team page (if current user in team)
 - show max bid in the modal bid forms
+- allow change to number of players shown on Rostered Players table on auction page--like how the player selection table works under the nomination queue on the team pages
 
 # Pre MVP-Deploy Fixes
 - fix `http://localhost:4000/...` in Header.js Image src
