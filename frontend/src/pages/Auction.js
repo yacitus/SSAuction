@@ -118,8 +118,8 @@ class AuctionContainer extends Component {
                 teamId={ data && data.meTeam ? data.meTeam.id : null }
                 auctionActive={ this.state.auctionActive }
                 startedOrPausedAt={ this.state.startedOrPausedAt } />
-              <AuctionRosteredPlayers auctionId={ auctionId } />
               <TeamsInfo auctionId={ auctionId } />
+              <AuctionRosteredPlayers auctionId={ auctionId } />
               <AuctionInfo
                 auctionId={ auctionId }
                 auctionActive={ this.state.auctionActive } />
