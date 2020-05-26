@@ -90,7 +90,11 @@ const TeamPlusOneButtonMutator = (props) => {
     });
   }, [props]);
 
-  const [submitBid] = useMutation(SUBMIT_BID_MUTATION);
+  const [submitBid] = useMutation(SUBMIT_BID_MUTATION, {
+        onError(err) {
+            console.log(err);
+        },
+  });
 
   return (
     <div>

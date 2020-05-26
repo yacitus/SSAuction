@@ -102,7 +102,11 @@ const NominateBidFormModal = (props) => {
     });
   }, [props]);
 
-  const [submitBid] = useMutation(SUBMIT_BID_MUTATION);
+  const [submitBid] = useMutation(SUBMIT_BID_MUTATION, {
+        onError(err) {
+            console.log(err);
+        },
+  });
 
   const handleSubmitBid = () => {
     submitBid({ variables: { auction_id: parseInt(props.auctionId, 10),

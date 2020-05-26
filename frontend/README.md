@@ -7,15 +7,15 @@
 # To Test
 
 # Fixed?
-- "$ Bid" in the Teams table of the auction page is not calculated correctly after bidding closes on players——it will even show negative numbers
-- nominated players remain in the nomination queue
-- "Unused Nominations" unchanged after nominations
-- Time of Last Nomination in Team Info not displaying
 
 # MVP Unfinished Features
 - show max bid in team info on team page (if current user in team)
 - show max bid in the modal bid forms
+- make pages (especially header) look better on my iPhone
+- invitation system for creating logins and teams
+- auction admin page (or at least GraphQL mutation) for creating new auctions
 - allow change to number of players shown on Rostered Players table on auction page--like how the player selection table works under the nomination queue on the team pages
+- download rosters as a CSV
 
 # Pre MVP-Deploy Fixes
 - fix `http://localhost:4000/...` in Header.js Image src
