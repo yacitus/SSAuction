@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Container from "react-bootstrap/Container";
 import NominationQueueTable from "../components/NominationQueueTable";
 import NominationQueuePlayerSearch from "../components/NominationQueuePlayerSearch";
 
@@ -9,13 +8,13 @@ class NominationQueue extends Component {
     const auctionId = parseInt(this.props.auctionId, 10);
 
     return (
-      <Container>
+      <div>
         <NominationQueueTable
           teamId={ teamId }
           auctionId={ auctionId } />
         <NominationQueuePlayerSearch
           teamId={ teamId } />
-      </Container>
+      </div>
     );
   }
 }

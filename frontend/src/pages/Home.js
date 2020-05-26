@@ -3,7 +3,6 @@ import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import Container from "react-bootstrap/Container";
 import Header from "../components/Header";
 import AuctionList from "../components/AuctionList";
 
@@ -24,12 +23,12 @@ const Home = () => (
       if (loading) return <Loading />;
       if (error) return <Error error={error} />;
       return (
-        <Container>
+        <div>
           <Header
             home='auctionlist'
           />
           <AuctionList auctions={data.auctions} />
-        </Container>
+        </div>
       );
     }}
   </Query>

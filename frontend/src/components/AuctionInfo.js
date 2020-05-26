@@ -4,7 +4,6 @@ import { Query } from "react-apollo";
 import { Mutation } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 import Moment from 'react-moment';
 import CurrentUserAuctionAdmin from "../components/CurrentUserAuctionAdmin";
@@ -97,7 +96,7 @@ class AuctionInfoTable extends Component {
         return (
           <CurrentUserAuctionAdmin auctionId={ auctionId }>
             {currentUserAuctionAdmin => (
-              <Container>
+              <div>
                 {currentUserAuctionAdmin && (
                     <ToggleAuctionSwitch
                       auctionId={ auctionId }
@@ -107,7 +106,7 @@ class AuctionInfoTable extends Component {
                 {!currentUserAuctionAdmin && (
                   auctionActive ? '✅' : '❌'
                 )}
-              </Container>
+              </div>
             )}
           </CurrentUserAuctionAdmin>
         );
@@ -176,7 +175,7 @@ class AuctionInfoTable extends Component {
         Auction Info</h3>;
 
     return (
-      <Container>
+      <div>
         <BootstrapTable
           bootstrap4={ true }
           caption={ <CaptionElement /> }
@@ -185,7 +184,7 @@ class AuctionInfoTable extends Component {
           columns={ columns }
           striped
           headerClasses="auction-info-header" />
-      </Container>
+      </div>
     );
   }
 }

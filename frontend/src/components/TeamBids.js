@@ -5,7 +5,6 @@ import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Countdown from "../components/Countdown";
-import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 import './tables.css';
 
@@ -152,7 +151,7 @@ class TeamBidsTable extends Component {
         Bids</h3>;
 
     return (
-      <Container>
+      <div>
         <BootstrapTable
           bootstrap4={ true }
           caption={ <CaptionElement /> }
@@ -160,7 +159,7 @@ class TeamBidsTable extends Component {
           data={ bids }
           columns={ columns }
           striped />
-      </Container>
+      </div>
     );
   }
 }

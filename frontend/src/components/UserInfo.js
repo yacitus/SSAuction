@@ -3,7 +3,6 @@ import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 
 
@@ -70,7 +69,7 @@ class UserInfo extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <Container>
+            <div>
               <BootstrapTable
                 bootstrap4={ true }
                 caption={ <CaptionElement /> }
@@ -78,7 +77,7 @@ class UserInfo extends Component {
                 data={ data.team.users }
                 columns={ columns }
                 striped />
-            </Container>
+            </div>
           );
         }}
       </Query>

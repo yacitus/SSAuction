@@ -6,7 +6,6 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Header from "../components/Header";
 import CurrentUserInTeam from "../components/CurrentUserInTeam";
-import Container from "react-bootstrap/Container";
 import TeamBids from "../components/TeamBids";
 import TeamAuthorizedBids from "../components/TeamAuthorizedBids";
 import NominationQueue from "../components/NominationQueue";
@@ -49,7 +48,7 @@ class Team extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <Container>
+            <div>
               <Header
                 home='team'
                 data={data.team}
@@ -60,7 +59,7 @@ class Team extends Component {
                 auctionActive={ data.team.auction.active }
                 subscribeToAuctionStatusChanges={ subscribeToMore }
               />
-            </Container>
+            </div>
           );
         }}
       </Query>
@@ -106,7 +105,7 @@ class TeamContainer extends Component {
     return (
       <CurrentUserInTeam teamId={ teamId }>
         {currentUserInTeam => (
-          <Container>
+          <div>
             {!currentUserInTeam && (
               <TeamBids
                 teamId={ teamId }
@@ -130,7 +129,7 @@ class TeamContainer extends Component {
             <TeamRosteredPlayers teamId={ teamId } />
             <TeamInfo teamId={ teamId } />
             <UserInfo teamId={ teamId } />
-          </Container>
+          </div>
         )}
       </CurrentUserInTeam>
     );

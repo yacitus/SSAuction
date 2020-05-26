@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 
 const TEAM_ROSTERED_PLAYERS_QUERY = gql`
@@ -117,7 +116,7 @@ class TeamRosteredPlayersTable extends Component {
         Rostered Players</h3>;
 
     return (
-      <Container>
+      <div>
         <BootstrapTable
           bootstrap4={ true }
           caption={ <CaptionElement /> }
@@ -125,7 +124,7 @@ class TeamRosteredPlayersTable extends Component {
           data={ rosteredPlayers }
           columns={ columns }
           striped />
-      </Container>
+      </div>
     );
   }
 }

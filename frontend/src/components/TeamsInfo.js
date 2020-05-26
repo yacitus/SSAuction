@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 
 const TEAMS_INFO_QUERY = gql`
@@ -145,7 +144,7 @@ class TeamsInfoTable extends Component {
     };
 
     return (
-      <Container>
+      <div>
         <BootstrapTable
           bootstrap4={ true }
           caption={ <CaptionElement /> }
@@ -155,7 +154,7 @@ class TeamsInfoTable extends Component {
           rowEvents={ rowEvents }
           striped
           hover />
-      </Container>
+      </div>
     );
   }
 }

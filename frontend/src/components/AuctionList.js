@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import NoData from "./NoData";
-import Container from "react-bootstrap/Container";
 import BootstrapTable from 'react-bootstrap-table-next';
 
 class AuctionList extends Component {
@@ -53,7 +52,7 @@ class AuctionList extends Component {
     };
 
     return (
-      <Container>
+      <div>
         <BootstrapTable
           bootstrap4={ true }
           caption={ <CaptionElement /> }
@@ -63,7 +62,7 @@ class AuctionList extends Component {
           rowEvents={ rowEvents }
           striped
           hover />
-      </Container>
+      </div>
     );
   }
 }

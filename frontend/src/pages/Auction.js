@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import Header from "../components/Header";
-import Container from "react-bootstrap/Container";
 import AuctionBids from "../components/AuctionBids";
 import AuctionRosteredPlayers from "../components/AuctionRosteredPlayers";
 import TeamsInfo from "../components/TeamsInfo";
@@ -53,7 +52,7 @@ class Auction extends Component {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
           return (
-            <Container>
+            <div>
               <Header
                 home='auction'
                 data={data.auction}
@@ -64,7 +63,7 @@ class Auction extends Component {
                 startedOrPausedAt={ data.auction.startedOrPausedAt }
                 subscribeToAuctionStatusChanges={ subscribeToMore }
               />
-            </Container>
+            </div>
           );
         }}
       </Query>
@@ -112,7 +111,7 @@ class AuctionContainer extends Component {
         variables={{ auction_id: auctionId }}>
         {({ data, loading, error }) => {
           return (
-            <Container>
+            <div>
               <AuctionBids
                 auctionId={ auctionId }
                 teamId={ data && data.meTeam ? data.meTeam.id : null }
@@ -123,7 +122,7 @@ class AuctionContainer extends Component {
               <AuctionInfo
                 auctionId={ auctionId }
                 auctionActive={ this.state.auctionActive } />
-            </Container>
+            </div>
           );
         }}
       </Query>
