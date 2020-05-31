@@ -1,4 +1,6 @@
 ## Known Bugs
+- no error message displayed when I set a hidden max bid too high when nominating
+- team page shows "$ Remaining for Bids" including hidden max bids to anyone (not just users in the team)
 - bid not removed from team page bids table when another team outbids
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
@@ -11,9 +13,10 @@
 # MVP Unfinished Features
 - show max bid in team info on team page (if current user in team)
 - show max bid in the modal bid forms
-- make pages (especially header) look better on my iPhone
-- invitation system for creating logins and teams
-- auction admin page (or at least GraphQL mutation) for creating new auctions
+- make pages (especially header when rotated) look better on my iPhone
+- tweak whitespace, margins, etc.
+- auction invitation system for creating logins and teams
+- site admin page (or at least GraphQL mutation) for creating new auctions
 - allow change to number of players shown on Rostered Players table on auction page--like how the player selection table works under the nomination queue on the team pages
 - download rosters as a CSV
 
