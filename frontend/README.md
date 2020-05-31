@@ -1,6 +1,5 @@
 ## Known Bugs
 - no error message displayed when I set a hidden max bid too high when nominating
-- team page shows "$ Remaining for Bids" including hidden max bids to anyone (not just users in the team)
 - bid not removed from team page bids table when another team outbids
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
@@ -19,6 +18,7 @@
 - site admin page (or at least GraphQL mutation) for creating new auctions
 - allow change to number of players shown on Rostered Players table on auction page--like how the player selection table works under the nomination queue on the team pages
 - download rosters as a CSV
+- display team info differently when "authorized" - included hidden bids in "$ Remaining for Bids"
 
 # Pre MVP-Deploy Fixes
 - fix `http://localhost:4000/...` in Header.js Image src
