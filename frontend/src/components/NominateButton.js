@@ -102,7 +102,7 @@ const NominateBidFormModal = (props) => {
     });
   }, [props]);
 
-  const [submitBid] = useMutation(SUBMIT_BID_MUTATION, {
+  const [submitBid, {error: mutationError}] = useMutation(SUBMIT_BID_MUTATION, {
         onError(err) {
             console.log(err);
         },
@@ -158,6 +158,7 @@ const NominateBidFormModal = (props) => {
         variant="outline-success">
         Nominate
       </Button>
+      { mutationError && <Error error={mutationError} /> }
     </div>
   );
 };

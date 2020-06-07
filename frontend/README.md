@@ -1,5 +1,4 @@
 ## Known Bugs
-- no error message displayed when nominating with an invalid bid (bid or hidden max bid too high)
 - bid not removed from team page bids table when another team outbids
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
