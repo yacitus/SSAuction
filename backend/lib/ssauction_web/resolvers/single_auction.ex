@@ -299,6 +299,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
       {:ok, bid} ->
         publish_bid_change(auction, team)
+        previous_team = SingleAuction.get_team_by_id!(existing_bid.team_id)
+        publish_bid_change(auction, previous_team)
         {:ok, bid}
     end
   end
