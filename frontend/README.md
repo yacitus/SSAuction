@@ -10,7 +10,6 @@
 # MVP Unfinished Features
 - show max bid allowed in team info on team page (if current user in team)
 - show max bid allowed in the modal bid forms
-- change "Team Users" table name to "Team Owners"
 - add team name to the top of the "Team Info" table (on the team page)
 - make pages (especially header when rotated) look better on my iPhone
 - tweak whitespace, margins, etc.

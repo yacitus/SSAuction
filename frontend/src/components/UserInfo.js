@@ -59,7 +59,7 @@ class UserInfo extends Component {
                    color: 'green',
                    border: '1px solid green',
                    padding: '0.5em' }}>
-        Team Users</h3>;
+        Team Owners</h3>;
 
     return (
       <Query
