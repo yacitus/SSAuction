@@ -1,4 +1,7 @@
-## Known Bugs
+# TODO
+- import 2020 Scoresheet BL, NL, & AL players into AllPlayer table
+
+# Known Bugs
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
@@ -8,6 +11,11 @@
 # Fixed?
 
 # MVP Unfinished Features
+- when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
+- teams can be in more than one auction
+- team page URLs include auction number
+- add player to AllPlayer table GraphQL mutation
+- create auction GraphQL mutation
 - show max bid allowed in team info on team page (if current user in team)
 - show max bid allowed in the modal bid forms
 - add team name to the top of the "Team Info" table (on the team page)
