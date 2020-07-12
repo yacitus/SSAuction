@@ -101,7 +101,7 @@ auction_2020_BL = SingleAuction.create_auction(name: "Test Auction: 2020-BL",
                                        year_range: year_range,
                                        players_per_team: 10,
                                        team_dollars_per_player: 10,
-                                       bid_timeout_seconds: 2*60,
+                                       bid_timeout_seconds: 60*60*12,
                                        started_or_paused_at: now)
 
 #
