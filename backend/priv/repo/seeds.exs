@@ -66,17 +66,26 @@ year_range = "2020-2020-BL"
 #
 
 
-{:ok, now} = DateTime.now("Etc/UTC")
-now = DateTime.truncate(now, :second)
+# {:ok, now} = DateTime.now("Etc/UTC")
+# now = DateTime.truncate(now, :second)
 
-year_range = "1985-1988-NL"
+# year_range = "1985-1988-NL"
 
-auction_1985_1988_NL = SingleAuction.create_auction(name: "Test Auction: 1985-1988-NL",
-                                       year_range: year_range,
-                                       players_per_team: 10,
-                                       team_dollars_per_player: 10,
-                                       bid_timeout_seconds: 2*60,
-                                       started_or_paused_at: now)
+# auction_1985_1988_NL = SingleAuction.create_auction(name: "Test Auction: 1985-1988-NL",
+#                                        year_range: year_range,
+#                                        players_per_team: 10,
+#                                        team_dollars_per_player: 10,
+#                                        bid_timeout_seconds: 2*60,
+#                                        started_or_paused_at: now)
+
+#
+# PLAYERS FROM AUCTION
+#
+
+# player1 = Repo.get!(Player, 1)
+# player2 = Repo.get!(Player, 2)
+# player3 = Repo.get!(Player, 3)
+# player4 = Repo.get!(Player, 4)
 
 #
 # 2020-2020-BL AUCTION
@@ -94,15 +103,6 @@ auction_2020_BL = SingleAuction.create_auction(name: "Test Auction: 2020-BL",
                                        team_dollars_per_player: 10,
                                        bid_timeout_seconds: 2*60,
                                        started_or_paused_at: now)
-
-#
-# PLAYERS FROM AUCTION
-#
-
-# player1 = Repo.get!(Player, 1)
-# player2 = Repo.get!(Player, 2)
-# player3 = Repo.get!(Player, 3)
-# player4 = Repo.get!(Player, 4)
 
 #
 # USERS
@@ -130,7 +130,7 @@ tom =
   |> Repo.insert!
 
 #
-# TEAMS
+# TEAMS (one team can't be in more than one auction yet)
 #
 
 team_daryl =
@@ -142,6 +142,16 @@ team_tom =
   %Team{
     name: "Team Tom",
     } |> Repo.insert!
+
+# team_daryl2 =
+#   %Team{
+#     name: "Team Daryl (a2)",
+#     } |> Repo.insert!
+
+# team_tom2 =
+#   %Team{
+#     name: "Team Tom (a2)",
+#     } |> Repo.insert!
 
 #
 # PUT USERS IN TEAMS
@@ -157,14 +167,24 @@ Repo.preload(team_tom, [:users])
 |> Ecto.Changeset.put_assoc(:users, [tom])
 |> Repo.update!()
 
+# Repo.preload(team_daryl2, [:users])
+# |> Ecto.Changeset.change()
+# |> Ecto.Changeset.put_assoc(:users, [daryl])
+# |> Repo.update!()
+
+# Repo.preload(team_tom2, [:users])
+# |> Ecto.Changeset.change()
+# |> Ecto.Changeset.put_assoc(:users, [tom])
+# |> Repo.update!()
+
 #
 # PUT TEAMS IN AUCTIONS
 #
 
-Repo.preload(auction_1985_1988_NL, [:teams])
-|> Ecto.Changeset.change()
-|> Ecto.Changeset.put_assoc(:teams, [team_daryl, team_tom])
-|> Repo.update!()
+# Repo.preload(auction_1985_1988_NL, [:teams])
+# |> Ecto.Changeset.change()
+# |> Ecto.Changeset.put_assoc(:teams, [team_daryl2, team_tom2])
+# |> Repo.update!()
 
 
 Repo.preload(auction_2020_BL, [:teams])
@@ -176,10 +196,10 @@ Repo.preload(auction_2020_BL, [:teams])
 # GIVE THE AUCTIONS AN ADMIN
 #
 
-Repo.preload(auction_1985_1988_NL, [:admins])
-|> Ecto.Changeset.change()
-|> Ecto.Changeset.put_assoc(:admins, [daryl])
-|> Repo.update!()
+# Repo.preload(auction_1985_1988_NL, [:admins])
+# |> Ecto.Changeset.change()
+# |> Ecto.Changeset.put_assoc(:admins, [daryl])
+# |> Repo.update!()
 
 Repo.preload(auction_2020_BL, [:admins])
 |> Ecto.Changeset.change()

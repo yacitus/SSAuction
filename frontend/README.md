@@ -13,6 +13,7 @@
 # MVP Unfinished Features
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
 - teams can be in more than one auction
+- team names need only be unique within an auction (checked when added to an auction)
 - team page URLs include auction number
 - add player to AllPlayer table GraphQL mutation
 - create auction GraphQL mutation
