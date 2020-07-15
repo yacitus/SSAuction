@@ -173,6 +173,11 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
           :error,
           message: "Player is already rostered"
         }
+      not hidden_high_bid_legal?(args[:hidden_high_bid], args[:bid_amount]) ->
+        {
+          :error,
+          message: "Hidden high bid must be nil or above bid amount"
+        }
       not SingleAuction.player_in_bids?(player) ->
         cond do
           not SingleAuction.legal_team_bid_amount?(auction, team, args, nil) ->
@@ -233,11 +238,6 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
             {
               :error,
               message: "Cannot out-bid yourself"
-            }
-          not hidden_high_bid_legal?(args[:hidden_high_bid], existing_bid.bid_amount) ->
-            {
-              :error,
-              message: "Hidden high bid must be nil or above bid amount"
             }
           true ->
             submit_bid_changeset(auction, team, player, args, existing_bid)

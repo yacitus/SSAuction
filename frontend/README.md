@@ -2,7 +2,6 @@
 - import 2020 Scoresheet BL, NL, & AL players into AllPlayer table
 
 # Known Bugs
-- when nominating (but not when updating), the hidden max big can be lower than the bid
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
