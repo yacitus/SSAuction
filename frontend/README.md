@@ -2,6 +2,7 @@
 - import 2020 Scoresheet BL, NL, & AL players into AllPlayer table
 
 # Known Bugs
+- when nominating (but not when updating), the hidden max big can be lower than the bid
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
@@ -20,6 +21,7 @@
 - show max bid allowed in team info on team page (if current user in team)
 - show max bid allowed in the modal bid forms
 - add team name to the top of the "Team Info" table (on the team page)
+- show "$ Bid (including hidden max bids)" and "$ Bid publicly" separately on "Team Info" table if logged in user is an owner of the team being displayed
 - make pages (especially header when rotated) look better on my iPhone
 - tweak whitespace, margins, etc.
 - auction invitation system for creating logins and teams
