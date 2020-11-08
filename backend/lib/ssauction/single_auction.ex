@@ -181,13 +181,13 @@ defmodule Ssauction.SingleAuction do
 
   defp auto_nominate(team = %Team{}, auction = %Auction{}) do
     if num_players_in_nomination_queue(auction) > 0 do
-      if team.unused_nominations > 0 do
+      if team.unused_nominations > 0 and team_dollars_remaining_for_bids(team) > 0 do
         player = next_in_nomination_queue(auction)
         args = %{bid_amount: 1}
         SingleAuction.submit_bid_changeset(auction, team, player, args, nil)
       end
 
-      if team.unused_nominations > 0, do: auto_nominate(team, auction)
+      if team.unused_nominations > 0 and team_dollars_remaining_for_bids(team) > 0, do: auto_nominate(team, auction)
     end
   end
 
@@ -252,12 +252,16 @@ defmodule Ssauction.SingleAuction do
     open_roster_spots = open_roster_spots(team, auction)
     new_unused_nominations = Enum.min([team.unused_nominations+num_nominations,
                                        open_roster_spots])
-    {:ok, now} = DateTime.now("Etc/UTC")
-    team
-    |> Team.changeset(%{unused_nominations: new_unused_nominations,
-                        time_nominations_expire: DateTime.add(now, auction.seconds_before_autonomination, :second)})
-    |> Repo.update
-    publish_team_info_change(team.id)
+    if new_unused_nominations > 0 do
+      {:ok, now} = DateTime.now("Etc/UTC")
+      # TODO - also update the team's new_nominations_open_at field
+      team
+      |> Team.changeset(%{unused_nominations: new_unused_nominations,
+                          time_nominations_expire: DateTime.add(now, auction.seconds_before_autonomination, :second),
+                          new_nominations_open_at: DateTime.add(team.new_nominations_open_at, 24, :hour)})
+      |> Repo.update
+      publish_team_info_change(team.id)
+    end
   end
 
   @doc """

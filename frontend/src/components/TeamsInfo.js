@@ -15,7 +15,7 @@ const TEAMS_INFO_QUERY = gql`
       dollarsSpent
       dollarsBid
       unusedNominations
-      timeOfLastNomination
+      newNominationsOpenAt
       numRosteredPlayers
     }
   }
@@ -29,7 +29,7 @@ const TEAMS_INFO_CHANGE_SUBSCRIPTION = gql`
       dollarsSpent
       dollarsBid
       unusedNominations
-      timeOfLastNomination
+      newNominationsOpenAt
       numRosteredPlayers
     }
   }
@@ -121,8 +121,8 @@ class TeamsInfoTable extends Component {
       dataField: 'unusedNominations',
       text: 'Unused Nominations',
     }, {
-      dataField: 'timeOfLastNomination',
-      text: 'Time of Last Nomination',
+      dataField: 'newNominationsOpenAt',
+      text: 'New Nominations Open At',
       formatter: timestampFormatter
     }, {
       dataField: 'numRosteredPlayers',

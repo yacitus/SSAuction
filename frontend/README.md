@@ -10,9 +10,6 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
-- allow teams to each specify nomination availabilty times, at which time 2 nominations are created (if they have $2 and two open roster spots)
-- if a nomination is open for over X minutes, a player is auto-nominated from the auto-nomination queue
-- display the number of open nominations and the time until auto-nomination on the team page
 - display the (head of the) auto-nomination queue in the auction page
 
 # MVP Unfinished Features

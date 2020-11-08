@@ -259,7 +259,8 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve &Resolvers.SingleAuction.team_dollars_remaining_for_bids/3
     end
     field :unused_nominations, non_null(:integer)
-    field :time_of_last_nomination, :datetime
+    field :time_nominations_expire, :datetime
+    field :new_nominations_open_at, :datetime
     field :users, list_of(:user) do
       resolve dataloader(SingleAuction, :users, args: %{scope: :team})
     end

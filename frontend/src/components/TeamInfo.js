@@ -16,7 +16,8 @@ const TEAM_INFO_QUERY = gql`
       dollarsBid
       dollarsRemainingForBids
       unusedNominations
-      timeOfLastNomination
+      newNominationsOpenAt
+      timeNominationsExpire
       numRosteredPlayers
     }
   }
@@ -31,7 +32,8 @@ const TEAM_INFO_CHANGE_SUBSCRIPTION = gql`
       dollarsBid
       dollarsRemainingForBids
       unusedNominations
-      timeOfLastNomination
+      newNominationsOpenAt
+      timeNominationsExpire
       numRosteredPlayers
     }
   }
@@ -86,7 +88,8 @@ class TeamInfoTable extends Component {
         dollarsBid: subscriptionData.data.teamInfoChange.dollarsBid,
         dollarsRemainingForBids: subscriptionData.data.teamInfoChange.dollarsRemainingForBids,
         unusedNominations: subscriptionData.data.teamInfoChange.unusedNominations,
-        timeOfLastNomination: subscriptionData.data.teamInfoChange.timeOfLastNomination
+        newNominationsOpenAt: subscriptionData.data.teamInfoChange.newNominationsOpenAt,
+        timeNominationsExpire: subscriptionData.data.teamInfoChange.timeNominationsExpire
       }
     };
   };
@@ -95,7 +98,7 @@ class TeamInfoTable extends Component {
     const { team } = this.props;
 
     function valueFormatter(cell, row) {
-      if (row.id === 4) {
+      if (row.id === 4 || row.id === 5) {
         if (cell === "null") {
           return '';
         } else {
@@ -134,13 +137,17 @@ class TeamInfoTable extends Component {
       value: `${team.unusedNominations}`,
       id: 3
     }, {
-      label: 'Time of Last Nomination',
-      value: `${team.timeOfLastNomination}`,
+      label: 'New Nominations Open At',
+      value: `${team.newNominationsOpenAt}`,
       id: 4
+    }, {
+      label: 'Time Nominations Expire',
+      value: `${team.timeNominationsExpire}`,
+      id: 5
     }, {
       label: 'Players Rostered',
       value: `${team.numRosteredPlayers}`,
-      id: 5
+      id: 56
     }];
 
     const CaptionElement = () =>
