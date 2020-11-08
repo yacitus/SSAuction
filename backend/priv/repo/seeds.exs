@@ -10,6 +10,8 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+import Ecto.Query, warn: false
+
 alias Ssauction.Repo
 alias Ssauction.User
 alias Ssauction.AllPlayer
@@ -25,9 +27,28 @@ alias Ssauction.SingleAuction
 # ALL PLAYERS
 #
 
-year_range = "1985-1988-NL"
+# year_range = "1985-1988-NL"
 
-"1985-1988-NL_players.csv"
+# "1985-1988-NL_players.csv"
+# |> Path.expand(__DIR__)
+# |> File.read!()
+# |> String.split("\n", trim: true)
+# |> Enum.map(&String.split(&1, ","))
+# |> Enum.map(fn [ssnum, name, position] ->
+#      %AllPlayer{}
+#      |> AllPlayer.changeset(%{
+#           year_range: year_range,
+#           name: name,
+#           ssnum: ssnum,
+#           position: String.trim_trailing(position)
+#         })
+#      |> Repo.insert!
+#    end)
+
+
+year_range = "1988-1991-SL"
+
+"1988-1991-SL_players.csv"
 |> Path.expand(__DIR__)
 |> File.read!()
 |> String.split("\n", trim: true)
@@ -43,23 +64,23 @@ year_range = "1985-1988-NL"
      |> Repo.insert!
    end)
 
-year_range = "2020-2020-BL"
+# year_range = "2020-2020-BL"
 
-"2020-2020-BL_players.csv"
-|> Path.expand(__DIR__)
-|> File.read!()
-|> String.split("\n", trim: true)
-|> Enum.map(&String.split(&1, ","))
-|> Enum.map(fn [ssnum, name, position] ->
-     %AllPlayer{}
-     |> AllPlayer.changeset(%{
-          year_range: year_range,
-          name: name,
-          ssnum: ssnum,
-          position: String.trim_trailing(position)
-        })
-     |> Repo.insert!
-   end)
+# "2020-2020-BL_players.csv"
+# |> Path.expand(__DIR__)
+# |> File.read!()
+# |> String.split("\n", trim: true)
+# |> Enum.map(&String.split(&1, ","))
+# |> Enum.map(fn [ssnum, name, position] ->
+#      %AllPlayer{}
+#      |> AllPlayer.changeset(%{
+#           year_range: year_range,
+#           name: name,
+#           ssnum: ssnum,
+#           position: String.trim_trailing(position)
+#         })
+#      |> Repo.insert!
+#    end)
 
 #
 # 1985-1988-NL AUCTION
@@ -88,21 +109,25 @@ year_range = "2020-2020-BL"
 # player4 = Repo.get!(Player, 4)
 
 #
-# 2020-2020-BL AUCTION
+# 1988-1991-BL AUCTION
 #
 
 
 {:ok, now} = DateTime.now("Etc/UTC")
 now = DateTime.truncate(now, :second)
 
-year_range = "2020-2020-BL"
+year_range = "1988-1991-SL"
 
-auction_2020_BL = SingleAuction.create_auction(name: "Test Auction: 2020-BL",
-                                       year_range: year_range,
-                                       players_per_team: 10,
-                                       team_dollars_per_player: 10,
-                                       bid_timeout_seconds: 60*60*12,
-                                       started_or_paused_at: now)
+auction_1988_1991_SL = SingleAuction.create_auction(name: "Test Auction: 1988-1991-SL",
+                                                    year_range: year_range,
+                                                    nominations_per_team: 2,
+                                                    seconds_before_autonomination: 60*60,
+                                                    new_nominations_created: "time",
+                                                    bid_timeout_seconds: 60*60*12,
+                                                    players_per_team: 50,
+                                                    must_roster_all_players: false,
+                                                    team_dollars_per_player: 20,
+                                                    started_or_paused_at: now)
 
 #
 # USERS
@@ -136,11 +161,15 @@ tom =
 team_daryl =
   %Team{
     name: "Team Daryl",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.add(now, 60*5, :second),
     } |> Repo.insert!
 
 team_tom =
   %Team{
     name: "Team Tom",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.add(now, 60*10, :second),
     } |> Repo.insert!
 
 # team_daryl2 =
@@ -181,30 +210,30 @@ Repo.preload(team_tom, [:users])
 # PUT TEAMS IN AUCTIONS
 #
 
-# Repo.preload(auction_1985_1988_NL, [:teams])
-# |> Ecto.Changeset.change()
-# |> Ecto.Changeset.put_assoc(:teams, [team_daryl2, team_tom2])
-# |> Repo.update!()
-
-
-Repo.preload(auction_2020_BL, [:teams])
+Repo.preload(auction_1988_1991_SL, [:teams])
 |> Ecto.Changeset.change()
 |> Ecto.Changeset.put_assoc(:teams, [team_daryl, team_tom])
 |> Repo.update!()
+
+
+# Repo.preload(auction_2020_BL, [:teams])
+# |> Ecto.Changeset.change()
+# |> Ecto.Changeset.put_assoc(:teams, [team_daryl, team_tom])
+# |> Repo.update!()
 
 #
 # GIVE THE AUCTIONS AN ADMIN
 #
 
-# Repo.preload(auction_1985_1988_NL, [:admins])
-# |> Ecto.Changeset.change()
-# |> Ecto.Changeset.put_assoc(:admins, [daryl])
-# |> Repo.update!()
-
-Repo.preload(auction_2020_BL, [:admins])
+Repo.preload(auction_1988_1991_SL, [:admins])
 |> Ecto.Changeset.change()
 |> Ecto.Changeset.put_assoc(:admins, [daryl])
 |> Repo.update!()
+
+# Repo.preload(auction_2020_BL, [:admins])
+# |> Ecto.Changeset.change()
+# |> Ecto.Changeset.put_assoc(:admins, [daryl])
+# |> Repo.update!()
 
 #
 # CREATE A BID
@@ -257,13 +286,24 @@ Repo.preload(auction_2020_BL, [:admins])
 # Repo.insert!(ordered_player)
 
 #
-# ADD A PLAYER TO AN AUCTION'S AUTO-NOMINATION LIST
+# ADD PLAYERS TO THE AUCTION'S AUTO-NOMINATION LIST
 #
 
-# ordered_player =
-#   %OrderedPlayer{
-#     rank: 1,
-#     player: player4
-#   }
-# ordered_player = Ecto.build_assoc(auction, :ordered_players, ordered_player)
-# Repo.insert!(ordered_player)
+"1988-1991-SL_players_sorted_by_playing_time.csv"
+|> Path.expand(__DIR__)
+|> File.read!()
+|> String.split("\n", trim: true)
+|> Enum.map(&String.split(&1, ","))
+|> Enum.with_index(1)
+|> Enum.map(fn {[_, ssnum, name], i} ->
+    player = Repo.one!(from player in Player,
+                        where: player.auction_id == ^auction_1988_1991_SL.id and player.ssnum == ^ssnum,
+                        select: player)
+    ordered_player =
+      %OrderedPlayer{
+        rank: i,
+        player: player
+      }
+    ordered_player = Ecto.build_assoc(auction_1988_1991_SL, :ordered_players, ordered_player)
+    Repo.insert!(ordered_player)
+   end)

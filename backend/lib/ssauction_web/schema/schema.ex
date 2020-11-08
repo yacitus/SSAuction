@@ -228,6 +228,7 @@ defmodule SsauctionWeb.Schema.Schema do
     field :seconds_before_autonomination, non_null(:integer)
     field :bid_timeout_seconds, non_null(:integer)
     field :players_per_team, non_null(:integer)
+    field :must_roster_all_players, non_null(:boolean)
     field :team_dollars_per_player, non_null(:integer)
     field :dollars_per_team, non_null(:integer) do
       resolve &Resolvers.SingleAuction.dollars_per_team/3

@@ -7,9 +7,11 @@ defmodule Ssauction.Repo.Migrations.CreateAuctions do
       add :year_range, :string, null: false
       add :nominations_per_team, :integer, null: false
       add :seconds_before_autonomination, :integer, null: false
+      add :new_nominations_created, :string, null: false
       add :bid_timeout_seconds, :integer, null: false
       add :active, :boolean, null: false
       add :players_per_team, :integer, null: false
+      add :must_roster_all_players, :boolean, null: false
       add :team_dollars_per_player, :integer, null: false
       add :started_or_paused_at, :utc_datetime
 

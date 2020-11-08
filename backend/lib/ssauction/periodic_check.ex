@@ -14,6 +14,8 @@ defmodule Ssauction.PeriodicCheck do
 
   def handle_info(:work, state) do
     SingleAuction.check_for_expired_bids()
+    SingleAuction.check_for_new_nominations()
+    SingleAuction.check_for_expired_nominations()
 
     schedule_work() # Reschedule once more
     {:noreply, state}

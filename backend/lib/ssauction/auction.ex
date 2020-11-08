@@ -6,9 +6,11 @@ defmodule Ssauction.Auction do
     field :name, :string
     field :year_range, :string
     field :nominations_per_team, :integer, default: 2
-    field :seconds_before_autonomination, :integer, default: 60*60*24
+    field :seconds_before_autonomination, :integer, default: 60*60
+    field :new_nominations_created, :string, default: "time" # "time" means at a time specified in the team record; "auction" means when the auction closes on a previously nominated player
     field :bid_timeout_seconds, :integer, default: 60*60*12
     field :players_per_team, :integer
+    field :must_roster_all_players, :boolean, default: true
     field :team_dollars_per_player, :integer
     field :active, :boolean, default: false
     field :started_or_paused_at, :utc_datetime

@@ -18,17 +18,25 @@ defmodule Ssauction.SingleAuction do
   """
   def create_auction(name: name,
                      year_range: year_range,
-                     players_per_team: players_per_team,
-                     team_dollars_per_player: team_dollars_per_player,
+                     nominations_per_team: nominations_per_team,
+                     seconds_before_autonomination: seconds_before_autonomination,
+                     new_nominations_created: new_nominations_created,
                      bid_timeout_seconds: bid_timeout_seconds,
+                     players_per_team: players_per_team,
+                     must_roster_all_players: must_roster_all_players,
+                     team_dollars_per_player: team_dollars_per_player,
                      started_or_paused_at: started_or_paused_at) do
     auction =
       %Auction{
         name: name,
         year_range: year_range,
-        players_per_team: players_per_team,
-        team_dollars_per_player: team_dollars_per_player,
+        nominations_per_team: nominations_per_team,
+        seconds_before_autonomination: seconds_before_autonomination,
+        new_nominations_created: new_nominations_created,
         bid_timeout_seconds: bid_timeout_seconds,
+        players_per_team: players_per_team,
+        must_roster_all_players: must_roster_all_players,
+        team_dollars_per_player: team_dollars_per_player,
         started_or_paused_at: started_or_paused_at
         } |> Repo.insert!
 
@@ -97,6 +105,106 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Searches for teams ready to be given new nominations in active auctions
+
+  """
+
+  def check_for_new_nominations() do
+    q = from a in Auction, where: a.active
+    Repo.all(q)
+    |> Enum.each(&check_for_new_nominations/1)
+  end
+
+  @doc """
+  Searches for teams ready to be given new nominations in the auction
+
+  """
+
+  def check_for_new_nominations(auction = %Auction{}) do
+    if auction.new_nominations_created == "time" do
+      for team <- list_teams(auction) do
+        check_for_new_nominations(team)
+      end
+    end
+  end
+
+  @doc """
+  Searches if the team is ready to be given new nominations
+
+  """
+
+  def check_for_new_nominations(team = %Team{}, auction = %Auction{}) do
+    {:ok, now} = DateTime.now("Etc/UTC")
+    if DateTime.diff(now, team.new_nominations_open_at) >= 0 do
+      give_team_new_nominations(team, auction, auction.nominations_per_team)
+    end
+  end
+
+  @doc """
+  Searches for teams with expired nominations in active auctions and auto-nominate for them
+
+  """
+
+  def check_for_expired_nominations() do
+    q = from a in Auction, where: a.active
+    Repo.all(q)
+    |> Enum.each(&check_for_expired_nominations/1)
+  end
+
+  @doc """
+  Searches for teams with expired nominations in the auction and auto-nominate for them
+
+  """
+
+  def check_for_expired_nominations(auction = %Auction{}) do
+    for team <- list_teams(auction) do
+      check_for_new_nominations(team, auction)
+    end
+  end
+
+  @doc """
+  Auto-nominate if the team has expired nomination
+
+  """
+
+  def check_for_expired_nominations(team = %Team{}, auction = %Auction{}) do
+    {:ok, now} = DateTime.now("Etc/UTC")
+    if DateTime.diff(now, team.time_nominations_expire) >= 0 do
+      auto_nominate(team, auction)
+    end
+  end
+
+  @doc """
+  Auto-nominate all of the team's open nominations
+
+  """
+
+  defp auto_nominate(team = %Team{}, auction = %Auction{}) do
+    if num_players_in_nomination_queue(auction) > 0 do
+      if team.unused_nominations > 0 do
+        player = next_in_nomination_queue(auction)
+        args = %{bid_amount: 1}
+        SingleAuction.submit_bid_changeset(auction, team, player, args, nil)
+      end
+
+      if team.unused_nominations > 0, do: auto_nominate(team, auction)
+    end
+  end
+
+  @doc """
+  Return the number of players in the auction's auto-nomination queue
+
+  """
+
+  defp num_players_in_nomination_queue(auction = %Auction{}) do
+    query = from a in Auction,
+              where: a.id == ^auction.id,
+              join: ordered_players in assoc(a, :ordered_players),
+              select: ordered_players.id
+    Repo.aggregate(query, :count, :id)
+  end
+
+  @doc """
   Roster the player from this bid and delete the bid
 
   """
@@ -134,13 +242,22 @@ defmodule Ssauction.SingleAuction do
   end
 
   defp update_unused_nominations(team = %Team{}, auction = %Auction{}) do
-    team = Repo.get(Team, team.id)
+    if auction.new_nominations_created == "auction" do
+      team = Repo.get(Team, team.id)
+      give_team_new_nominations(team, auction, 1)
+    end
+  end
+
+  defp give_team_new_nominations(team = %Team{}, auction = %Auction{}, num_nominations) do
     open_roster_spots = open_roster_spots(team, auction)
-    new_unused_nominations = Enum.min([team.unused_nominations+1,
+    new_unused_nominations = Enum.min([team.unused_nominations+num_nominations,
                                        open_roster_spots])
+    {:ok, now} = DateTime.now("Etc/UTC")
     team
-    |> Team.changeset(%{unused_nominations: new_unused_nominations})
+    |> Team.changeset(%{unused_nominations: new_unused_nominations,
+                        time_nominations_expire: DateTime.add(now, auction.seconds_before_autonomination, :second)})
     |> Repo.update
+    publish_team_info_change(team.id)
   end
 
   @doc """
@@ -148,11 +265,8 @@ defmodule Ssauction.SingleAuction do
 
   """
   def update_team_info_post_nomination(team = %Team{}, args) do
-    {:ok, now} = DateTime.now("Etc/UTC")
     team
-    |> Team.changeset(%{unused_nominations: team.unused_nominations-1,
-                        # dollars_bid: team.dollars_bid+args.bid_amount,
-                        time_of_last_nomination: now})
+    |> Team.changeset(%{unused_nominations: team.unused_nominations-1})
     |> Repo.update
     publish_team_info_change(team.id)
     Repo.get(Auction, team.auction_id)
@@ -161,7 +275,7 @@ defmodule Ssauction.SingleAuction do
 
   defp publish_team_info_change(team_id) do
     Repo.get(Team, team_id)
-    |> SingleAuction.publish_team_info_change()
+    |> SingleAuction.publish_team_info_change
   end
 
   @doc """
@@ -269,6 +383,20 @@ defmodule Ssauction.SingleAuction do
       _ ->
         Enum.max(ranks)
     end
+  end
+
+
+  @doc """
+  Returns a the player at the top (lowest rank) of the auction's auto-nomination queue
+
+  """
+  def next_in_nomination_queue(auction = %Auction{}) do
+    query = from a in Auction,
+              where: a.id == ^auction.id,
+              join: ordered_players in assoc(a, :ordered_players),
+              select: ordered_players.id,
+              order_by: ordered_players.rank
+    Repo.one(query)
   end
 
   @doc """
@@ -509,9 +637,13 @@ defmodule Ssauction.SingleAuction do
   def team_dollars_remaining_for_bids(auction = %Auction{}, team = %Team{}) do
     dollars_left = dollars_per_team(auction) \
                     - (team_dollars_spent(team) + team_dollars_bid(team))
-    dollars_left - (auction.players_per_team \
-                    - number_of_rostered_players_in_team(team) \
-                    - number_of_bids_for_team(team))
+    if auction.must_roster_all_players do
+      dollars_left - (auction.players_per_team \
+                      - number_of_rostered_players_in_team(team) \
+                      - number_of_bids_for_team(team))
+    else
+      dollars_left
+    end
   end
 
   @doc """
@@ -527,9 +659,13 @@ defmodule Ssauction.SingleAuction do
   def team_dollars_remaining_for_bids_including_hidden(auction = %Auction{}, team = %Team{}) do
     dollars_left = dollars_per_team(auction) \
                     - (team_dollars_spent(team) + team_dollars_bid_including_hidden(team))
-    dollars_left - (auction.players_per_team \
-                    - number_of_rostered_players_in_team(team) \
-                    - number_of_bids_for_team(team))
+    if auction.must_roster_all_players do
+      dollars_left - (auction.players_per_team \
+                      - number_of_rostered_players_in_team(team) \
+                      - number_of_bids_for_team(team))
+    else
+      dollars_left
+    end
   end
 
   @doc """
@@ -583,7 +719,7 @@ defmodule Ssauction.SingleAuction do
 
   defp add_seconds_to_expires_at(seconds, %Bid{} = bid) do
     bid
-    |> Bid.changeset(%{expires_at: DateTime.add(bid.expires_at, seconds)})
+    |> Bid.changeset(%{expires_at: DateTime.add(bid.expires_at, seconds, :second)})
     |> Repo.update()
   end
 
@@ -623,7 +759,13 @@ defmodule Ssauction.SingleAuction do
              where: op.team_id == ^team.id and op.player_id == ^player.id)
   end
 
+  defp find_ordered_player(player = %Player{}, auction = %Auction{}) do
+    Repo.one(from op in OrderedPlayer,
+             where: op.auction_id == ^auction.id and op.player_id == ^player.id)
+  end
+
   def remove_from_nomination_queues(player = %Player{}, auction = %Auction{}) do
+    remove_from_nomination_queue(player, auction)
     for team <- list_teams(auction) do
       remove_from_nomination_queue(player, team)
     end
@@ -631,6 +773,15 @@ defmodule Ssauction.SingleAuction do
 
   def remove_from_nomination_queue(player = %Player{}, team = %Team{}) do
     ordered_player = find_ordered_player(player, team)
+    if ordered_player != nil do
+      ordered_player
+      |> Ecto.Changeset.change
+      |> Repo.delete
+    end
+  end
+
+  def remove_from_nomination_queue(player = %Player{}, auction = %Auction{}) do
+    ordered_player = find_ordered_player(player, auction)
     if ordered_player != nil do
       ordered_player
       |> Ecto.Changeset.change

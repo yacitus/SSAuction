@@ -4,8 +4,9 @@ defmodule Ssauction.Team do
 
   schema "teams" do
     field :name, :string
-    field :unused_nominations, :integer, default: 2
-    field :time_of_last_nomination, :utc_datetime
+    field :unused_nominations, :integer, default: 0
+    field :time_nominations_expire, :utc_datetime
+    field :new_nominations_open_at, :utc_datetime
 
     belongs_to :auction, Ssauction.Auction
 

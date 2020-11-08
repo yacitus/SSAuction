@@ -1,5 +1,4 @@
 # TODO
-- import 2020 Scoresheet BL, NL, & AL players into AllPlayer table
 
 # Known Bugs
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
@@ -9,6 +8,12 @@
 # To Test
 
 # Fixed?
+
+# 2020 Winter League Urgent Features
+- allow teams to each specify nomination availabilty times, at which time 2 nominations are created (if they have $2 and two open roster spots)
+- if a nomination is open for over X minutes, a player is auto-nominated from the auto-nomination queue
+- display the number of open nominations and the time until auto-nomination on the team page
+- display the (head of the) auto-nomination queue in the auction page
 
 # MVP Unfinished Features
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
@@ -41,6 +46,8 @@
 - Supervisor.Spec module used in backend/lib/ssauction/application.ex is deprecated: https://stackoverflow.com/a/61312844/4766
 
 # Post MVP Feature Priority
+- ability to re-order a team nomination queue
+- a team setting to enabled/disable auto-nomination from ordered team nomination queue
 - user invitations (including to new or existing team)
 - create new auction mutation
 - database backup

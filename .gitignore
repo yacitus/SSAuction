@@ -2,3 +2,4 @@ misc/*
 env/*
 db.dump
 db.sql
+.DS_Store

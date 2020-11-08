@@ -18,6 +18,7 @@ const AUCTION_INFO_QUERY = gql`
       yearRange
       startedOrPausedAt
       playersPerTeam
+      mustRosterAllPlayers
       dollarsPerTeam
       nominationsPerTeam
       secondsBeforeAutonomination
@@ -116,6 +117,13 @@ class AuctionInfoTable extends Component {
             {info.auction.startedOrPausedAt}
           </Moment>
         );
+      } else if (row.id === 4) {
+        if (info.auction.mustRosterAllPlayers) {
+          return "Yes";
+        }
+        else {
+          return "No";
+        }
       } else {
         return (`${cell}`);
       }
@@ -147,23 +155,27 @@ class AuctionInfoTable extends Component {
       value: `${info.auction.playersPerTeam}`,
       id: 3
     }, {
-      label: 'Dollars Per Team:',
-      value: `${info.auction.dollarsPerTeam}`,
+      label: 'Must Roster All Players:',
+      value: `${info.auction.mustRosterAllPlayers}`,
       id: 4
+    }, {
+      label: 'Dollars Per Team:',
+      value: `$${info.auction.dollarsPerTeam}`,
+      id: 5
     }, {
       label: 'Nominations Per Team:',
       value: `${info.auction.nominationsPerTeam}`,
-      id: 5
+      id: 6
     }, {
       label: 'Time Before Auto-nomination:',
       value: `${Utilities.secondsToDaysHoursMinsSecsStr(
                   info.auction.secondsBeforeAutonomination)}`,
-      id: 6
+      id: 7
     }, {
       label: 'Time Before Bids Expire:',
       value: `${Utilities.secondsToDaysHoursMinsSecsStr(
                   info.auction.bidTimeoutSeconds)}`,
-      id: 7
+      id: 8
     }];
 
     const CaptionElement = () =>

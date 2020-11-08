@@ -250,7 +250,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     Map.put(args, :expires_at, DateTime.add(utc_datetime, auction.bid_timeout_seconds, :second))
   end
 
-  defp submit_bid_changeset(auction, team, player, args, nil) do
+  def submit_bid_changeset(auction, team, player, args, nil) do
     args = add_expires_at_to_args(args, auction)
 
     args = if not Map.has_key?(args, :hidden_high_bid) do
@@ -276,7 +276,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
-  defp submit_bid_changeset(auction, team, _player, args, existing_bid) do
+  def submit_bid_changeset(auction, team, _player, args, existing_bid) do
     args = if team.id != existing_bid.team_id do
       add_expires_at_to_args(args, auction)
     else
