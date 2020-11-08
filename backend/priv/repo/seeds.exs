@@ -162,7 +162,7 @@ team_daryl =
   %Team{
     name: "Team Daryl",
     unused_nominations: 0,
-    new_nominations_open_at: DateTime.add(now, 60*5, :second),
+    new_nominations_open_at: DateTime.add(now, 60*1, :second),
     } |> Repo.insert!
 
 team_tom =

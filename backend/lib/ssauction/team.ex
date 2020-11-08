@@ -18,8 +18,8 @@ defmodule Ssauction.Team do
   end
 
   def changeset(team, params \\ %{}) do
-    required_fields = [:name, :unused_nominations]
-    optional_fields = [:time_of_last_nomination]
+    required_fields = [:name, :unused_nominations, :new_nominations_open_at]
+    optional_fields = [:time_nominations_expire]
 
     team
     |> cast(params, required_fields ++ optional_fields)

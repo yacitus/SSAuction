@@ -123,7 +123,7 @@ defmodule Ssauction.SingleAuction do
   def check_for_new_nominations(auction = %Auction{}) do
     if auction.new_nominations_created == "time" do
       for team <- list_teams(auction) do
-        check_for_new_nominations(team)
+        check_for_new_nominations(team, auction)
       end
     end
   end
@@ -258,9 +258,10 @@ defmodule Ssauction.SingleAuction do
       team
       |> Team.changeset(%{unused_nominations: new_unused_nominations,
                           time_nominations_expire: DateTime.add(now, auction.seconds_before_autonomination, :second),
-                          new_nominations_open_at: DateTime.add(team.new_nominations_open_at, 24, :hour)})
+                          new_nominations_open_at: DateTime.add(team.new_nominations_open_at, 24*60*60, :second)})
       |> Repo.update
       publish_team_info_change(team.id)
+      SingleAuction.publish_auction_teams_info_change(auction)
     end
   end
 
