@@ -158,7 +158,7 @@ defmodule Ssauction.SingleAuction do
 
   def check_for_expired_nominations(auction = %Auction{}) do
     for team <- list_teams(auction) do
-      check_for_new_nominations(team, auction)
+      check_for_expired_nominations(team, auction)
     end
   end
 
@@ -169,7 +169,7 @@ defmodule Ssauction.SingleAuction do
 
   def check_for_expired_nominations(team = %Team{}, auction = %Auction{}) do
     {:ok, now} = DateTime.now("Etc/UTC")
-    if DateTime.diff(now, team.time_nominations_expire) >= 0 do
+    if team.time_nominations_expire != nil and DateTime.diff(now, team.time_nominations_expire) >= 0 do
       auto_nominate(team, auction)
     end
   end
@@ -181,13 +181,22 @@ defmodule Ssauction.SingleAuction do
 
   defp auto_nominate(team = %Team{}, auction = %Auction{}) do
     if num_players_in_nomination_queue(auction) > 0 do
-      if team.unused_nominations > 0 and team_dollars_remaining_for_bids(team) > 0 do
-        player = next_in_nomination_queue(auction)
-        args = %{bid_amount: 1}
-        SingleAuction.submit_bid_changeset(auction, team, player, args, nil)
+      if team.unused_nominations > 0 do
+        for _ <- 1..team.unused_nominations do
+          if team_dollars_remaining_for_bids(team) > 0 do
+            player = next_in_nomination_queue(auction)
+            args = %{bid_amount: 1}
+            SingleAuction.submit_bid_changeset(auction, team, player, args, nil)
+            remove_from_nomination_queue(player, auction)
+          end
+        end
+        team
+        |> Team.changeset(%{time_nominations_expire: nil,
+                            unused_nominations: 0})
+        |> Repo.update
+        publish_team_info_change(team.id)
+        SingleAuction.publish_auction_teams_info_change(auction)
       end
-
-      if team.unused_nominations > 0 and team_dollars_remaining_for_bids(team) > 0, do: auto_nominate(team, auction)
     end
   end
 
@@ -254,7 +263,9 @@ defmodule Ssauction.SingleAuction do
                                        open_roster_spots])
     if new_unused_nominations > 0 do
       {:ok, now} = DateTime.now("Etc/UTC")
-      # TODO - also update the team's new_nominations_open_at field
+      now = now
+        |> DateTime.truncate(:second)
+        |> DateTime.add(-now.second, :second)
       team
       |> Team.changeset(%{unused_nominations: new_unused_nominations,
                           time_nominations_expire: DateTime.add(now, auction.seconds_before_autonomination, :second),
@@ -390,18 +401,31 @@ defmodule Ssauction.SingleAuction do
     end
   end
 
+ defp smallest_rank_in_auction_nomination_queue(auction = %Auction{}) do
+    query = from a in Auction,
+              where: a.id == ^auction.id,
+              join: ordered_players in assoc(a, :ordered_players),
+              select: ordered_players.rank,
+              order_by: ordered_players.rank
+    ranks = Repo.all(query)
+    case ranks do
+      [] ->
+        nil
+
+      _ ->
+        Enum.min(ranks)
+    end
+  end
 
   @doc """
   Returns a the player at the top (lowest rank) of the auction's auto-nomination queue
 
   """
   def next_in_nomination_queue(auction = %Auction{}) do
-    query = from a in Auction,
-              where: a.id == ^auction.id,
-              join: ordered_players in assoc(a, :ordered_players),
-              select: ordered_players.id,
-              order_by: ordered_players.rank
-    Repo.one(query)
+    rank_of_next = smallest_rank_in_auction_nomination_queue(auction)
+    ordered_player = Repo.one!(from op in OrderedPlayer,
+                               where: op.auction_id == ^auction.id and op.rank == ^rank_of_next)
+    get_player_by_id!(ordered_player.player_id)
   end
 
   @doc """
@@ -706,13 +730,16 @@ defmodule Ssauction.SingleAuction do
 
   """
   def start_auction(auction = %Auction{}) do
-    {:ok, utc_datetime} = DateTime.now("Etc/UTC")
+    {:ok, now} = DateTime.now("Etc/UTC")
+    now = now
+      |> DateTime.truncate(:second)
+      |> DateTime.add(-now.second, :second)
 
-    update_bids_to_new_start_time(auction, utc_datetime)
+    update_bids_to_new_start_time(auction, now)
 
     auction
     |> Auction.active_changeset(%{active: true,
-                                  started_or_paused_at: utc_datetime})
+                                  started_or_paused_at: now})
     |> Repo.update()
   end
 
@@ -733,11 +760,14 @@ defmodule Ssauction.SingleAuction do
 
   """
   def pause_auction(auction = %Auction{}) do
-    {:ok, utc_datetime} = DateTime.now("Etc/UTC")
+    {:ok, now} = DateTime.now("Etc/UTC")
+    now = now
+      |> DateTime.truncate(:second)
+      |> DateTime.add(-now.second, :second)
 
     auction
     |> Auction.active_changeset(%{active: false,
-                                  started_or_paused_at: utc_datetime})
+                                  started_or_paused_at: now})
     |> Repo.update()
   end
 
@@ -767,6 +797,11 @@ defmodule Ssauction.SingleAuction do
   defp find_ordered_player(player = %Player{}, auction = %Auction{}) do
     Repo.one(from op in OrderedPlayer,
              where: op.auction_id == ^auction.id and op.player_id == ^player.id)
+  end
+
+  defp find_ordered_player_by_rank(auction = %Auction{}, rank) do
+    Repo.one(from op in OrderedPlayer,
+             where: op.auction_id == ^auction.id and op.rank == ^rank)
   end
 
   def remove_from_nomination_queues(player = %Player{}, auction = %Auction{}) do
