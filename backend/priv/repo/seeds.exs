@@ -140,7 +140,7 @@ daryl =
   |> User.changeset(%{
       username: "daryl",
       email: "daryl.spitzer@gmail.com",
-      slack_display_name: "daryl",
+      slack_display_name: "@daryl",
       super: true,
       password: "CxKtzVJ"
     })
@@ -151,8 +151,118 @@ tom =
   |> User.changeset(%{
       username: "tom",
       email: "han60man@aol.com",
-      slack_display_name: "han60man",
+      slack_display_name: "@han60man",
       password: "gnrPiTP"
+    })
+  |> Repo.insert!
+
+john =
+  %User{}
+  |> User.changeset(%{
+      username: "john",
+      email: "johndjones44@yahoo.com",
+      slack_display_name: "@johndjones44",
+      password: "YsenMtt"
+    })
+  |> Repo.insert!
+
+harry =
+  %User{}
+  |> User.changeset(%{
+      username: "harry",
+      email: "haguilera1021@gmail.com",
+      slack_display_name: "?",
+      password: "UZegTYX"
+    })
+  |> Repo.insert!
+
+kyle =
+  %User{}
+  |> User.changeset(%{
+      username: "kyle",
+      email: "zorrofox12@yahoo.com",
+      slack_display_name: "@Kyle Fox",
+      password: "bjnQBdS"
+    })
+  |> Repo.insert!
+
+joe =
+  %User{}
+  |> User.changeset(%{
+      username: "joe",
+      email: "joe@manycycles.com",
+      slack_display_name: "@Joe Golton",
+      password: "GxRashA"
+    })
+  |> Repo.insert!
+
+lee =
+  %User{}
+  |> User.changeset(%{
+      username: "lee",
+      email: "laralee@att.net",
+      slack_display_name: "@Lee Gootblatt",
+      password: "JHvbujT"
+    })
+  |> Repo.insert!
+
+george =
+  %User{}
+  |> User.changeset(%{
+      username: "george",
+      email: "gejoycejr@gmail.com",
+      slack_display_name: "@George E Joyce Jr",
+      password: "dYhpsPv"
+    })
+  |> Repo.insert!
+
+rob =
+  %User{}
+  |> User.changeset(%{
+      username: "rob",
+      email: "rcmiller510@gmail.com",
+      slack_display_name: "?",
+      password: "KVbVcwv"
+    })
+  |> Repo.insert!
+
+alan =
+  %User{}
+  |> User.changeset(%{
+      username: "alan",
+      email: "coachmurf@aol.com",
+      slack_display_name: "@Alan Murphy",
+      password: "UWRGFeH"
+    })
+  |> Repo.insert!
+
+ken =
+  %User{}
+  |> User.changeset(%{
+      username: "ken",
+      email: "kennadeau@aol.com",
+      slack_display_name: "@Ken Nadeau",
+      password: "zkBaXkZ"
+    })
+  |> Repo.insert!
+
+scott =
+  %User{}
+  |> User.changeset(%{
+      username: "scott",
+      email: "scportnoy1955@gmail.com",
+      slack_display_name: "?",
+      password: "GbNHYkm"
+    })
+  |> Repo.insert!
+
+jerry =
+  %User{}
+  |> User.changeset(%{
+      username: "jerry",
+      email: "gvelli@comcast.net",
+      slack_display_name: "@Jerry V",
+      password: "CyssPnt"
     })
   |> Repo.insert!
 
@@ -160,18 +270,108 @@ tom =
 # TEAMS (one team can't be in more than one auction yet)
 #
 
-team_daryl =
-  %Team{
-    name: "Team Daryl",
-    unused_nominations: 0,
-    new_nominations_open_at: DateTime.add(now, 60*1, :second),
-    } |> Repo.insert!
-
+{:ok, nomination_time} = DateTime.new(~D[2020-11-09], ~T[11:45:00.000], "Etc/UTC")
 team_tom =
   %Team{
     name: "Team Tom",
     unused_nominations: 0,
-    new_nominations_open_at: DateTime.add(now, 60*10, :second),
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-09], ~T[13:00:00.000], "Etc/UTC")
+team_jerry =
+  %Team{
+    name: "Team Jerry",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-09], ~T[14:30:00.000], "Etc/UTC")
+team_joe =
+  %Team{
+    name: "Team Joe",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-09], ~T[16:45:00.000], "Etc/UTC")
+team_daryl =
+  %Team{
+    name: "Team Daryl",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[01:30:00.000], "Etc/UTC")
+team_scott =
+  %Team{
+    name: "Team Scott",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[03:00:00.000], "Etc/UTC")
+team_ken =
+  %Team{
+    name: "Team Ken",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[03:15:00.000], "Etc/UTC")
+team_alan =
+  %Team{
+    name: "Team Alan",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[04:00:00.000], "Etc/UTC")
+team_rob =
+  %Team{
+    name: "Team Rob",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[04:30:00.000], "Etc/UTC")
+team_kyle =
+  %Team{
+    name: "Team Kyle",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[05:00:00.000], "Etc/UTC")
+team_lee =
+  %Team{
+    name: "Team Lee",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[06:45:00.000], "Etc/UTC")
+team_john =
+  %Team{
+    name: "Team John",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[07:00:00.000], "Etc/UTC")
+team_george =
+  %Team{
+    name: "Team George",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
+    } |> Repo.insert!
+
+{:ok, nomination_time} = DateTime.new(~D[2020-11-10], ~T[07:30:00.000], "Etc/UTC")
+team_harry =
+  %Team{
+    name: "Team Harry",
+    unused_nominations: 0,
+    new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!
 
 # team_daryl2 =
@@ -198,6 +398,61 @@ Repo.preload(team_tom, [:users])
 |> Ecto.Changeset.put_assoc(:users, [tom])
 |> Repo.update!()
 
+Repo.preload(team_john, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [john])
+|> Repo.update!()
+
+Repo.preload(team_harry, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [harry])
+|> Repo.update!()
+
+Repo.preload(team_kyle, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [kyle])
+|> Repo.update!()
+
+Repo.preload(team_joe, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [joe])
+|> Repo.update!()
+
+Repo.preload(team_lee, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [lee])
+|> Repo.update!()
+
+Repo.preload(team_george, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [george])
+|> Repo.update!()
+
+Repo.preload(team_rob, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [rob])
+|> Repo.update!()
+
+Repo.preload(team_alan, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [alan])
+|> Repo.update!()
+
+Repo.preload(team_ken, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [ken])
+|> Repo.update!()
+
+Repo.preload(team_scott, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [scott])
+|> Repo.update!()
+
+Repo.preload(team_jerry, [:users])
+|> Ecto.Changeset.change()
+|> Ecto.Changeset.put_assoc(:users, [jerry])
+|> Repo.update!()
+
 # Repo.preload(team_daryl2, [:users])
 # |> Ecto.Changeset.change()
 # |> Ecto.Changeset.put_assoc(:users, [daryl])
@@ -214,7 +469,19 @@ Repo.preload(team_tom, [:users])
 
 Repo.preload(auction_1988_1991_SL, [:teams])
 |> Ecto.Changeset.change()
-|> Ecto.Changeset.put_assoc(:teams, [team_daryl, team_tom])
+|> Ecto.Changeset.put_assoc(:teams, [team_tom,
+                                     team_jerry,
+                                     team_joe,
+                                     team_daryl,
+                                     team_scott,
+                                     team_ken,
+                                     team_alan,
+                                     team_rob,
+                                     team_kyle,
+                                     team_lee,
+                                     team_john,
+                                     team_george,
+                                     team_harry])
 |> Repo.update!()
 
 

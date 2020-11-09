@@ -108,25 +108,31 @@ class TeamsInfoTable extends Component {
     const columns = [{
       dataField: 'name',
       text: 'Team',
-      formatter: nameFormatter
+      formatter: nameFormatter,
+      sort: true
     }, {
       dataField: 'dollarsSpent',
       text: '$ Spent',
-      formatter: dollarsFormatter
+      formatter: dollarsFormatter,
+      sort: true
     }, {
       dataField: 'dollarsBid',
       text: '$ Bid',
-      formatter: dollarsFormatter
+      formatter: dollarsFormatter,
+      sort: true
     }, {
       dataField: 'unusedNominations',
       text: 'Unused Nominations',
+      sort: true
     }, {
       dataField: 'newNominationsOpenAt',
       text: 'New Nominations Open At',
-      formatter: timestampFormatter
+      formatter: timestampFormatter,
+      sort: true
     }, {
       dataField: 'numRosteredPlayers',
       text: 'Players Rostered',
+      sort: true
     }];
 
     const CaptionElement = () =>
