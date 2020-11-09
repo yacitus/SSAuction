@@ -123,7 +123,7 @@ year_range = "1988-1991-SL"
 auction_1988_1991_SL = SingleAuction.create_auction(name: "Test Auction: 1988-1991-SL",
                                                     year_range: year_range,
                                                     nominations_per_team: 2,
-                                                    seconds_before_autonomination: 60,
+                                                    seconds_before_autonomination: 60*60,
                                                     new_nominations_created: "time",
                                                     bid_timeout_seconds: 60*60*12,
                                                     players_per_team: 50,
@@ -221,7 +221,7 @@ rob =
   |> User.changeset(%{
       username: "rob",
       email: "rcmiller510@gmail.com",
-      slack_display_name: "?",
+      slack_display_name: "@Team12_Miller",
       password: "KVbVcwv"
     })
   |> Repo.insert!
