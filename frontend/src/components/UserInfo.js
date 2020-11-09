@@ -38,7 +38,11 @@ class UserInfo extends Component {
     const { teamId } = this.props;
 
     function slackDisplayNameFormatter(cell, row) {
-        return (`@${cell}`);
+        if (cell.charAt(0) === "@") {
+          return cell;
+        } else {
+          return (`@${cell}`);
+        }
     }
 
     const columns = [{
