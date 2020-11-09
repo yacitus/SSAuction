@@ -129,17 +129,21 @@ class TeamBidsTable extends Component {
     const columns = [{
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
+      sort: true
     }, {
       dataField: 'player.name',
-      text: 'Player'
+      text: 'Player',
+      sort: true
     }, {
       dataField: 'bidAmount',
       text: '$ Bid',
-      formatter: dollarsFormatter
+      formatter: dollarsFormatter,
+      sort: true
     }, {
       dataField: 'expiresAt',
       text: 'Expires In',
-      formatter: countdownFormatter
+      formatter: countdownFormatter,
+      sort: true
     }];
 
     const CaptionElement = () =>

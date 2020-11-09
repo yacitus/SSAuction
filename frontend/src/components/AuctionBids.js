@@ -156,17 +156,21 @@ class AuctionBidsTable extends Component {
       let columns = [{
         dataField: 'team.name',
         text: 'Team',
-        formatter: nameFormatter
+        formatter: nameFormatter,
+        sort: true
       }, {
         dataField: 'player.name',
         text: 'Player',
+        sort: true
       }, {
         dataField: 'player.ssnum',
         text: 'Scoresheet num',
+        sort: true
       }, {
         dataField: 'bidAmount',
         text: '$ Bid',
-        formatter: dollarsFormatter
+        formatter: dollarsFormatter,
+        sort: true
       }, {
         dataField: 'hiddenHighBid',
         text: '$ Hidden Max Bid',
@@ -175,6 +179,7 @@ class AuctionBidsTable extends Component {
         dataField: 'expiresAt',
         text: 'Expires In',
         formatter: countdownFormatter,
+        sort: true
       }];
 
       if (teamId != null) {
