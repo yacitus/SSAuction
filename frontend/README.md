@@ -10,6 +10,8 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
+- mutation to change user data: username, email, slack_display_name, password
+- mutation to change auction data, especially bid_timeout_seconds
 
 # MVP Unfinished Features
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
