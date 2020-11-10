@@ -45,6 +45,7 @@
 - Supervisor.Spec module used in backend/lib/ssauction/application.ex is deprecated: https://stackoverflow.com/a/61312844/4766
 
 # Post MVP Feature Priority
+- add "Keep Bidding Up To" to New Bid dialog box
 - bid history
 - ability to re-order a team nomination queue
 - a team setting to enabled/disable auto-nomination from ordered team nomination queue
