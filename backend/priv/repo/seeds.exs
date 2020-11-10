@@ -171,7 +171,7 @@ harry =
   |> User.changeset(%{
       username: "harry",
       email: "haguilera1021@gmail.com",
-      slack_display_name: "?",
+      slack_display_name: "@Harry",
       password: "UZegTYX"
     })
   |> Repo.insert!

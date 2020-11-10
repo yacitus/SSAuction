@@ -1,6 +1,7 @@
 # TODO
 
 # Known Bugs
+- $ Bid doesn't update in auction page teams table when players are bid up under a hidden max bid without changing the team with the high bid
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
 - have to refresh (more than once) to display buttons in Auction page Bids table if sign out and sign back in on that page
