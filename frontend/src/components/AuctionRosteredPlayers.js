@@ -110,17 +110,21 @@ class AuctionRosteredPlayersTable extends Component {
     const columns = [{
       dataField: 'team.name',
       text: 'Team',
-      formatter: nameFormatter
+      formatter: nameFormatter,
+      sort: true
     }, {
       dataField: 'cost',
       text: 'Cost',
-      formatter: dollarsFormatter
+      formatter: dollarsFormatter,
+      sort: true
     }, {
       dataField: 'player.name',
-      text: 'Player'
+      text: 'Player',
+      sort: true
     }, {
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
+      sort: true
     }];
 
     const CaptionElement = () =>

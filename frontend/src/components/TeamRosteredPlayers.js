@@ -98,13 +98,16 @@ class TeamRosteredPlayersTable extends Component {
     const columns = [{
       dataField: 'cost',
       text: 'Cost',
-      formatter: dollarsFormatter
+      formatter: dollarsFormatter,
+      sort: true
     }, {
       dataField: 'player.name',
       text: 'Player',
+      sort: true
     }, {
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
+      sort: true
     }];
 
     const CaptionElement = () =>
