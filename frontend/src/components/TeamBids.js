@@ -20,6 +20,7 @@ const TEAM_BIDS_QUERY = gql`
           id
           ssnum
           name
+          position
         }
       }
     }
@@ -38,6 +39,7 @@ const TEAM_BID_CHANGE_SUBSCRIPTION = gql`
           id
           ssnum
           name
+          position
         }
       }
     }
@@ -133,6 +135,10 @@ class TeamBidsTable extends Component {
     }, {
       dataField: 'player.name',
       text: 'Player',
+      sort: true
+    }, {
+      dataField: 'player.position',
+      text: 'Position',
       sort: true
     }, {
       dataField: 'bidAmount',

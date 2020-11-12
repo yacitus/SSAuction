@@ -16,6 +16,7 @@ const AUCTION_ROSTERED_PLAYERS_QUERY = gql`
         player {
           id
           name
+          position
           ssnum
         }
         team {
@@ -36,6 +37,7 @@ const AUCTION_ROSTER_CHANGE_SUBSCRIPTION = gql`
         player {
           id
           name
+          position
           ssnum
         }
         team {
@@ -120,6 +122,10 @@ class AuctionRosteredPlayersTable extends Component {
     }, {
       dataField: 'player.name',
       text: 'Player',
+      sort: true
+    }, {
+      dataField: 'player.position',
+      text: 'Position',
       sort: true
     }, {
       dataField: 'player.ssnum',

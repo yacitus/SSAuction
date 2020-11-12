@@ -24,6 +24,7 @@ const AUCTION_BIDS_QUERY = gql`
           id
           ssnum
           name
+          position
         }
         team {
           id
@@ -48,6 +49,7 @@ const AUCTION_BID_CHANGE_SUBSCRIPTION = gql`
           id
           ssnum
           name
+          position
         }
         team {
           id
@@ -161,6 +163,10 @@ class AuctionBidsTable extends Component {
       }, {
         dataField: 'player.name',
         text: 'Player',
+        sort: true
+      }, {
+        dataField: 'player.position',
+        text: 'Position',
         sort: true
       }, {
         dataField: 'player.ssnum',

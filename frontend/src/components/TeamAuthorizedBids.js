@@ -22,6 +22,7 @@ const TEAM_BIDS_QUERY = gql`
           id
           ssnum
           name
+          position
         }
       }
     }
@@ -41,6 +42,7 @@ const TEAM_BID_CHANGE_SUBSCRIPTION = gql`
           id
           ssnum
           name
+          position
         }
       }
     }
@@ -147,20 +149,29 @@ class TeamAuthorizedBidsTable extends Component {
     const columns = [{
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
+      sort: true
     }, {
       dataField: 'player.name',
-      text: 'Player'
+      text: 'Player',
+      sort: true
+    }, {
+      dataField: 'player.position',
+      text: 'Position',
+      sort: true
     }, {
       dataField: 'bidAmount',
       text: '$ Bid',
+      sort: true,
       formatter: dollarsFormatter
     }, {
       dataField: 'hiddenHighBid',
       text: '$ Hidden Max Bid',
+      sort: true,
       formatter: dollarsFormatter
     }, {
       dataField: 'expiresAt',
       text: 'Expires In',
+      sort: true,
       formatter: countdownFormatter
     }, {
       text: '',
