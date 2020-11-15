@@ -113,6 +113,13 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
+  def change_team_info(_, args, _) do
+    team = SingleAuction.get_team_by_id!(args[:team_id])
+
+    SingleAuction.change_team_name(team, args[:team_name])
+    {:ok, team}
+  end
+
   def add_to_nomination_queue(_, args, %{context: %{current_user: _user}}) do
     team = SingleAuction.get_team_by_id!(args[:team_id])
     player = SingleAuction.get_player_by_id!(args[:player_id])

@@ -772,6 +772,17 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Changes a team name
+
+  """
+  def change_team_name(team = %Team{}, team_name) do
+    team
+    |> Team.changeset(%{name: team_name})
+    |> Repo.update()
+    publish_team_info_change(team.id)
+  end
+
+  @doc """
   Adds the player to the team's nomination queue
 
   """

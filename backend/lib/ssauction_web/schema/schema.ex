@@ -128,6 +128,15 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :password, non_null(:string)
       resolve &Resolvers.Accounts.signin/3
     end
+
+    @desc "Change team info"
+    field :change_team_info, :team do
+      arg :team_id, non_null(:integer)
+      arg :auction_id, non_null(:integer)
+      arg :team_name, non_null(:string)
+      middleware Middleware.AuthorizeUserAuctionAdmin
+      resolve &Resolvers.SingleAuction.change_team_info/3
+    end
   end
 
   subscription do
