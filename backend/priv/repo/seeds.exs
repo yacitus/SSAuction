@@ -156,6 +156,16 @@ tom =
     })
   |> Repo.insert!
 
+jerry =
+  %User{}
+  |> User.changeset(%{
+      username: "jerry",
+      email: "gvelli@comcast.net",
+      slack_display_name: "@Jerry V",
+      password: "CyssPnt"
+    })
+  |> Repo.insert!
+
 joe =
   %User{}
   |> User.changeset(%{
@@ -212,7 +222,7 @@ team_daryl =
 {:ok, nomination_time} = DateTime.new(~D[2020-11-16], ~T[12:00:00.000], "Etc/UTC")
 team_tom =
   %Team{
-    name: "Team Tom",
+    name: "Team Tom & Jerry",
     unused_nominations: 0,
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!
@@ -220,7 +230,7 @@ team_tom =
 {:ok, nomination_time} = DateTime.new(~D[2020-11-16], ~T[14:30:00.000], "Etc/UTC")
 team_joe =
   %Team{
-    name: "Team Joe",
+    name: "Hot Ice (Joe)",
     unused_nominations: 0,
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!
@@ -244,7 +254,7 @@ Repo.preload(team_daryl, [:users])
 
 Repo.preload(team_tom, [:users])
 |> Ecto.Changeset.change()
-|> Ecto.Changeset.put_assoc(:users, [tom])
+|> Ecto.Changeset.put_assoc(:users, [tom, jerry])
 |> Repo.update!()
 
 Repo.preload(team_joe, [:users])
