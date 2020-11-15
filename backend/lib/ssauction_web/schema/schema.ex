@@ -116,6 +116,7 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :team_id, non_null(:integer)
       arg :player_id, non_null(:integer)
       arg :bid_amount, non_null(:integer)
+      arg :keep_bidding_up_to, :integer
       arg :hidden_high_bid, :integer
       middleware Middleware.Authenticate
       middleware Middleware.AuthorizeUserInTeam

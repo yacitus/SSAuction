@@ -698,7 +698,7 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Returns true if the team has enough money left for the bid amount (and hidden high bid)
+  Returns true if the team has enough money left for the bid amount, the "keep bidding up to" amount, and the hidden high bid
 
   """
 
@@ -708,7 +708,7 @@ defmodule Ssauction.SingleAuction do
   end
 
   defp calculate_max_new_dollars(args, nil) do
-    calculate_max_bid_vs_hidden_high_bid(args[:bid_amount], args[:hidden_high_bid])
+    calculate_max_bid(args[:bid_amount], args[:keep_bidding_up_to], args[:hidden_high_bid])
   end
 
   defp calculate_max_new_dollars(args, existing_team_bid) do
@@ -723,6 +723,22 @@ defmodule Ssauction.SingleAuction do
 
   defp calculate_max_bid_vs_hidden_high_bid(bid, hidden_high_bid) do
     max(bid, hidden_high_bid)
+  end
+
+  defp calculate_max_bid(bid, nil, nil) do
+    bid
+  end
+
+  defp calculate_max_bid(bid, keep_bidding_up_to, nil) do
+    max(bid, keep_bidding_up_to)
+  end
+
+  defp calculate_max_bid(bid, nil, hidden_high_bid) do
+    max(bid, hidden_high_bid)
+  end
+
+  defp calculate_max_bid(bid, keep_bidding_up_to, hidden_high_bid) do
+    max(max(bid, keep_bidding_up_to), hidden_high_bid)
   end
 
   @doc """
