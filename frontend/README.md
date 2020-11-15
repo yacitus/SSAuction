@@ -12,7 +12,6 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
-- add player position column to all tables with player names, and make it sortable
 - add "Keep Bidding Up To" to New Bid dialog box
 - mutation to change user data: username, email, slack_display_name, password
 - mutation to change auction data, especially bid_timeout_seconds
