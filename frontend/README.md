@@ -2,6 +2,7 @@
 
 # Known Bugs
 - auto-nomination doesn't include hidden max bids when checking to see if team has $1 free first?
+- team info doesn't update after successful bid
 - $ Bid doesn't update in auction page teams table when players are bid up under a hidden max bid without changing the team with the high bid
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
@@ -12,6 +13,8 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
+- add to mutation to change team data: new_nominations_open_at
+- add support for 3 nominations per team (per day)
 - add "Keep Bidding Up To" to New Bid dialog box
 - mutation to change user data: username, email, slack_display_name, password
 - mutation to change auction data, especially bid_timeout_seconds
