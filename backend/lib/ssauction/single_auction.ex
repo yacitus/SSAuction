@@ -772,7 +772,18 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
-  Changes a team name
+  Changes an auction name and/or nominations_per_team value
+
+  """
+  def change_auction_info(auction = %Auction{}, info) do
+    auction
+    |> Auction.changeset(Map.take(info, [:name, :nominations_per_team]))
+    |> Repo.update()
+    SingleAuction.publish_auction_status_change(auction)
+  end
+
+  @doc """
+  Changes a team name and/or new_nominations_open_at date/time
 
   """
   def change_team_info(team = %Team{}, info) do

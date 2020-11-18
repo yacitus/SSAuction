@@ -13,7 +13,6 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
-- add support for 3 nominations per team (per day)
 - add "Keep Bidding Up To" to New Bid dialog box
 - mutation to change user data: username, email, slack_display_name, password
 - mutation to change auction data, especially bid_timeout_seconds

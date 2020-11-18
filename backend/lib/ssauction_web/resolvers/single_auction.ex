@@ -113,6 +113,11 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
+  def change_auction_info(_, args, _) do
+    SingleAuction.change_auction_info(SingleAuction.get_auction_by_id!(args[:auction_id]), args)
+    {:ok, SingleAuction.get_auction_by_id!(args[:auction_id])}
+  end
+
   def change_team_info(_, args, _) do
     SingleAuction.change_team_info(SingleAuction.get_team_by_id!(args[:team_id]), args)
     {:ok, SingleAuction.get_team_by_id!(args[:team_id])}
@@ -348,7 +353,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     )
   end
 
-  defp publish_auction_status_change(auction) do
+  def publish_auction_status_change(auction) do
     Absinthe.Subscription.publish(
       SsauctionWeb.Endpoint,
       auction,
