@@ -133,7 +133,8 @@ defmodule SsauctionWeb.Schema.Schema do
     field :change_team_info, :team do
       arg :team_id, non_null(:integer)
       arg :auction_id, non_null(:integer)
-      arg :team_name, non_null(:string)
+      arg :name, :string
+      arg :new_nominations_open_at, :datetime
       middleware Middleware.AuthorizeUserAuctionAdmin
       resolve &Resolvers.SingleAuction.change_team_info/3
     end

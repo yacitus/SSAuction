@@ -775,9 +775,9 @@ defmodule Ssauction.SingleAuction do
   Changes a team name
 
   """
-  def change_team_name(team = %Team{}, team_name) do
+  def change_team_info(team = %Team{}, info) do
     team
-    |> Team.changeset(%{name: team_name})
+    |> Team.changeset(Map.take(info, [:name, :new_nominations_open_at]))
     |> Repo.update()
     publish_team_info_change(team.id)
   end
