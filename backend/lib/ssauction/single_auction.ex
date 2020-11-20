@@ -793,6 +793,20 @@ defmodule Ssauction.SingleAuction do
     publish_team_info_change(team.id)
   end
 
+ @doc """
+  Changes a bid's expires_at time
+
+  """
+  def change_bid_info(bid = %Bid{}, info) do
+    auction = get_auction_by_id!(info[:auction_id])
+    expires_at = auction.started_or_paused_at
+      |> DateTime.add(info[:seconds_before_expires], :second)
+    bid
+    |> Bid.changeset(%{expires_at: expires_at})
+    |> Repo.update()
+    SingleAuction.publish_bid_change(auction, get_team_by_id!(bid.team_id))
+  end
+
   @doc """
   Adds the player to the team's nomination queue
 

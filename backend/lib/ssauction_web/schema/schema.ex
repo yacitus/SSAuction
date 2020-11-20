@@ -147,6 +147,15 @@ defmodule SsauctionWeb.Schema.Schema do
       middleware Middleware.AuthorizeUserAuctionAdmin
       resolve &Resolvers.SingleAuction.change_team_info/3
     end
+
+    @desc "Change bid info"
+    field :change_bid_info, :bid do
+      arg :bid_id, non_null(:integer)
+      arg :auction_id, non_null(:integer)
+      arg :seconds_before_expires, non_null(:integer)
+      middleware Middleware.AuthorizeUserAuctionAdmin
+      resolve &Resolvers.SingleAuction.change_bid_info/3
+    end
   end
 
   subscription do
