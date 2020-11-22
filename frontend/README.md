@@ -13,7 +13,6 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
-- Auction page Bids table default sort order: by Expires In, soonest first
 - Auction page Rostered Players table default sort order: by order rostered (like now), but most recently rostered first
 - add "Keep Bidding Up To" to New Bid dialog box
 - mutation to change user data: username, email, slack_display_name, password

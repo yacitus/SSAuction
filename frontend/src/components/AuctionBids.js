@@ -232,6 +232,11 @@ class AuctionBidsTable extends Component {
                    padding: '0.5em' }}>
         Bids</h3>;
 
+    const defaultSortedBy = [{
+      dataField: "expiresAt",
+      order: "asc"
+    }];
+
     return (
       <div>
         <BootstrapTable
@@ -240,7 +245,9 @@ class AuctionBidsTable extends Component {
           keyField='id'
           data={ this.props.bids }
           columns={ getColumns() }
-          striped />
+          striped
+          defaultSorted={defaultSortedBy}
+        />
       </div>
     );
   }

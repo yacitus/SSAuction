@@ -149,6 +149,11 @@ class TeamsInfoTable extends Component {
       }
     };
 
+    const defaultSortedBy = [{
+      dataField: "newNominationsOpenAt",
+      order: "asc"
+    }];
+
     return (
       <div>
         <BootstrapTable
@@ -159,7 +164,9 @@ class TeamsInfoTable extends Component {
           columns={ columns }
           rowEvents={ rowEvents }
           striped
-          hover />
+          hover
+          defaultSorted={defaultSortedBy}
+        />
       </div>
     );
   }
