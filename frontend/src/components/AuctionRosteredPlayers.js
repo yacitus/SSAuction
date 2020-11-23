@@ -113,7 +113,8 @@ class AuctionRosteredPlayersTable extends Component {
 
     const columns = [{
       dataField: 'id',
-      hidden: true
+      text: 'ID',
+      sort: true
     }, {
       dataField: 'team.name',
       text: 'Team',
