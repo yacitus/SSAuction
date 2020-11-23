@@ -122,7 +122,8 @@ class AuctionRosteredPlayersTable extends Component {
           return numB - numA;
         }
         return numA - numB; // desc
-      }
+      },
+      hidden: true
     }, {
       dataField: 'team.name',
       text: 'Team',
