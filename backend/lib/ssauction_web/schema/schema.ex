@@ -343,6 +343,7 @@ defmodule SsauctionWeb.Schema.Schema do
   end
 
   object :rostered_player do
+    field :id, non_null(:id)
     field :cost, non_null(:integer)
     field :player, non_null(:player) do
       resolve dataloader(SingleAuction, :player, args: %{scope: :rostered_player})

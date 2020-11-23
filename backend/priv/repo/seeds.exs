@@ -100,15 +100,6 @@ year_range = "1988-1991-SL"
 #                                        started_or_paused_at: now)
 
 #
-# PLAYERS FROM AUCTION
-#
-
-# player1 = Repo.get!(Player, 1)
-# player2 = Repo.get!(Player, 2)
-# player3 = Repo.get!(Player, 3)
-# player4 = Repo.get!(Player, 4)
-
-#
 # 1988-1991-BL AUCTION
 #
 
@@ -288,10 +279,14 @@ Repo.preload(auction_1988_1991_SL, [:admins])
 |> Ecto.Changeset.put_assoc(:admins, [daryl])
 |> Repo.update!()
 
-# Repo.preload(auction_2020_BL, [:admins])
-# |> Ecto.Changeset.change()
-# |> Ecto.Changeset.put_assoc(:admins, [daryl])
-# |> Repo.update!()
+#
+# PLAYERS FROM AUCTION
+#
+
+player1 = Repo.get!(Player, 1)
+player2 = Repo.get!(Player, 2)
+player3 = Repo.get!(Player, 3)
+player4 = Repo.get!(Player, 4)
 
 #
 # CREATE A BID
@@ -315,21 +310,28 @@ Repo.preload(auction_1988_1991_SL, [:admins])
 # |> Repo.update!()
 
 #
-# ROSTER A PLAYER
+# ROSTER PLAYERS
 #
 
-# player_cost = 4
-# rostered_player =
-#   %RosteredPlayer{
-#     cost: player_cost,
-#     player: player2
-#   }
-# rostered_player = Ecto.build_assoc(team_two, :rostered_players, rostered_player)
-# rostered_player = Ecto.build_assoc(auction, :rostered_players, rostered_player)
-# Repo.insert!(rostered_player)
+player_cost = 4
+rostered_player =
+  %RosteredPlayer{
+    cost: player_cost,
+    player: player1
+  }
+rostered_player = Ecto.build_assoc(team_daryl, :rostered_players, rostered_player)
+rostered_player = Ecto.build_assoc(auction_1988_1991_SL, :rostered_players, rostered_player)
+Repo.insert!(rostered_player)
 
-# Team.changeset(team_two, %{dollars_spent: team_daryl.dollars_spent + player_cost})
-# |> Repo.update!()
+player_cost = 2
+rostered_player =
+  %RosteredPlayer{
+    cost: player_cost,
+    player: player2
+  }
+rostered_player = Ecto.build_assoc(team_daryl, :rostered_players, rostered_player)
+rostered_player = Ecto.build_assoc(auction_1988_1991_SL, :rostered_players, rostered_player)
+Repo.insert!(rostered_player)
 
 #
 # ADD A PLAYER TO A TEAM'S NOMINATION LIST

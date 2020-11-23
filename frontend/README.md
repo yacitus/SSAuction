@@ -13,13 +13,13 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
-- Auction page Rostered Players table default sort order: by order rostered (like now), but most recently rostered first
 - add "Keep Bidding Up To" to New Bid dialog box
 - mutation to change user data: username, email, slack_display_name, password
 - mutation to change auction data, especially bid_timeout_seconds
 - allow people to file tickets on GitHub or a Trello project
 
 # MVP Unfinished Features
+- paginate auction page Rostered Players table
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
 - teams can be in more than one auction
 - team names need only be unique within an auction (checked when added to an auction)
