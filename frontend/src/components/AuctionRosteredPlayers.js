@@ -114,7 +114,15 @@ class AuctionRosteredPlayersTable extends Component {
     const columns = [{
       dataField: 'id',
       text: 'ID',
-      sort: true
+      sort: true,
+      sortFunc: (a, b, order, dataField, rowA, rowB) => {
+        const numA = parseInt(a);
+        const numB = parseInt(b);
+        if (order === "desc") {
+          return numB - numA;
+        }
+        return numA - numB; // desc
+      }
     }, {
       dataField: 'team.name',
       text: 'Team',
