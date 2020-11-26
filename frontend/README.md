@@ -1,8 +1,8 @@
 # TODO
 
 # Known Bugs
-- auto-nomination doesn't include hidden max bids when checking to see if team has $1 free first?
 - team info doesn't update after successful bid
+- when you are out of funds and hit +1, it silently fails--preferred UI is to throw up a dialog box saying something like "Not enough cash available to make this bid"
 - $ Bid doesn't update in auction page teams table when players are bid up under a hidden max bid without changing the team with the high bid
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
@@ -19,7 +19,6 @@
 - allow people to file tickets on GitHub or a Trello project
 
 # MVP Unfinished Features
-- when you are out of funds and hit +1, it silently fails--preferred UI is to throw up a dialog box saying something like "Not enough cash available to make this bid"
 - widen the "Expires In" field by about 20%
   ---'It would cause many lines to be less tall, and stop the flickering of the display when it goes from something like 3 hours and 10 minutes down to 3 hours and 9 minutes (because one less character doesn't force the extra line). You can save room on width of the "$ hidden max bid" column by moving the word "max" down to be with the word "bid."'
 - slightly widening the player column would cause many players to only take up 1 line instead of two

@@ -183,7 +183,7 @@ defmodule Ssauction.SingleAuction do
     if num_players_in_nomination_queue(auction) > 0 do
       if team.unused_nominations > 0 do
         for _ <- 1..team.unused_nominations do
-          if team_dollars_remaining_for_bids(team) > 0 do
+          if team_dollars_remaining_for_bids_including_hidden(team) > 0 do
             player = next_in_nomination_queue(auction)
             args = %{bid_amount: 1}
             SingleAuction.submit_bid_changeset(auction, team, player, args, nil)
