@@ -171,16 +171,26 @@ class AuctionBidsTable extends Component {
       }, {
         dataField: 'player.ssnum',
         text: 'Scoresheet num',
-        sort: true
+        sort: true,
+        headerStyle: () => {
+          return { width: "10%" };
+        }
       }, {
         dataField: 'bidAmount',
         text: '$ Bid',
         formatter: dollarsFormatter,
-        sort: true
+        sort: true,
+        headerStyle: () => {
+          return { width: "5%" };
+        }
       }, {
         dataField: 'hiddenHighBid',
         text: '$ Hidden Max Bid',
-        formatter: dollarsFormatter
+        formatter: dollarsFormatter,
+        sort: true,
+        headerStyle: () => {
+          return { width: "5%" };
+        }
       }, {
         dataField: 'expiresAt',
         text: 'Expires In',

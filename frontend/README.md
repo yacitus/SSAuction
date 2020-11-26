@@ -19,9 +19,6 @@
 - allow people to file tickets on GitHub or a Trello project
 
 # MVP Unfinished Features
-- widen the "Expires In" field by about 20%
-  ---'It would cause many lines to be less tall, and stop the flickering of the display when it goes from something like 3 hours and 10 minutes down to 3 hours and 9 minutes (because one less character doesn't force the extra line). You can save room on width of the "$ hidden max bid" column by moving the word "max" down to be with the word "bid."'
-- slightly widening the player column would cause many players to only take up 1 line instead of two
 - a $/Player column in the Teams table on the auction page
 - paginate auction page Rostered Players table
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
