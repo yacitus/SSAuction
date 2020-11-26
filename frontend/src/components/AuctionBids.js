@@ -170,10 +170,10 @@ class AuctionBidsTable extends Component {
         sort: true
       }, {
         dataField: 'player.ssnum',
-        text: 'Scoresheet num',
+        text: 'S. num',
         sort: true,
         headerStyle: () => {
-          return { width: "10%" };
+          return { width: "5%" };
         }
       }, {
         dataField: 'bidAmount',
