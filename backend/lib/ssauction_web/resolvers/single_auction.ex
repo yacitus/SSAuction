@@ -287,6 +287,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         SingleAuction.remove_from_nomination_queues(player, auction)
         publish_nomination_queue_change(auction)
         publish_bid_change(auction, team)
+        publish_team_info_change(team)
+        publish_auction_teams_info_change(auction)
         {:ok, bid}
     end
   end
@@ -316,6 +318,9 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         publish_bid_change(auction, team)
         previous_team = SingleAuction.get_team_by_id!(existing_bid.team_id)
         publish_bid_change(auction, previous_team)
+        publish_team_info_change(team)
+        publish_team_info_change(previous_team)
+        publish_auction_teams_info_change(auction)
         {:ok, bid}
     end
   end
@@ -332,6 +337,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
       {:ok, bid} ->
         team = SingleAuction.get_team_by_id!(existing_bid.team_id)
         publish_bid_change(auction, team)
+        publish_team_info_change(team)
+        publish_auction_teams_info_change(auction)
         {:ok, bid}
     end
   end

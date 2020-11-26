@@ -1,7 +1,6 @@
 # TODO
 
 # Known Bugs
-- team info doesn't update after successful bid
 - when you are out of funds and hit +1, it silently fails--preferred UI is to throw up a dialog box saying something like "Not enough cash available to make this bid"
 - $ Bid doesn't update in auction page teams table when players are bid up under a hidden max bid without changing the team with the high bid
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
