@@ -201,7 +201,7 @@ george =
 # TEAMS (one team can't be in more than one auction yet)
 #
 
-{:ok, nomination_time} = DateTime.new(~D[2020-11-20], ~T[16:45:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2020-12-04], ~T[16:45:00.000], "Etc/UTC")
 # nomination_time = DateTime.add(now, 60*2, :second)
 team_daryl =
   %Team{
@@ -210,7 +210,7 @@ team_daryl =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!
 
-{:ok, nomination_time} = DateTime.new(~D[2020-11-20], ~T[12:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2020-12-04], ~T[12:00:00.000], "Etc/UTC")
 team_tom =
   %Team{
     name: "Team Tom & Jerry",
@@ -218,7 +218,7 @@ team_tom =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!
 
-{:ok, nomination_time} = DateTime.new(~D[2020-11-20], ~T[14:30:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2020-12-04], ~T[14:30:00.000], "Etc/UTC")
 team_joe =
   %Team{
     name: "Hot Ice (Joe)",
@@ -226,7 +226,7 @@ team_joe =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!
 
-{:ok, nomination_time} = DateTime.new(~D[2020-11-20], ~T[21:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2020-12-04], ~T[21:00:00.000], "Etc/UTC")
 team_hgj =
   %Team{
     name: "Team Harry/George/John",

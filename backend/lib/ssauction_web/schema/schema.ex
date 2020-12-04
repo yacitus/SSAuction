@@ -109,7 +109,6 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve &Resolvers.SingleAuction.add_to_nomination_queue/3
     end
 
-
     @desc "Submit a bid"
     field :submit_bid, :bid do
       arg :auction_id, non_null(:integer)
@@ -155,6 +154,14 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :seconds_before_expires, non_null(:integer)
       middleware Middleware.AuthorizeUserAuctionAdmin
       resolve &Resolvers.SingleAuction.change_bid_info/3
+    end
+
+    @desc "Delete bid"
+    field :delete_bid, :bid do
+      arg :bid_id, non_null(:integer)
+      arg :auction_id, non_null(:integer)
+      middleware Middleware.AuthorizeUserAuctionAdmin
+      resolve &Resolvers.SingleAuction.delete_bid/3
     end
   end
 

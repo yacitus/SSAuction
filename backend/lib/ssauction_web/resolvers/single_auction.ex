@@ -128,6 +128,11 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.get_bid_by_id!(args[:bid_id])}
   end
 
+  def delete_bid(_, args, _) do
+    SingleAuction.delete_bid(SingleAuction.get_bid_by_id!(args[:bid_id]))
+    {:ok, nil}
+  end
+
   def add_to_nomination_queue(_, args, %{context: %{current_user: _user}}) do
     team = SingleAuction.get_team_by_id!(args[:team_id])
     player = SingleAuction.get_player_by_id!(args[:player_id])

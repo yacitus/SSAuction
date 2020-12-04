@@ -183,7 +183,7 @@ defmodule Ssauction.SingleAuction do
     if num_players_in_nomination_queue(auction) > 0 do
       if team.unused_nominations > 0 do
         for _ <- 1..team.unused_nominations do
-          if team_dollars_remaining_for_bids_including_hidden(team) > 0 do
+          if team_has_open_roster_spot?(team, auction) and team_dollars_remaining_for_bids_including_hidden(team) > 0 do
             player = next_in_nomination_queue(auction)
             args = %{bid_amount: 1}
             SingleAuction.submit_bid_changeset(auction, team, player, args, nil)
@@ -231,19 +231,33 @@ defmodule Ssauction.SingleAuction do
     rostered_player = Ecto.build_assoc(auction, :rostered_players, rostered_player)
     Repo.insert!(rostered_player)
     nominating_team = get_team_by_id!(bid.nominated_by)
-    # team
-    # |> Team.changeset(%{dollars_spent: team.dollars_spent + bid.bid_amount,
-    #                     dollars_bid: team.dollars_bid - bid.bid_amount})
-    # |> Repo.update
+    delete_bid(bid, auction, team, player, nominating_team)
+    update_unused_nominations(nominating_team, auction)
+    SingleAuction.publish_roster_change(auction, team)
+  end
+
+  @doc """
+  Delete the bid
+
+  """
+  def delete_bid(bid = %Bid{}) do
+    bid = Repo.preload(bid, [:player, :team, :auction])
+    auction = bid.auction
+    team = bid.team
+    player = bid.player
+    nominating_team = get_team_by_id!(bid.nominated_by)
+    delete_bid(bid, auction, team, player, nominating_team)
+  end
+
+
+  def delete_bid(bid = %Bid{}, auction = %Auction{}, team = %Team{}, player = %Player{}, nominating_team = %Team{}) do
     player
     |> Ecto.Changeset.change(%{bid_id: nil})
     |> Repo.update
     bid
     |> Ecto.Changeset.change
     |> Repo.delete
-    update_unused_nominations(nominating_team, auction)
     SingleAuction.publish_bid_change(auction, team)
-    SingleAuction.publish_roster_change(auction, team)
     SingleAuction.publish_queueable_players_change(team)
     publish_team_info_change(team.id)
     publish_team_info_change(nominating_team.id)
