@@ -51,7 +51,9 @@
 - Supervisor.Spec module used in backend/lib/ssauction/application.ex is deprecated: https://stackoverflow.com/a/61312844/4766
 
 # Post MVP Feature Priority
-- bid history
+- bid history for each player
+- rosters sortable by time sold (easy with bid history)
+- bids sortable by most recent high bid (easy with bid history)
 - ability to re-order a team nomination queue
 - a team setting to enabled/disable auto-nomination from ordered team nomination queue
 - user invitations (including to new or existing team)
