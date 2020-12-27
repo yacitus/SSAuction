@@ -145,53 +145,65 @@ class AuctionInfoTable extends Component {
       formatter: valueFormatter
     }];
 
-    const data = [{
-      label: 'Active:',
-      value: '',
-      id: 0
-    }, {
-      label: 'Last Started or Paused:',
-      value: '',
-      id: 1
-    }, {
-      label: 'Years:',
-      value: `${info.auction.yearRange}`,
-      id: 2
-    }, {
-      label: 'Players Per Team:',
-      value: `${info.auction.playersPerTeam}`,
-      id: 3
-    }, {
-      label: 'Must Roster All Players:',
-      value: `${info.auction.mustRosterAllPlayers}`,
-      id: 4
-    }, {
-      label: 'Dollars Per Team:',
-      value: `$${info.auction.dollarsPerTeam}`,
-      id: 5
-    }, {
-      label: 'Time Before Bids Expire:',
-      value: `${Utilities.secondsToDaysHoursMinsSecsStr(
-                  info.auction.bidTimeoutSeconds)}`,
-      id: 6
-    }, {
-      label: 'Nominations Per Team:',
-      value: `${info.auction.nominationsPerTeam}`,
-      id: 7
-    }, {
-      label: 'Time Before Auto-nomination:',
-      value: `${Utilities.secondsToDaysHoursMinsSecsStr(
-                  info.auction.secondsBeforeAutonomination)}`,
-      id: 8
-    }, {
-      label: 'Next Players in Auto-Nomination Queue:',
-      value: `${info.auction.autonominationQueue[0].player.name} (#${info.auction.autonominationQueue[0].player.ssnum} - ${info.auction.autonominationQueue[0].player.position})`,
-      id: 9
-    }, {
-      label: '',
-      value: `${info.auction.autonominationQueue[1].player.name} (#${info.auction.autonominationQueue[1].player.ssnum} - ${info.auction.autonominationQueue[1].player.position})`,
-      id: 10
-    }];
+    function tabledata() {
+      let data = [{
+        label: 'Active:',
+        value: '',
+        id: 0
+      }, {
+        label: 'Last Started or Paused:',
+        value: '',
+        id: 1
+      }, {
+        label: 'Years:',
+        value: `${info.auction.yearRange}`,
+        id: 2
+      }, {
+        label: 'Players Per Team:',
+        value: `${info.auction.playersPerTeam}`,
+        id: 3
+      }, {
+        label: 'Must Roster All Players:',
+        value: `${info.auction.mustRosterAllPlayers}`,
+        id: 4
+      }, {
+        label: 'Dollars Per Team:',
+        value: `$${info.auction.dollarsPerTeam}`,
+        id: 5
+      }, {
+        label: 'Time Before Bids Expire:',
+        value: `${Utilities.secondsToDaysHoursMinsSecsStr(
+                    info.auction.bidTimeoutSeconds)}`,
+        id: 6
+      }, {
+        label: 'Nominations Per Team:',
+        value: `${info.auction.nominationsPerTeam}`,
+        id: 7
+      }, {
+        label: 'Time Before Auto-nomination:',
+        value: `${Utilities.secondsToDaysHoursMinsSecsStr(
+                    info.auction.secondsBeforeAutonomination)}`,
+        id: 8
+      }];
+
+      // TODO - clean up below
+      if (info.auction.nominationsPerTeam === 1) {
+        data.push({label: 'Next Player in Auto-Nomination Queue:',
+                   value: `${info.auction.autonominationQueue[0].player.name} (#${info.auction.autonominationQueue[0].player.ssnum} - ${info.auction.autonominationQueue[0].player.position})`,
+                   id: 9});
+      } else {
+        data.push({label: 'Next Players in Auto-Nomination Queue:',
+                   value: `${info.auction.autonominationQueue[0].player.name} (#${info.auction.autonominationQueue[0].player.ssnum} - ${info.auction.autonominationQueue[0].player.position})`,
+                   id: 9});
+        for (let i = 1; i < info.auction.nominationsPerTeam; i++) {
+          data.push({label: '',
+                     value: `${info.auction.autonominationQueue[i].player.name} (#${info.auction.autonominationQueue[i].player.ssnum} - ${info.auction.autonominationQueue[i].player.position})`,
+                     id: i+9});
+        }
+      }
+
+      return data;
+    }
 
     const CaptionElement = () =>
       <h3 style={{ borderRadius: '0.25em',
@@ -207,7 +219,7 @@ class AuctionInfoTable extends Component {
           bootstrap4={ true }
           caption={ <CaptionElement /> }
           keyField='id'
-          data={ data }
+          data={ tabledata() }
           columns={ columns }
           striped
           headerClasses="auction-info-header" />

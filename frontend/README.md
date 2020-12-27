@@ -1,7 +1,8 @@
 # TODO
 
 # Known Bugs
-- auto-nomination doesn't include hidden max bids when checking to see if team has $1 free first?
+- when you are out of funds and hit +1, it silently fails--preferred UI is to throw up a dialog box saying something like "Not enough cash available to make this bid"
+- the past Time Nominations Expire is shown when the next New Nominations Open At is in the future
 - $ Bid doesn't update in auction page teams table when players are bid up under a hidden max bid without changing the team with the high bid
 - toggle switch (on auction page) to make auction active/inactive doesn't auto-update
 - bid buttons have a dark outline (still focused?) after the modal is closed
@@ -12,13 +13,14 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
-- add player position column to all tables with player names, and make it sortable
 - add "Keep Bidding Up To" to New Bid dialog box
 - mutation to change user data: username, email, slack_display_name, password
 - mutation to change auction data, especially bid_timeout_seconds
 - allow people to file tickets on GitHub or a Trello project
 
 # MVP Unfinished Features
+- a $/Player column in the Teams table on the auction page
+- paginate auction page Rostered Players table
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
 - teams can be in more than one auction
 - team names need only be unique within an auction (checked when added to an auction)
@@ -49,7 +51,9 @@
 - Supervisor.Spec module used in backend/lib/ssauction/application.ex is deprecated: https://stackoverflow.com/a/61312844/4766
 
 # Post MVP Feature Priority
-- bid history
+- bid history for each player
+- rosters sortable by time sold (easy with bid history)
+- bids sortable by most recent high bid (easy with bid history)
 - ability to re-order a team nomination queue
 - a team setting to enabled/disable auto-nomination from ordered team nomination queue
 - user invitations (including to new or existing team)

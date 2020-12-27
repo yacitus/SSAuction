@@ -113,6 +113,26 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
+  def change_auction_info(_, args, _) do
+    SingleAuction.change_auction_info(SingleAuction.get_auction_by_id!(args[:auction_id]), args)
+    {:ok, SingleAuction.get_auction_by_id!(args[:auction_id])}
+  end
+
+  def change_team_info(_, args, _) do
+    SingleAuction.change_team_info(SingleAuction.get_team_by_id!(args[:team_id]), args)
+    {:ok, SingleAuction.get_team_by_id!(args[:team_id])}
+  end
+
+  def change_bid_info(_, args, _) do
+    SingleAuction.change_bid_info(SingleAuction.get_bid_by_id!(args[:bid_id]), args)
+    {:ok, SingleAuction.get_bid_by_id!(args[:bid_id])}
+  end
+
+  def delete_bid(_, args, _) do
+    SingleAuction.delete_bid(SingleAuction.get_bid_by_id!(args[:bid_id]))
+    {:ok, nil}
+  end
+
   def add_to_nomination_queue(_, args, %{context: %{current_user: _user}}) do
     team = SingleAuction.get_team_by_id!(args[:team_id])
     player = SingleAuction.get_player_by_id!(args[:player_id])
@@ -272,6 +292,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         SingleAuction.remove_from_nomination_queues(player, auction)
         publish_nomination_queue_change(auction)
         publish_bid_change(auction, team)
+        publish_team_info_change(team)
+        publish_auction_teams_info_change(auction)
         {:ok, bid}
     end
   end
@@ -301,6 +323,9 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         publish_bid_change(auction, team)
         previous_team = SingleAuction.get_team_by_id!(existing_bid.team_id)
         publish_bid_change(auction, previous_team)
+        publish_team_info_change(team)
+        publish_team_info_change(previous_team)
+        publish_auction_teams_info_change(auction)
         {:ok, bid}
     end
   end
@@ -317,6 +342,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
       {:ok, bid} ->
         team = SingleAuction.get_team_by_id!(existing_bid.team_id)
         publish_bid_change(auction, team)
+        publish_team_info_change(team)
+        publish_auction_teams_info_change(auction)
         {:ok, bid}
     end
   end
@@ -343,7 +370,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     )
   end
 
-  defp publish_auction_status_change(auction) do
+  def publish_auction_status_change(auction) do
     Absinthe.Subscription.publish(
       SsauctionWeb.Endpoint,
       auction,

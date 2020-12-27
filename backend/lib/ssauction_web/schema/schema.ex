@@ -109,7 +109,6 @@ defmodule SsauctionWeb.Schema.Schema do
       resolve &Resolvers.SingleAuction.add_to_nomination_queue/3
     end
 
-
     @desc "Submit a bid"
     field :submit_bid, :bid do
       arg :auction_id, non_null(:integer)
@@ -128,6 +127,42 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :username, non_null(:string)
       arg :password, non_null(:string)
       resolve &Resolvers.Accounts.signin/3
+    end
+
+    @desc "Change auction info"
+    field :change_auction_info, :auction do
+      arg :auction_id, non_null(:integer)
+      arg :name, :string
+      arg :nominations_per_team, :integer
+      middleware Middleware.AuthorizeUserAuctionAdmin
+      resolve &Resolvers.SingleAuction.change_auction_info/3
+    end
+
+    @desc "Change team info"
+    field :change_team_info, :team do
+      arg :team_id, non_null(:integer)
+      arg :auction_id, non_null(:integer)
+      arg :name, :string
+      arg :new_nominations_open_at, :datetime
+      middleware Middleware.AuthorizeUserAuctionAdmin
+      resolve &Resolvers.SingleAuction.change_team_info/3
+    end
+
+    @desc "Change bid info"
+    field :change_bid_info, :bid do
+      arg :bid_id, non_null(:integer)
+      arg :auction_id, non_null(:integer)
+      arg :seconds_before_expires, non_null(:integer)
+      middleware Middleware.AuthorizeUserAuctionAdmin
+      resolve &Resolvers.SingleAuction.change_bid_info/3
+    end
+
+    @desc "Delete bid"
+    field :delete_bid, :bid do
+      arg :bid_id, non_null(:integer)
+      arg :auction_id, non_null(:integer)
+      middleware Middleware.AuthorizeUserAuctionAdmin
+      resolve &Resolvers.SingleAuction.delete_bid/3
     end
   end
 
@@ -316,6 +351,7 @@ defmodule SsauctionWeb.Schema.Schema do
   end
 
   object :rostered_player do
+    field :id, non_null(:id)
     field :cost, non_null(:integer)
     field :player, non_null(:player) do
       resolve dataloader(SingleAuction, :player, args: %{scope: :rostered_player})

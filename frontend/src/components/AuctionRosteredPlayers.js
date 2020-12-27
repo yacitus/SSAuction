@@ -12,6 +12,7 @@ const AUCTION_ROSTERED_PLAYERS_QUERY = gql`
     auction(id: $auction_id) {
       id
       rosteredPlayers {
+        id
         cost
         player {
           id
@@ -33,6 +34,7 @@ const AUCTION_ROSTER_CHANGE_SUBSCRIPTION = gql`
     auctionRosterChange(id: $auction_id) {
       id
       rosteredPlayers {
+        id
         cost
         player {
           id
@@ -110,6 +112,19 @@ class AuctionRosteredPlayersTable extends Component {
     }
 
     const columns = [{
+      dataField: 'id',
+      text: 'ID',
+      sort: true,
+      sortFunc: (a, b, order, dataField, rowA, rowB) => {
+        const numA = parseInt(a);
+        const numB = parseInt(b);
+        if (order === "desc") {
+          return numB - numA;
+        }
+        return numA - numB; // desc
+      },
+      hidden: true
+    }, {
       dataField: 'team.name',
       text: 'Team',
       formatter: nameFormatter,
@@ -141,6 +156,11 @@ class AuctionRosteredPlayersTable extends Component {
                    padding: '0.5em' }}>
         Rostered Players</h3>;
 
+    const defaultSortedBy = [{
+      dataField: "id",
+      order: "desc"
+    }];
+
     return (
       <div>
         <BootstrapTable
@@ -149,7 +169,9 @@ class AuctionRosteredPlayersTable extends Component {
           keyField='id'
           data={ rosteredPlayers }
           columns={ columns }
-          striped />
+          striped
+          defaultSorted={defaultSortedBy}
+        />
       </div>
     );
   }

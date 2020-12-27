@@ -170,17 +170,27 @@ class AuctionBidsTable extends Component {
         sort: true
       }, {
         dataField: 'player.ssnum',
-        text: 'Scoresheet num',
-        sort: true
+        text: 'S. num',
+        sort: true,
+        headerStyle: () => {
+          return { width: "5%" };
+        }
       }, {
         dataField: 'bidAmount',
         text: '$ Bid',
         formatter: dollarsFormatter,
-        sort: true
+        sort: true,
+        headerStyle: () => {
+          return { width: "5%" };
+        }
       }, {
         dataField: 'hiddenHighBid',
         text: '$ Hidden Max Bid',
-        formatter: dollarsFormatter
+        formatter: dollarsFormatter,
+        sort: true,
+        headerStyle: () => {
+          return { width: "5%" };
+        }
       }, {
         dataField: 'expiresAt',
         text: 'Expires In',
@@ -232,6 +242,11 @@ class AuctionBidsTable extends Component {
                    padding: '0.5em' }}>
         Bids</h3>;
 
+    const defaultSortedBy = [{
+      dataField: "expiresAt",
+      order: "asc"
+    }];
+
     return (
       <div>
         <BootstrapTable
@@ -240,7 +255,9 @@ class AuctionBidsTable extends Component {
           keyField='id'
           data={ this.props.bids }
           columns={ getColumns() }
-          striped />
+          striped
+          defaultSorted={defaultSortedBy}
+        />
       </div>
     );
   }
