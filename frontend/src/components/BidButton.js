@@ -33,12 +33,14 @@ const SUBMIT_BID_MUTATION = gql`
     $team_id: Int!
     $player_id: Int!
     $bid_amount: Int!
+    $keep_bidding_up_to: Int!
     $hidden_high_bid: Int
   ) {
     submitBid(auctionId: $auction_id,
               teamId: $team_id,
               playerId: $player_id,
               bidAmount: $bid_amount,
+              keepBiddingUpTo: $keep_bidding_up_to,
               hiddenHighBid: $hidden_high_bid) {
       id
       expiresAt
@@ -80,6 +82,7 @@ const SubmitBidFormModal = (props) => {
   const [show, setShow] = useState(false);
 
   const bidAmountRef = React.createRef();
+  const keepBiddingUpToRef = React.createRef();
   const hiddenHighBidRef = React.createRef();
 
   const handleClose = () => {
@@ -113,6 +116,7 @@ const SubmitBidFormModal = (props) => {
                              team_id: parseInt(props.teamId, 10),
                              player_id: parseInt(props.row.player.id, 10),
                              bid_amount: bidAmountRef.current.valueAsNumber,
+                             keep_bidding_up_to: keepBiddingUpToRef.current.valueAsNumber,
                              hidden_high_bid: hiddenHighBidRef.current.valueAsNumber } });
     handleClose();
   }
@@ -143,6 +147,14 @@ const SubmitBidFormModal = (props) => {
                 defaultValue={ props.row.bidAmount
                                + (props.teamPage || props.teamId === props.row.team.id
                                   ? 0 : 1) } />
+            </Form.Group>
+            <Form.Group controlId="formKeepBiddingUpTo">
+              <Form.Label>Keep Bidding Up To</Form.Label>
+              <Form.Control
+                type="number"
+                ref={keepBiddingUpToRef}
+                defaultValue={ props.row.keepBiddingUpTo === null
+                               ? "" : props.row.keepBiddingUpTo } />
             </Form.Group>
             <Form.Group controlId="formHiddenHighBid">
               <Form.Label>Hidden Max Bid</Form.Label>
