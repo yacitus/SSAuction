@@ -293,13 +293,15 @@ player4 = Repo.get!(Player, 4)
 #
 
 bid_amount = 2
+hidden_high_bid = 5
 {:ok, now} = DateTime.now("Etc/UTC")
 attrs = %{bid_amount: bid_amount,
+          hidden_high_bid: hidden_high_bid,
           expires_at: DateTime.add(now, auction_1988_1991_SL.bid_timeout_seconds, :second),
           # the below line is an alternative to the above for testing
           # expires_at: DateTime.add(now, 10, :second),
           player: player1}
-Ssauction.SingleAuction.submit_new_bid(auction_1988_1991_SL, team_daryl, player1, attrs)
+Ssauction.SingleAuction.submit_new_bid(auction_1988_1991_SL, team_tom, player1, attrs)
 
 #
 # ROSTER PLAYERS

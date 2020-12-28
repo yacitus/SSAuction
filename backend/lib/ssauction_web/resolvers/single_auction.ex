@@ -200,6 +200,11 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         }
       not SingleAuction.player_in_bids?(player) ->
         cond do
+          args[:keep_bidding_up_to] != nil ->
+            {
+              :error,
+              message: "Keep bidding up to can't be specified when nominating"
+            }
           not SingleAuction.legal_team_bid_amount?(auction, team, args, nil) ->
             {
               :error,
@@ -227,6 +232,11 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
               :error,
               message: "Bid amount cannot be reduced"
             }
+          not keep_bidding_up_to_legal?(args[:keep_bidding_up_to], args[:bid_amount]) ->
+            {
+              :error,
+              message: "Keep bidding up to must be nil or above bid amount"
+            }
           args[:team_id] != existing_bid.team_id ->
             cond do
               not SingleAuction.legal_team_bid_amount?(auction, team, args, nil) ->
@@ -244,8 +254,19 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
                   :error,
                   message: "Team does not have open roster spot for another bid"
                 }
-              existing_bid.hidden_high_bid != nil and not(args[:bid_amount] > existing_bid.hidden_high_bid) ->
-                  submit_new_bid_amount_changeset(auction, existing_bid, args)
+              existing_bid.hidden_high_bid != nil
+              and (
+                (
+                  not(args[:bid_amount] > existing_bid.hidden_high_bid)
+                  and not(Map.has_key?(args, :keep_bidding_up_to)))
+                or
+                (
+                  Map.has_key?(args, :keep_bidding_up_to)
+                  and args.keep_bidding_up_to != nil
+                  and not(args[:keep_bidding_up_to] > existing_bid.hidden_high_bid)
+                )
+              ) ->
+                submit_new_bid_amount_changeset(auction, existing_bid, args)
               true ->
                 submit_bid_changeset(auction, team, player, args, existing_bid)
             end
@@ -258,6 +279,11 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
             {
               :error,
               message: "Cannot out-bid yourself"
+            }
+          Map.has_key?(args, :keep_bidding_up_to) and args.keep_bidding_up_to != nil ->
+            {
+              :error,
+              message: "Keep bidding up to not applicable when your team already has high bid"
             }
           true ->
             submit_bid_changeset(auction, team, player, args, existing_bid)
@@ -311,6 +337,25 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
       args
     end
 
+    args = if not Map.has_key?(args, :keep_bidding_up_to) do
+      Map.put(args, :keep_bidding_up_to, nil)
+    else
+      args
+    end
+
+    current_team_max_bid = if existing_bid.hidden_high_bid != nil do
+      max(existing_bid.bid_amount, existing_bid.hidden_high_bid)
+    else
+      existing_bid.bid_amount
+    end
+
+    args = if args.bid_amount > current_team_max_bid do
+      args
+    else
+      # assert args.keep_bidding_up_to > current_team_max_bid
+      Map.put(args, :bid_amount, current_team_max_bid + 1)
+    end
+
     case SingleAuction.update_existing_bid(existing_bid, team, args) do
       {:error, changeset} ->
         {
@@ -331,7 +376,12 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
   end
 
   defp submit_new_bid_amount_changeset(auction, existing_bid, args) do
-    case SingleAuction.update_existing_bid_amount(existing_bid, args.bid_amount) do
+    new_bid_amount = if Map.has_key?(args, :keep_bidding_up_to) and args.keep_bidding_up_to != nil do
+      max(args.bid_amount, args.keep_bidding_up_to)
+    else
+      args.bid_amount
+    end
+    case SingleAuction.update_existing_bid_amount(existing_bid, new_bid_amount) do
       {:error, changeset} ->
         {
           :error,
@@ -427,5 +477,13 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
 
   defp hidden_high_bid_legal?(hidden, bid_amount) do
     hidden > bid_amount
+  end
+
+  defp keep_bidding_up_to_legal?(nil, _) do
+    true
+  end
+
+  defp keep_bidding_up_to_legal?(keep_bidding_up_to, bid_amount) do
+    keep_bidding_up_to > bid_amount
   end
 end
