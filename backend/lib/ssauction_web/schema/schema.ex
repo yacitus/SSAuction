@@ -3,7 +3,8 @@ defmodule SsauctionWeb.Schema.Schema do
   alias Ssauction.SingleAuction
 
   import_types Absinthe.Type.Custom
-  import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
+  # import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
+  import Absinthe.Resolution.Helpers, only: [dataloader: 3]
 
   alias SsauctionWeb.Resolvers
   alias SsauctionWeb.Schema.Middleware

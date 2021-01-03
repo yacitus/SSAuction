@@ -12,9 +12,8 @@ defmodule Ssauction.SingleAuction do
   alias SsauctionWeb.Resolvers.SingleAuction
 
   @doc """
-  Returns all auctions.
+  Creates an auction.
 
-  Raises `Ecto.NoResultsError` if no auction was found.
   """
   def create_auction(name: name,
                      year_range: year_range,
@@ -55,6 +54,27 @@ defmodule Ssauction.SingleAuction do
                               |> Repo.insert!
                  end)
     auction
+  end
+
+  @doc """
+  Deletes an auction.
+
+  """
+  def delete_auction(auction = %Auction{}) do
+    q = from op in OrderedPlayer, where: op.auction_id == ^auction.id
+    Repo.delete_all(q)
+    q = from p in Player, where: p.auction_id == ^auction.id
+    Repo.delete_all(q)
+    q = from t in Team, where: t.auction_id == ^auction.id
+    Repo.all(q)
+    |> Enum.each(fn team ->
+                   q = from r in "teams_users", where: r.team_id == ^team.id, select: [r.id, r.team_id, r.user_id]
+                   Repo.delete_all(q)
+                   Repo.delete!(team)
+                 end)
+    q = from r in "auctions_users", where: r.auction_id == ^auction.id, select: [r.id, r.auction_id, r.user_id]
+    Repo.delete_all(q)
+    Repo.delete!(auction)
   end
 
   @doc """

@@ -19,7 +19,7 @@ defmodule Ssauction.AllPlayer do
     # TODO - :position should be split by / and each slice confirmed to be in the list below
     # |> validate_inclusion(:position, ["SP", "RP", "C", "1B", "2B", "3B", "SS", "OF", "DH"])
     |> validate_year_range()
-    |> validate_unique_year_range_and_ssnum()
+    # |> validate_unique_year_range_and_ssnum() # don't need this because expect insert!(on_conflict: :nothing)
   end
 
   def validate_year_range(changeset) do
