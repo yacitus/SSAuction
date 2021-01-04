@@ -20,6 +20,7 @@ defmodule Ssauction.Auction do
     has_many :bids, Ssauction.Bid
     has_many :rostered_players, Ssauction.RosteredPlayer
     has_many :ordered_players, Ssauction.OrderedPlayer
+    has_many :bid_logs, Ssauction.BidLog
 
     many_to_many :admins, Ssauction.User, join_through: "auctions_users"
 
