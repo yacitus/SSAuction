@@ -6,7 +6,7 @@ defmodule Ssauction.SingleAuction do
   import Ecto.Query, warn: false
   alias Ssauction.Repo
 
-  alias Ssauction.{Auction, Team, AllPlayer, Player, Bid, OrderedPlayer, RosteredPlayer}
+  alias Ssauction.{Auction, Team, AllPlayer, Player, Bid, OrderedPlayer, RosteredPlayer, BidLog}
   alias Ssauction.User
 
   alias SsauctionWeb.Resolvers.SingleAuction
@@ -61,19 +61,26 @@ defmodule Ssauction.SingleAuction do
 
   """
   def delete_auction(auction = %Auction{}) do
-    q = from op in OrderedPlayer, where: op.auction_id == ^auction.id
-    Repo.delete_all(q)
-    q = from p in Player, where: p.auction_id == ^auction.id
-    Repo.delete_all(q)
-    q = from t in Team, where: t.auction_id == ^auction.id
-    Repo.all(q)
+    Repo.delete_all(from bl in BidLog, where: bl.auction_id == ^auction.id)
+    Repo.delete_all(from op in OrderedPlayer, where: op.auction_id == ^auction.id)
+    Repo.all(from t in Team, where: t.auction_id == ^auction.id)
     |> Enum.each(fn team ->
-                   q = from r in "teams_users", where: r.team_id == ^team.id, select: [r.id, r.team_id, r.user_id]
-                   Repo.delete_all(q)
+                   Repo.delete_all(from op in OrderedPlayer, where: op.team_id == ^team.id)
+                   Repo.all(from b in Bid, where: b.team_id == ^team.id)
+                   |> Enum.each(fn bid ->
+                                  player = Repo.preload(bid, [:player]).player
+                                  if player do
+                                    player
+                                    |> Ecto.Changeset.change(%{bid_id: nil})
+                                    |> Repo.update
+                                  end
+                                  Repo.delete!(bid)
+                                end)
+                   Repo.delete_all(from r in "teams_users", where: r.team_id == ^team.id, select: [r.id, r.team_id, r.user_id])
                    Repo.delete!(team)
                  end)
-    q = from r in "auctions_users", where: r.auction_id == ^auction.id, select: [r.id, r.auction_id, r.user_id]
-    Repo.delete_all(q)
+    Repo.delete_all(from r in "auctions_users", where: r.auction_id == ^auction.id, select: [r.id, r.auction_id, r.user_id])
+    Repo.delete_all(from p in Player, where: p.auction_id == ^auction.id)
     Repo.delete!(auction)
   end
 
@@ -252,6 +259,7 @@ defmodule Ssauction.SingleAuction do
     Repo.insert!(rostered_player)
     nominating_team = get_team_by_id!(bid.nominated_by)
     delete_bid(bid, auction, team, player, nominating_team)
+    log_bid(bid, auction, team, player, "R")
     update_unused_nominations(nominating_team, auction)
     SingleAuction.publish_roster_change(auction, team)
   end
@@ -359,14 +367,9 @@ defmodule Ssauction.SingleAuction do
 
   """
   def get_team_by_user_and_auction(user = %User{}, auction = %Auction{}) do
-    q = from t in Team,
-          where: t.auction_id == ^auction.id,
-          join: users in assoc(t, :users),
-          select: users
-    Repo.one(from u in subquery(q),
-               where: u.id == ^user.id,
-               join: teams in assoc(u, :teams),
-               select: teams)
+    [team] = Enum.filter(Repo.preload(user, [:teams]).teams,
+                         fn(team) -> team.auction_id == auction.id end)
+    team
   end
 
   @doc """
@@ -916,16 +919,38 @@ defmodule Ssauction.SingleAuction do
   end
 
   @doc """
+  Logs a bid
+
+  """
+  def log_bid(bid = %Bid{}, auction = %Auction{}, team = %Team{}, player = %Player{}, type) do
+    {:ok, now} = DateTime.now("Etc/UTC")
+    %BidLog{}
+    |> BidLog.changeset(%{amount: bid.bid_amount,
+                          type: type,
+                          datetime: now})
+    |> Ecto.Changeset.put_assoc(:auction, auction)
+    |> Ecto.Changeset.put_assoc(:team, team)
+    |> Ecto.Changeset.put_assoc(:player, player)
+    |> Repo.insert()
+    # SingleAuction.publish_player_change(auction, player) <- TODO: create this
+  end
+
+  @doc """
   Submits a new bid
 
   """
   def submit_new_bid(auction = %Auction{}, team = %Team{}, player = %Player{}, attrs) do
-    %Bid{}
+    insert = %Bid{}
     |> Bid.changeset(Map.put(attrs, :nominated_by, team.id))
     |> Ecto.Changeset.put_assoc(:auction, auction)
     |> Ecto.Changeset.put_assoc(:team, team)
     |> Ecto.Changeset.put_assoc(:player, player)
     |> Repo.insert()
+    case insert do
+      {:ok, bid} ->
+        log_bid(bid, auction, team, player, "N")
+    end
+    insert
   end
 
   @doc """
@@ -933,11 +958,16 @@ defmodule Ssauction.SingleAuction do
 
   """
   def update_existing_bid(bid, new_team = %Team{}, attrs) do
-    bid
-    |> Repo.preload([:team])
+    update = bid
+    |> Repo.preload([:team, :auction, :player])
     |> Bid.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:team, new_team)
     |> Repo.update()
+    case update do
+      {:ok, bid} ->
+        log_bid(bid, bid.auction, bid.team, bid.player, "B")
+    end
+    update
   end
 
   @doc """
@@ -945,9 +975,12 @@ defmodule Ssauction.SingleAuction do
 
   """
   def update_existing_bid_amount(bid, bid_amount) do
-    bid
+    bid = bid
+    |> Repo.preload([:team, :auction, :player])
     |> Bid.changeset(%{bid_amount: bid_amount})
     |> Repo.update()
+    log_bid(bid, bid.auction, bid.team, bid.player, "B")
+    bid
   end
 
   # Dataloader - TODO: there are more functions in ~/dev/pragstudio-unpacked-graphql-code/backend/lib/getaways/vacation.ex
