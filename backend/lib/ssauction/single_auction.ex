@@ -359,14 +359,9 @@ defmodule Ssauction.SingleAuction do
 
   """
   def get_team_by_user_and_auction(user = %User{}, auction = %Auction{}) do
-    q = from t in Team,
-          where: t.auction_id == ^auction.id,
-          join: users in assoc(t, :users),
-          select: users
-    Repo.one(from u in subquery(q),
-               where: u.id == ^user.id,
-               join: teams in assoc(u, :teams),
-               select: teams)
+    [team] = Enum.filter(Repo.preload(user, [:teams]).teams,
+                         fn(team) -> team.auction_id == auction.id end)
+    team
   end
 
   @doc """
