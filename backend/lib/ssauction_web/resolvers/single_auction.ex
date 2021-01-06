@@ -258,7 +258,8 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
               and (
                 (
                   not(args[:bid_amount] > existing_bid.hidden_high_bid)
-                  and not(Map.has_key?(args, :keep_bidding_up_to)))
+                  and (not(Map.has_key?(args, :keep_bidding_up_to)) or args.keep_bidding_up_to == nil)
+                )
                 or
                 (
                   Map.has_key?(args, :keep_bidding_up_to)

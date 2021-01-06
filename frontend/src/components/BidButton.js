@@ -33,7 +33,7 @@ const SUBMIT_BID_MUTATION = gql`
     $team_id: Int!
     $player_id: Int!
     $bid_amount: Int!
-    $keep_bidding_up_to: Int!
+    $keep_bidding_up_to: Int
     $hidden_high_bid: Int
   ) {
     submitBid(auctionId: $auction_id,
