@@ -1,6 +1,7 @@
 # TODO
 
 # urgent
+- bid buttons not appearing in auction page
 - can't leave Keep Bidding Up To blank when bidding
 
 # Known Bugs
