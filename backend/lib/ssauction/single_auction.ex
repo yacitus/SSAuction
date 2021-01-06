@@ -6,7 +6,7 @@ defmodule Ssauction.SingleAuction do
   import Ecto.Query, warn: false
   alias Ssauction.Repo
 
-  alias Ssauction.{Auction, Team, AllPlayer, Player, Bid, OrderedPlayer, RosteredPlayer}
+  alias Ssauction.{Auction, Team, AllPlayer, Player, Bid, OrderedPlayer, RosteredPlayer, BidLog}
   alias Ssauction.User
 
   alias SsauctionWeb.Resolvers.SingleAuction
@@ -61,19 +61,26 @@ defmodule Ssauction.SingleAuction do
 
   """
   def delete_auction(auction = %Auction{}) do
-    q = from op in OrderedPlayer, where: op.auction_id == ^auction.id
-    Repo.delete_all(q)
-    q = from p in Player, where: p.auction_id == ^auction.id
-    Repo.delete_all(q)
-    q = from t in Team, where: t.auction_id == ^auction.id
-    Repo.all(q)
+    Repo.delete_all(from bl in BidLog, where: bl.auction_id == ^auction.id)
+    Repo.delete_all(from op in OrderedPlayer, where: op.auction_id == ^auction.id)
+    Repo.all(from t in Team, where: t.auction_id == ^auction.id)
     |> Enum.each(fn team ->
-                   q = from r in "teams_users", where: r.team_id == ^team.id, select: [r.id, r.team_id, r.user_id]
-                   Repo.delete_all(q)
+                   Repo.delete_all(from op in OrderedPlayer, where: op.team_id == ^team.id)
+                   Repo.all(from b in Bid, where: b.team_id == ^team.id)
+                   |> Enum.each(fn bid ->
+                                  player = Repo.preload(bid, [:player]).player
+                                  if player do
+                                    player
+                                    |> Ecto.Changeset.change(%{bid_id: nil})
+                                    |> Repo.update
+                                  end
+                                  Repo.delete!(bid)
+                                end)
+                   Repo.delete_all(from r in "teams_users", where: r.team_id == ^team.id, select: [r.id, r.team_id, r.user_id])
                    Repo.delete!(team)
                  end)
-    q = from r in "auctions_users", where: r.auction_id == ^auction.id, select: [r.id, r.auction_id, r.user_id]
-    Repo.delete_all(q)
+    Repo.delete_all(from r in "auctions_users", where: r.auction_id == ^auction.id, select: [r.id, r.auction_id, r.user_id])
+    Repo.delete_all(from p in Player, where: p.auction_id == ^auction.id)
     Repo.delete!(auction)
   end
 
