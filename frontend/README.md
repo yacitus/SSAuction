@@ -1,5 +1,7 @@
 # TODO
 
+# urgent
+
 # Known Bugs
 - when you are out of funds and hit +1, it silently fails--preferred UI is to throw up a dialog box saying something like "Not enough cash available to make this bid"
 - the past Time Nominations Expire is shown when the next New Nominations Open At is in the future

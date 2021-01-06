@@ -140,7 +140,7 @@ tom = Repo.one(from u in User, where: u.username == "tom")
 # TEAMS (one team can't be in more than one auction yet)
 #
 
-{:ok, nomination_time} = DateTime.new(~D[2021-01-03], ~T[16:45:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-01-06], ~T[04:10:00.000], "Etc/UTC")
 # nomination_time = DateTime.add(now, 60*2, :second)
 team_daryl_test =
   %Team{
@@ -149,7 +149,7 @@ team_daryl_test =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-01-03], ~T[12:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-01-06], ~T[04:11:00.000], "Etc/UTC")
 team_tom_test =
   %Team{
     name: "Team Tom Test",

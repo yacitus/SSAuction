@@ -997,4 +997,3 @@ defmodule Ssauction.SingleAuction do
   end
 
 end
-3
