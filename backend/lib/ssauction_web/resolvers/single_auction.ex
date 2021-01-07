@@ -19,6 +19,14 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.get_team_by_id!(id)}
   end
 
+  def player(_, %{id: id}, _) do
+    {:ok, SingleAuction.get_player_by_id!(id)}
+  end
+
+  def bid_logs_for_player(player, _, _) do
+    {:ok, SingleAuction.bid_logs_for_player(player)}
+  end
+
   def queueable_players(team, _, _) do
     {:ok, SingleAuction.queueable_players(team)}
   end
@@ -267,7 +275,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
                   and not(args[:keep_bidding_up_to] > existing_bid.hidden_high_bid)
                 )
               ) ->
-                submit_new_bid_amount_changeset(auction, existing_bid, args)
+                submit_new_bid_amount_changeset(auction, team, existing_bid, args)
               true ->
                 submit_bid_changeset(auction, team, player, args, existing_bid)
             end
@@ -376,13 +384,13 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     end
   end
 
-  defp submit_new_bid_amount_changeset(auction, existing_bid, args) do
+  defp submit_new_bid_amount_changeset(auction, bidding_team, existing_bid, args) do
     new_bid_amount = if Map.has_key?(args, :keep_bidding_up_to) and args.keep_bidding_up_to != nil do
       max(args.bid_amount, args.keep_bidding_up_to)
     else
       args.bid_amount
     end
-    case SingleAuction.update_existing_bid_amount(existing_bid, new_bid_amount) do
+    case SingleAuction.update_existing_bid_amount(existing_bid, new_bid_amount, bidding_team) do
       {:error, changeset} ->
         {
           :error,

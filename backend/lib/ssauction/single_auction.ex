@@ -974,7 +974,7 @@ defmodule Ssauction.SingleAuction do
   Updates the bid amount of an existing bid
 
   """
-  def update_existing_bid_amount(bid, bid_amount) do
+  def update_existing_bid_amount(bid, bid_amount, bidding_team) do
     update = bid
     |> Repo.preload([:team, :auction, :player])
     |> Bid.changeset(%{bid_amount: bid_amount})
@@ -982,8 +982,17 @@ defmodule Ssauction.SingleAuction do
     case update do
       {:ok, bid} ->
         log_bid(bid, bid.auction, bid.team, bid.player, "H")
+        log_bid(bid, bid.auction, bidding_team, bid.player, "U")
     end
     update
+  end
+
+  @doc """
+  Returns a list of bid_logs (sorted by datetime) associated with the player
+
+  """
+  def bid_logs_for_player(player = %Player{}) do
+    Repo.all(from bl in BidLog, where: bl.player_id == ^player.id, order_by: bl.datetime)
   end
 
   # Dataloader - TODO: there are more functions in ~/dev/pragstudio-unpacked-graphql-code/backend/lib/getaways/vacation.ex

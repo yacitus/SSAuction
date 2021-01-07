@@ -73,6 +73,12 @@ defmodule SsauctionWeb.Schema.Schema do
       arg :id, non_null(:integer)
       resolve &Resolvers.SingleAuction.bid/3
     end
+
+    @desc "Get a player by its id"
+    field :player, :player do
+      arg :id, non_null(:integer)
+      resolve &Resolvers.SingleAuction.player/3
+    end
   end
 
   mutation do
@@ -343,12 +349,25 @@ defmodule SsauctionWeb.Schema.Schema do
     end
   end
 
+  object :bid_log do
+    field :id, non_null(:id)
+    field :amount, non_null(:integer)
+    field :type, non_null(:string)
+    field :team, non_null(:team) do
+      resolve dataloader(SingleAuction, :team, args: %{scope: :bid_log})
+    end
+    field :datetime, non_null(:datetime)
+  end
+
   object :player do
     field :id, non_null(:id)
     field :year_range, non_null(:string)
     field :ssnum, non_null(:integer)
     field :name, non_null(:string)
     field :position, non_null(:string)
+    field :bid_logs, list_of(:bid_log) do
+      resolve &Resolvers.SingleAuction.bid_logs_for_player/3
+    end
   end
 
   object :rostered_player do
