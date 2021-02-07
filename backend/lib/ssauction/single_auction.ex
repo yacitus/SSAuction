@@ -995,6 +995,14 @@ defmodule Ssauction.SingleAuction do
     Repo.all(from bl in BidLog, where: bl.player_id == ^player.id, order_by: bl.datetime)
   end
 
+  @doc """
+  Returns a RosteredPlayer associated with the player, if there is one
+
+  """
+  def player_rostered(player = %Player{}) do
+    Repo.one(from rp in RosteredPlayer, join: p in assoc(rp, :player), where: p.id == ^player.id)
+  end
+
   # Dataloader - TODO: there are more functions in ~/dev/pragstudio-unpacked-graphql-code/backend/lib/getaways/vacation.ex
 
   def datasource() do

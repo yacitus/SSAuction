@@ -368,6 +368,9 @@ defmodule SsauctionWeb.Schema.Schema do
     field :bid_logs, list_of(:bid_log) do
       resolve &Resolvers.SingleAuction.bid_logs_for_player/3
     end
+    field :rostered, :rostered_player do
+      resolve &Resolvers.SingleAuction.player_rostered/3
+    end
   end
 
   object :rostered_player do

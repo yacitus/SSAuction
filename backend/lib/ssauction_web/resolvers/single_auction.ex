@@ -27,6 +27,10 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
     {:ok, SingleAuction.bid_logs_for_player(player)}
   end
 
+  def player_rostered(player, _, _) do
+    {:ok, SingleAuction.player_rostered(player)}
+  end
+
   def queueable_players(team, _, _) do
     {:ok, SingleAuction.queueable_players(team)}
   end
