@@ -262,6 +262,7 @@ defmodule Ssauction.SingleAuction do
     log_bid(bid, auction, team, player, "R")
     update_unused_nominations(nominating_team, auction)
     SingleAuction.publish_roster_change(auction, team)
+    SingleAuction.publish_player_info_change(player)
   end
 
   @doc """
@@ -335,6 +336,11 @@ defmodule Ssauction.SingleAuction do
     Repo.get(Team, team_id)
     |> SingleAuction.publish_team_info_change
   end
+
+  # defp publish_player_info_change(player_id) do
+  #   Repo.get(Player, player_id)
+  #   |> SingleAuction.publish_player_info_change
+  # end
 
   @doc """
   Returns the auction with the given `id`.

@@ -15,7 +15,6 @@
 # Fixed?
 
 # 2020 Winter League Urgent Features
-- add "Keep Bidding Up To" to New Bid dialog box
 - mutation to change user data: username, email, slack_display_name, password
 - mutation to change auction data, especially bid_timeout_seconds
 - allow people to file tickets on GitHub or a Trello project
@@ -53,7 +52,6 @@
 - Supervisor.Spec module used in backend/lib/ssauction/application.ex is deprecated: https://stackoverflow.com/a/61312844/4766
 
 # Post MVP Feature Priority
-- bid history for each player
 - rosters sortable by time sold (easy with bid history)
 - bids sortable by most recent high bid (easy with bid history)
 - ability to re-order a team nomination queue

@@ -146,6 +146,10 @@ class TeamAuthorizedBidsTable extends Component {
       );
     }
 
+    function playerNameFormatter(cell, row) {
+      return ( <a href={'/player/' + row.player.id}>{cell}</a> );
+    }
+
     const columns = [{
       dataField: 'player.ssnum',
       text: 'Scoresheet num',
@@ -153,6 +157,7 @@ class TeamAuthorizedBidsTable extends Component {
     }, {
       dataField: 'player.name',
       text: 'Player',
+      formatter: playerNameFormatter,
       sort: true
     }, {
       dataField: 'player.position',

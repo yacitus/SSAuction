@@ -333,11 +333,12 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         publish_bid_change(auction, team)
         publish_team_info_change(team)
         publish_auction_teams_info_change(auction)
+        publish_player_info_change(player)
         {:ok, bid}
     end
   end
 
-  def submit_bid_changeset(auction, team, _player, args, existing_bid) do
+  def submit_bid_changeset(auction, team, player, args, existing_bid) do
     args = if team.id != existing_bid.team_id do
       add_expires_at_to_args(args, auction)
     else
@@ -384,6 +385,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
         publish_team_info_change(team)
         publish_team_info_change(previous_team)
         publish_auction_teams_info_change(auction)
+        publish_player_info_change(player)
         {:ok, bid}
     end
   end
@@ -474,6 +476,14 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
       team_info_change: team.id
     )
     publish_nomination_queue_change(team)
+  end
+
+  def publish_player_info_change(player) do
+    Absinthe.Subscription.publish(
+      SsauctionWeb.Endpoint,
+      player,
+      player_info_change: player.id
+    )
   end
 
   def publish_auction_teams_info_change(auction) do
