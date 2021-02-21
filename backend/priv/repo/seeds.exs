@@ -51,7 +51,8 @@ auction_1988_1991_BL = SingleAuction.create_auction(name: year_range,
                                                     nominations_per_team: 2,
                                                     seconds_before_autonomination: 60*60,
                                                     new_nominations_created: "time",
-                                                    bid_timeout_seconds: 60*60*12,
+                                                    initial_bid_timeout_seconds: 60*60,
+                                                    bid_timeout_seconds: 60*58,
                                                     players_per_team: 50,
                                                     must_roster_all_players: false,
                                                     team_dollars_per_player: 20,
@@ -140,7 +141,7 @@ tom = Repo.one(from u in User, where: u.username == "tom")
 # TEAMS (one team can't be in more than one auction yet)
 #
 
-{:ok, nomination_time} = DateTime.new(~D[2021-02-07], ~T[05:41:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-02-21], ~T[05:45:00.000], "Etc/UTC")
 # nomination_time = DateTime.add(now, 60*2, :second)
 team_daryl_test =
   %Team{
@@ -149,7 +150,7 @@ team_daryl_test =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-02-07], ~T[05:42:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-02-21], ~T[05:46:00.000], "Etc/UTC")
 team_tom_test =
   %Team{
     name: "Team Tom Test",

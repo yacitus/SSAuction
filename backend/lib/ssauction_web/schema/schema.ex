@@ -277,6 +277,7 @@ defmodule SsauctionWeb.Schema.Schema do
     field :year_range, non_null(:string)
     field :nominations_per_team, non_null(:integer)
     field :seconds_before_autonomination, non_null(:integer)
+    field :initial_bid_timeout_seconds, non_null(:integer)
     field :bid_timeout_seconds, non_null(:integer)
     field :players_per_team, non_null(:integer)
     field :must_roster_all_players, non_null(:boolean)

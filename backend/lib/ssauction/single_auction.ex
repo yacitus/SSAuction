@@ -20,6 +20,7 @@ defmodule Ssauction.SingleAuction do
                      nominations_per_team: nominations_per_team,
                      seconds_before_autonomination: seconds_before_autonomination,
                      new_nominations_created: new_nominations_created,
+                     initial_bid_timeout_seconds: initial_bid_timeout_seconds,
                      bid_timeout_seconds: bid_timeout_seconds,
                      players_per_team: players_per_team,
                      must_roster_all_players: must_roster_all_players,
@@ -32,6 +33,7 @@ defmodule Ssauction.SingleAuction do
         nominations_per_team: nominations_per_team,
         seconds_before_autonomination: seconds_before_autonomination,
         new_nominations_created: new_nominations_created,
+        initial_bid_timeout_seconds: initial_bid_timeout_seconds,
         bid_timeout_seconds: bid_timeout_seconds,
         players_per_team: players_per_team,
         must_roster_all_players: must_roster_all_players,
@@ -75,6 +77,16 @@ defmodule Ssauction.SingleAuction do
                                     |> Repo.update
                                   end
                                   Repo.delete!(bid)
+                                end)
+                   Repo.all(from rp in RosteredPlayer, where: rp.team_id == ^team.id)
+                   |> Enum.each(fn rostered_player ->
+                                  player = Repo.preload(rostered_player, [:player]).player
+                                  if player do
+                                    player
+                                    |> Ecto.Changeset.change(%{rostered_player_id: nil})
+                                    |> Repo.update
+                                  end
+                                  Repo.delete!(rostered_player)
                                 end)
                    Repo.delete_all(from r in "teams_users", where: r.team_id == ^team.id, select: [r.id, r.team_id, r.user_id])
                    Repo.delete!(team)

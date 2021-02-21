@@ -22,6 +22,7 @@ const AUCTION_INFO_QUERY = gql`
       dollarsPerTeam
       nominationsPerTeam
       secondsBeforeAutonomination
+      initialBidTimeoutSeconds
       bidTimeoutSeconds
       autonominationQueue {
         player {
@@ -171,19 +172,24 @@ class AuctionInfoTable extends Component {
         value: `$${info.auction.dollarsPerTeam}`,
         id: 5
       }, {
+        label: 'Time Before Nominations Expire:',
+        value: `${Utilities.secondsToDaysHoursMinsSecsStr(
+                    info.auction.initialBidTimeoutSeconds)}`,
+        id: 6
+      }, {
         label: 'Time Before Bids Expire:',
         value: `${Utilities.secondsToDaysHoursMinsSecsStr(
                     info.auction.bidTimeoutSeconds)}`,
-        id: 6
+        id: 7
       }, {
         label: 'Nominations Per Team:',
         value: `${info.auction.nominationsPerTeam}`,
-        id: 7
+        id: 8
       }, {
         label: 'Time Before Auto-nomination:',
         value: `${Utilities.secondsToDaysHoursMinsSecsStr(
                     info.auction.secondsBeforeAutonomination)}`,
-        id: 8
+        id: 9
       }];
 
       // TODO - clean up below
