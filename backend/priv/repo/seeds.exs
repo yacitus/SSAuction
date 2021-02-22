@@ -23,6 +23,7 @@ alias Ssauction.Auction
 alias Ssauction.RosteredPlayer
 alias Ssauction.OrderedPlayer
 alias Ssauction.SingleAuction
+alias Ssauction.BidLog
 
 #
 # moved from priv/repo/migrations/20210103215400_create_bid_logs.exs
