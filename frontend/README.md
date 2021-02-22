@@ -3,6 +3,8 @@
 # urgent
 
 # Known Bugs
+- changing Hidden High Bid just makes a new bid?
+- Keep Bidding Up To just bids the full amount?
 - when you are out of funds and hit +1, it silently fails--preferred UI is to throw up a dialog box saying something like "Not enough cash available to make this bid"
 - the past Time Nominations Expire is shown when the next New Nominations Open At is in the future
 - $ Bid doesn't update in auction page teams table when players are bid up under a hidden max bid without changing the team with the high bid
@@ -65,6 +67,11 @@
 - auction admin page (that allows invites, shows nomination status)
 - archive auction mutation (and add to site admin page)
 - database backup and restore
+- a Hide button (per user) in the Auction page Bids table, plus an Show All button
+- separate pages for Bids and Rostered Players that allow filtering
+- (optionally) show only the most recent Bids on the auction page
+- show only the most recently rostered players on the auction page
+- note icons beside bids that allow owners to make notes
 
 ----
 
