@@ -25,6 +25,24 @@ alias Ssauction.OrderedPlayer
 alias Ssauction.SingleAuction
 
 #
+# moved from priv/repo/migrations/20210103215400_create_bid_logs.exs
+#
+
+Repo.all(RosteredPlayer)
+|> Enum.each(fn rp ->
+               rp = Repo.preload(rp, [:player])
+               auction = Repo.get!(Auction, rp.auction_id)
+               %BidLog{}
+               |> BidLog.changeset(%{amount: rp.cost,
+                                     type: "R",
+                                     datetime: auction.started_or_paused_at})
+               |> Ecto.Changeset.put_assoc(:auction, auction)
+               |> Ecto.Changeset.put_assoc(:team, Repo.get!(Team, rp.team_id))
+               |> Ecto.Changeset.put_assoc(:player, rp.player)
+               |> Repo.insert()
+             end)
+
+#
 # ALL PLAYERS
 #
 

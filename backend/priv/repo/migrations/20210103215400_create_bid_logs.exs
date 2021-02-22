@@ -20,6 +20,12 @@ defmodule Ssauction.Repo.Migrations.CreateBidLogs do
       timestamps()
     end
 
+    #
+    # this should've been run before the changes to Auction was pushed...
+    # now it won't work as part of the migration, so it's been moved to
+    # priv/repo/seeds.exs
+    #
+
     # flush()
 
     # Repo.all(RosteredPlayer)
