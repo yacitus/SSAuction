@@ -152,6 +152,7 @@ const SubmitBidFormModal = (props) => {
               <Form.Label>Keep Bidding Up To</Form.Label>
               <Form.Control
                 type="number"
+                disabled={ props.teamPage || props.teamId === props.row.team.id }
                 ref={keepBiddingUpToRef}
                 defaultValue={ props.row.keepBiddingUpTo === null
                                ? "" : props.row.keepBiddingUpTo } />
