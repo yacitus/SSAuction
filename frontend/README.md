@@ -67,7 +67,9 @@
 - auction admin page (that allows invites, shows nomination status)
 - archive auction mutation (and add to site admin page)
 - database backup and restore
-- a Hide button (per user) in the Auction page Bids table, plus an Show All button
+- sounds when a user is outbid on a player
+- emails when a user is outbid on a player
+- a Hide checkbox (per user) in the Auction page Bids table, plus an Show All (/Hide) toggle button
 - separate pages for Bids and Rostered Players that allow filtering
 - (optionally) show only the most recent Bids on the auction page
 - show only the most recently rostered players on the auction page
