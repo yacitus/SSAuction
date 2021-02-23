@@ -364,11 +364,15 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
       existing_bid.bid_amount
     end
 
-    args = if args.bid_amount > current_team_max_bid do
+    args = if team.id == existing_bid.team_id do
       args
     else
-      # assert args.keep_bidding_up_to > current_team_max_bid
-      Map.put(args, :bid_amount, current_team_max_bid + 1)
+      args = if args.bid_amount > current_team_max_bid do
+        args
+      else
+        # assert args.keep_bidding_up_to > current_team_max_bid
+        Map.put(args, :bid_amount, current_team_max_bid + 1)
+      end
     end
 
     case SingleAuction.update_existing_bid(existing_bid, team, args) do
