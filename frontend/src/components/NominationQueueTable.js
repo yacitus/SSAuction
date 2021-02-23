@@ -141,7 +141,7 @@ class NominationQueueBootstrapTable extends Component {
                    color: 'green',
                    border: '1px solid green',
                    padding: '0.5em' }}>
-        Nomination Queue</h3>;
+        Nomination List</h3>;
 
     return (
       <BootstrapTable

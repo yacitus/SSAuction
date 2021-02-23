@@ -56,7 +56,7 @@
 # Post MVP Feature Priority
 - rosters sortable by time sold (easy with bid history)
 - bids sortable by most recent high bid (easy with bid history)
-- ability to re-order a team nomination queue
+- ability to re-order (or remove players from) a team nomination queue
 - a team setting to enabled/disable auto-nomination from ordered team nomination queue
 - user invitations (including to new or existing team)
 - create new auction mutation
