@@ -54,6 +54,7 @@
 - Supervisor.Spec module used in backend/lib/ssauction/application.ex is deprecated: https://stackoverflow.com/a/61312844/4766
 
 # Post MVP Feature Priority
+- "collapse" repeated +1 presses in the bid history into either one database table record or one list element through the GraphQL query
 - rosters sortable by time sold (easy with bid history)
 - bids sortable by most recent high bid (easy with bid history)
 - ability to re-order (or remove players from) a team nomination queue
