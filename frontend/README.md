@@ -22,9 +22,11 @@
 - allow people to file tickets on GitHub or a Trello project
 
 # MVP Unfinished Features
+- rosters sortable by time sold (easy with bid history)
 - a $/Player column in the Teams table on the auction page
 - paginate auction page Rostered Players table
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
+- add a guardrail, like an "Are you sure?" confirmation if a bid is more than some percentage higher than the existing bid
 - teams can be in more than one auction
 - team names need only be unique within an auction (checked when added to an auction)
 - team page URLs include auction number
@@ -55,7 +57,6 @@
 
 # Post MVP Feature Priority
 - "collapse" repeated +1 presses in the bid history into either one database table record or one list element through the GraphQL query
-- rosters sortable by time sold (easy with bid history)
 - bids sortable by most recent high bid (easy with bid history)
 - ability to re-order (or remove players from) a team nomination queue
 - a team setting to enabled/disable auto-nomination from ordered team nomination queue
