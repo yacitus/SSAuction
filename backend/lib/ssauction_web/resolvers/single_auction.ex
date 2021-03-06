@@ -242,7 +242,7 @@ defmodule SsauctionWeb.Resolvers.SingleAuction do
           args[:bid_amount] < existing_bid.bid_amount ->
             {
               :error,
-              message: "Bid amount cannot be reduced"
+              message: "Bid amount cannot be reduced -- someone else may also be bidding"
             }
           not keep_bidding_up_to_legal?(args[:keep_bidding_up_to], args[:bid_amount]) ->
             {

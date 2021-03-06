@@ -26,7 +26,7 @@
 - a $/Player column in the Teams table on the auction page
 - paginate auction page Rostered Players table
 - when a year_range is displayed (main page, auction page under auction info) where both ends of the range are the same (eg. "2020-2020-BL"), convert it to just one year for display ("2020-BL"——use last 7 characters of range string)
-- add a guardrail, like an "Are you sure?" confirmation if a bid is more than some percentage higher than the existing bid
+- add a guardrail, like an "Are you sure?" confirmation if a bid is more than some percentage (5%?) higher than the existing bid
 - teams can be in more than one auction
 - team names need only be unique within an auction (checked when added to an auction)
 - team page URLs include auction number
