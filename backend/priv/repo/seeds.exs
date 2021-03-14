@@ -363,7 +363,7 @@ team_brian =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[18:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[17:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_roger = Repo.one(from t in Team, where: t.name == "Team Roger")
