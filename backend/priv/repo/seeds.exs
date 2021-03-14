@@ -283,7 +283,7 @@ nomination_time = DateTime.truncate(nomination_time, :second)
 
 team_tom =
   %Team{
-    name: "Team Tom & Jeff",
+    name: "Charm City Centaurs (Tom & Jeff)",
     unused_nominations: 0,
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
