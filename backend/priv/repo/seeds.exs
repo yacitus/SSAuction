@@ -256,7 +256,7 @@ bill = Repo.one(from u in User, where: u.username == "bill")
 # TEAMS (one team can't be in more than one auction yet)
 #
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[15:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[14:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_joe = Repo.one(from t in Team, where: t.name == "Hot Ice (Joe)")
@@ -274,7 +274,7 @@ team_joe =
 # changeset = change(old_team_tom, name: "Team Tom & Jeff - old")
 # Repo.update(changeset)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[15:45:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[14:45:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_tom = Repo.one(from t in Team, where: t.name == "Team Tom & Jeff")
@@ -288,7 +288,7 @@ team_tom =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[16:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[15:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_jim = Repo.one(from t in Team, where: t.name == "Team Jim")
@@ -306,7 +306,7 @@ team_jim =
 # changeset = change(old_team_daryl, name: "Team Daryl - old")
 # Repo.update(changeset)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[16:45:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[15:45:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_daryl = Repo.one(from t in Team, where: t.name == "Team Daryl")
@@ -321,7 +321,7 @@ team_daryl =
     } |> Repo.insert!(on_conflict: :nothing)
 
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[17:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[16:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_dannyr = Repo.one(from t in Team, where: t.name == "Team Danny Rowe")
@@ -335,7 +335,7 @@ team_dannyr =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[17:30:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[16:30:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_tony = Repo.one(from t in Team, where: t.name == "Holyoke Hooligans (Tony)")
@@ -349,7 +349,7 @@ team_tony =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[18:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[17:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_brian = Repo.one(from t in Team, where: t.name == "Team Brian")
@@ -363,7 +363,7 @@ team_brian =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[19:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[18:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_roger = Repo.one(from t in Team, where: t.name == "Team Roger")
@@ -372,12 +372,12 @@ nomination_time = DateTime.truncate(nomination_time, :second)
 
 team_roger =
   %Team{
-    name: "Team Roger",
+    name: "Prairie Gold (Roger)",
     unused_nominations: 0,
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[20:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[19:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_dannyl = Repo.one(from t in Team, where: t.name == "Game Of Throws (Danny)")
@@ -391,7 +391,7 @@ team_dannyl =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-01], ~T[21:00:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-14], ~T[20:00:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_john = Repo.one(from t in Team, where: t.name == "Team John & George")
@@ -405,7 +405,7 @@ team_john =
     new_nominations_open_at: DateTime.truncate(nomination_time, :second),
     } |> Repo.insert!(on_conflict: :nothing)
 
-{:ok, nomination_time} = DateTime.new(~D[2021-03-02], ~T[02:30:00.000], "Etc/UTC")
+{:ok, nomination_time} = DateTime.new(~D[2021-03-15], ~T[01:30:00.000], "Etc/UTC")
 nomination_time = DateTime.truncate(nomination_time, :second)
 
 # team_bill = Repo.one(from t in Team, where: t.name == "The Masked Crusaders (Bill)")
