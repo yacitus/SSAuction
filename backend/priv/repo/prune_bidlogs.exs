@@ -25,7 +25,7 @@ defmodule PruneBidlogs do
     l2 = hd(tl(logs))
     if l1.amount == l2.amount && l1.team_id == l2.team_id do
       IO.puts("duplicate #{l1.amount}")
-      # Repo.delete!(l1)
+      Repo.delete!(l1)
     end
 
     if Enum.count(tl(logs)) > 1 do
