@@ -31,6 +31,7 @@ defmodule PruneBidlogs do
     if Enum.count(tl(logs)) > 1 do
       prune_if(tl(logs))
     end
+    :ok
   end
 
   def prune_player_bidlog(rostered_player) do
@@ -41,14 +42,17 @@ defmodule PruneBidlogs do
     if num_logs > 1 do
       prune_if(logs)
     end
+    :ok
   end
 
   def prune_bidlogs do
-    auction_id = 1
+    auction_id = 3
 
     rostered_players = Repo.all(from rp in RosteredPlayer, where: rp.auction_id == ^auction_id, preload: :player)
 
     Enum.map(rostered_players, &prune_player_bidlog/1)
+
+    :ok
   end
 end
 
