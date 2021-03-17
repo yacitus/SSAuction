@@ -61,6 +61,9 @@
 - bids sortable by most recent high bid (easy with bid history)
 - ability to re-order (or remove players from) a team nomination queue
 - a team setting to enabled/disable auto-nomination from ordered team nomination queue
+- allow setting initial bid and hidden high bid for each player in the nomination queue
+- add a notes field to each player in the nomination queue
+- create a players already nominated list, of player who were in a team's nomination queue who were nominated by someone else (and show who nominated them and their bidding status)
 - user invitations (including to new or existing team)
 - create new auction mutation
 - database backup
