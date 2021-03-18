@@ -59,6 +59,7 @@
 # Post MVP Feature Priority
 - "collapse" repeated +1 presses in the bid history into either one database table record or one list element through the GraphQL query
 - bids sortable by most recent high bid (easy with bid history)
+- show secondary position eligibility for players, and ranges
 - ability to re-order (or remove players from) a team nomination queue
 - a team setting to enabled/disable auto-nomination from ordered team nomination queue
 - allow setting initial bid and hidden high bid for each player in the nomination queue
@@ -80,6 +81,11 @@
 - (optionally) show only the most recent Bids on the auction page
 - show only the most recently rostered players on the auction page
 - note icons beside bids that allow owners to make notes
+
+# 3.0 Ideas
+- player info "popup" (perhaps triggered by a little button beside players' names)
+    - whatever stats and info are freely available (at least from previous season)
+    - notes made on player
 
 ----
 
