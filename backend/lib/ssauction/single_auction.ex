@@ -323,12 +323,14 @@ defmodule Ssauction.SingleAuction do
         |> DateTime.add(-now.second, :second)
       team
       |> Team.changeset(%{unused_nominations: new_unused_nominations,
-                          time_nominations_expire: DateTime.add(now, auction.seconds_before_autonomination, :second),
-                          new_nominations_open_at: DateTime.add(team.new_nominations_open_at, 24*60*60, :second)})
+                          time_nominations_expire: DateTime.add(now, auction.seconds_before_autonomination, :second)})
       |> Repo.update
-      publish_team_info_change(team.id)
-      SingleAuction.publish_auction_teams_info_change(auction)
     end
+    team
+    |> Team.changeset(%{new_nominations_open_at: DateTime.add(team.new_nominations_open_at, 24*60*60, :second)})
+    |> Repo.update
+    publish_team_info_change(team.id)
+    SingleAuction.publish_auction_teams_info_change(auction)
   end
 
   @doc """
